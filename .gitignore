@@ -4,6 +4,7 @@
 # Include and Library files
 include/
 lib/
+imgui/
 
 # Compiled Object files
 *.slo

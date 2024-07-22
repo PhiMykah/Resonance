@@ -1,6 +1,14 @@
-#include <iostream>
+// GUI Headers
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+// Primary Headers
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// C/C++ Library Headers
+#include <iostream>
 #include <math.h> 
 
 struct Color
@@ -17,18 +25,21 @@ struct Color
     }
 };
 
-const char * vertexShaderSource = "#version 330 core\n"
+// Vertex Shader source code
+const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"uniform float size;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   gl_Position = vec4(size * aPos.x, size * aPos.y, size * aPos.z, 1.0);\n"
 "}\0";
-
+//Fragment Shader source code
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"uniform vec4 color;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
+"   FragColor = color;\n"
 "}\n\0";
 
 int main() {
@@ -37,9 +48,9 @@ int main() {
     // *******************
     glfwInit();
 
-    // Give glfw information about opengl version (3.3)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // Give glfw information about opengl version (4.6)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
     // Give glfw information about opengl profile
     // Currently running the CORE profile with modern functions
@@ -167,43 +178,87 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
 
-    // *************************
-    // * Initialize Background *
-    // *************************
+    // ********************
+    // * Initialize IMGUI *
+    // ********************
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    // Create input/output handler
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    // Choose imgui style
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(main_window, true);
+    ImGui_ImplOpenGL3_Init("#version 460"); // Specify initialization based on version of OpenGL
+
+    // *****************************
+    // * Initialize Loop Variables *
+    // *****************************
 
     // Set Background color
     // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f) 
     // Navy Blue: (0.07f, 0.13f, 0.17f, 1.0f)
     Color bg_color(0.4f, 0.2f, 0.6f, 1.0f); 
-    // Clear back buffer and set it to color with RGBA float values
-    glClearColor(bg_color.R, bg_color.G, bg_color.B, bg_color.A);
-    // Execute command above on color buffer
-    glClear(GL_COLOR_BUFFER_BIT);
-    // Swap back buffer and front buffer for effects to take place
-    glfwSwapBuffers(main_window);
+
+    // Triangle attributes
+    // -------------------
+    bool drawTriangle = true; // Triangle visibility
+    float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
+    float size = 1.0f; // Triangle size
+
+    // Ignore mouse inputs with imGUI enabled
+    // if (!io.WantCaptureMouse) {
+    //     // Handle input
+    // }
+
+    // Export variables to shaders
+    glUseProgram(shaderProgram);
+	glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
+	glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
 
     // While loop repeats until window is told to close or user closes window
     while(!glfwWindowShouldClose(main_window)) {
+        // Clear back buffer and set it to color with RGBA float values
         glClearColor(bg_color.R, bg_color.G, bg_color.B, bg_color.A);
+        // Execute command above on color buffer
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Activate program
-        glUseProgram(shaderProgram);
+        // Create new UI Frame, inform opengl3 and glfw
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-        // Bind VAO
-        glBindVertexArray(VAO);
+    
+        glUseProgram(shaderProgram); // Activate program
+        glBindVertexArray(VAO); // Bind VAO
 
+        
         // Draw the Triangle by selecting triangle primative, starting index, and vertex count
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        if (drawTriangle){ glDrawArrays(GL_TRIANGLES, 0, 3); };
+
+        // Create UI Window
+        ImGui::Begin("Testing a new ImGUI window!");
+        ImGui::Text("Do you like the triangle?");
+        ImGui::Checkbox("Draw Triangle", &drawTriangle); // Select whether to draw the triangle
+        ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);
+        ImGui::ColorEdit4("Color", color);
+        ImGui::End();
+
+        // Render UI Window
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // Swap the buffers to update the screen each frame !! 
         glfwSwapBuffers(main_window);
-
         // Update window events every loop, such as resizing, moving, min-max, and other events
         glfwPollEvents();
     }
     
-    // Delete objects created
+    // Close ImGui and Delete Objects
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    // Delete GL objects created
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);
