@@ -4,7 +4,7 @@
 
 CXX=g++
 CXXFLAGS= -g -Wall -std=c++17 -I./libraries/include
-LDFLAGS= -L./libraries/lib -lglfw3 -lrt -lm -ldl
+LDFLAGS= -L./libraries/lib -lrt -lm -ldl -lglfw3
 
 # ----------------
 # MAKEFILE SCRIPTS
@@ -17,4 +17,4 @@ LDFLAGS= -L./libraries/lib -lglfw3 -lrt -lm -ldl
 all: main
 
 main:
-	$(CXX) $(CXXFLAGS) main.cpp -o main $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) main.cpp glad.c -o main $(LDFLAGS)
