@@ -26,15 +26,15 @@ struct Color
 };
 
 // Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
+const char* vertexShaderSource = "#version 460 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "uniform float size;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(size * aPos.x, size * aPos.y, size * aPos.z, 1.0);\n"
 "}\0";
-//Fragment Shader source code
-const char* fragmentShaderSource = "#version 330 core\n"
+// Fragment Shader source code
+const char* fragmentShaderSource = "#version 460 core\n"
 "out vec4 FragColor;\n"
 "uniform vec4 color;\n"
 "void main()\n"
@@ -63,14 +63,6 @@ int main() {
     const char * win_name = "Test Window"; // Window name
     // Designated fullscreen monitor 
     GLFWmonitor * fullscreen = NULL; //glfwGetPrimaryMonitor(); 
-
-    // Initialize triangle vertex array
-    GLfloat vertices[] =
-    {
-        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom left cordinate
-        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom right Coordinate
-        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f // Top coordinate
-    };
 
     // Initialize window with the following parameters:
     //  width, height, name, fullscreen monitor, and context object sharing
@@ -131,15 +123,38 @@ int main() {
     // Vertex array object MUST be created before vertex buffer object
     // Vertex buffer is a different kind of buffer than the front and back buffer
 
+    // Initialize triangle vertex array
+    GLfloat vertices[] =
+    {
+        -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom left corner
+        0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom right corner
+        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Top vertex
+        -0.5f / 2 , 0.5f * float(sqrt(3)) / 6, 0.0f, // Mid left point
+        0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Mid right Point
+        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Bottom Center point
+    };
+
+    // Initialize Index buffer to tell vertex shader the order to form primitives
+    GLuint indices[] = 
+    {
+        0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5
+        3, 2, 4, // Lower right triangle uses vertices 3, 2, and 4
+        5, 4, 1, // Top triangle uses vertices 5, 4, and 1
+    };
+
     // Vertex Array Object (VAO)
     GLuint VAO;
 
     // Vertex Buffer Object (VBO)
     GLuint VBO;
+    
+    // Index Buffer Object (EBO)
+    GLuint EBO;
 
-    // Generate VAO, then VBO
+    // Generate VAO, then VBO, then EBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     // Bind VAO
     glBindVertexArray(VAO);
@@ -162,6 +177,14 @@ int main() {
     //      - COPY suggests that the data will be copied
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Bind EBO
+    //   - Buffer type for index buffer is GL_ELEMENT_ARRAY_BUFFER
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    // Place index array into buffer
+    // See vertex buffer data above for more information
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // Configure VAO with VBO
     // - Position of Vertex Attribute
     // - Number of Values per Vertex
@@ -174,9 +197,10 @@ int main() {
     // Enable Vertex Attribute Array
     glEnableVertexAttribArray(0);
     
-    // Reset Buffer and Vertex Array
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    // Reset array buffer, vertex buffer, and index buffer to zero IN THAT ORDER to avoid modifying 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // ********************
     // * Initialize IMGUI *
@@ -202,8 +226,8 @@ int main() {
     // Triangle attributes
     // -------------------
     bool drawTriangle = true; // Triangle visibility
-    float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
     float size = 1.0f; // Triangle size
+    float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
 
     // Ignore mouse inputs with imGUI enabled
     // if (!io.WantCaptureMouse) {
@@ -212,8 +236,8 @@ int main() {
 
     // Export variables to shaders
     glUseProgram(shaderProgram);
-	glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
-	glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
+    glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
+    glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
 
     // While loop repeats until window is told to close or user closes window
     while(!glfwWindowShouldClose(main_window)) {
@@ -227,20 +251,27 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-    
+        // Update uniforms with ImGui values
         glUseProgram(shaderProgram); // Activate program
+        glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
+        glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
         glBindVertexArray(VAO); // Bind VAO
 
-        
-        // Draw the Triangle by selecting triangle primative, starting index, and vertex count
-        if (drawTriangle){ glDrawArrays(GL_TRIANGLES, 0, 3); };
+        // Draw the Triforce
+        //  - Select Triangle primitive
+        //  - Specify number of indices 
+        //  - Specify datatype of indices
+        //  - Identify index of indices
+        if (drawTriangle){ 
+            glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        }
 
-        // Create UI Window
-        ImGui::Begin("Testing a new ImGUI window!");
-        ImGui::Text("Do you like the triangle?");
+        // Create UI Window 
+        ImGui::Begin("Testing a new ImGUI window!"); // ImGUI window creation
+        ImGui::Text("Do you like the triangle?"); // Text that appears in the window
         ImGui::Checkbox("Draw Triangle", &drawTriangle); // Select whether to draw the triangle
-        ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);
-        ImGui::ColorEdit4("Color", color);
+        ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
+        ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
         ImGui::End();
 
         // Render UI Window
@@ -261,6 +292,7 @@ int main() {
     // Delete GL objects created
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 
     glfwDestroyWindow(main_window); // Close window when complete

@@ -6,6 +6,9 @@ include/
 lib/
 imgui/
 
+# User Settings files
+*.ini 
+
 # Compiled Object files
 *.slo
 *.lo
