@@ -1,0 +1,1 @@
+Place the "include" and "lib" files from GLFW and glad into this directory!
