@@ -37,19 +37,19 @@ struct Color
 
 // Initialize triangle vertex array
 GLfloat vertices[] =
-{
-    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom left corner
-    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Bottom right corner
-    0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Top vertex
-    -0.5f / 2 , 0.5f * float(sqrt(3)) / 6, 0.0f, // Mid left point
-    0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Mid right Point
-    0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Bottom Center point
+{ //        X,Y,Z Coordinates                       /       RGB Color        //
+    -0.5f,  -0.5f * float(sqrt(3)) / 3,     0.0f,       0.80f, 0.30f, 0.02f, // Bottom left corner
+     0.5f,  -0.5f * float(sqrt(3)) / 3,     0.0f,       0.80f, 0.30f, 0.02f, // Bottom right corner
+     0.0f,   0.5f * float(sqrt(3)) * 2 / 3, 0.0f,       1.00f, 0.60f, 0.32f, // Top vertex
+    -0.25f,  0.5f * float(sqrt(3)) / 6,     0.0f,       0.90f, 0.45f, 0.17f, // Mid left point
+     0.25f,  0.5f * float(sqrt(3)) / 6,     0.0f,       0.90f, 0.45f, 0.17f, // Mid right Point
+     0.0f,  -0.5f * float(sqrt(3)) / 3,     0.0f,       0.80f, 0.30f, 0.02f  // Bottom Center point
 };
 
 // Initialize Index buffer to tell vertex shader the order to form primitives
 GLuint indices[] = 
 {
-    0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5
+    0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5   
     3, 2, 4, // Lower right triangle uses vertices 3, 2, and 4
     5, 4, 1, // Top triangle uses vertices 5, 4, and 1
 };
@@ -72,7 +72,7 @@ int main() {
     int width = 800;
     int height = 800;
 
-    const char * win_name = "Test Window"; // Window name
+    const char * win_name = "Triforce Simulator"; // Window name
     // Designated fullscreen monitor 
     GLFWmonitor * fullscreen = NULL; //glfwGetPrimaryMonitor(); 
 
@@ -113,9 +113,11 @@ int main() {
     // Index Buffer Object (EBO)
     EBO ebo1(indices, sizeof(indices));
 
-    // Link vbo to corresponding vao
-    vao1.LinkVBO(vbo1, 0);
-
+    // Link vbo layouts to corresponding vao
+    // Position Coordinate layout (layout 0)
+    vao1.LinkAttrib(vbo1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+    // Color layout (layout 1)
+    vao1.LinkAttrib(vbo1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     // Unbind vao, vbo, and ebo to avoid further modifications
     vao1.Unbind();
     vbo1.Unbind();
@@ -146,17 +148,21 @@ int main() {
     // -------------------
     bool drawTriangle = true; // Triangle visibility
     float size = 1.0f; // Triangle size
-    float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
+    // float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
 
     // Ignore mouse inputs with imGUI enabled
     // if (!io.WantCaptureMouse) {
     //     // Handle input
     // }
 
+    // Pointer to uniform variable size from shader
+    GLuint sizeID = glGetUniformLocation(shaderProgram.ID, "size");
+    // GLunit colorID = glGetUniformLocation(shaderProgram.ID, "color");
+
     // Export variables to shaders
     shaderProgram.Activate();
-    glUniform1f(glGetUniformLocation(shaderProgram.ID, "size"), size);
-    glUniform4f(glGetUniformLocation(shaderProgram.ID, "color"), color[0], color[1], color[2], color[3]);
+    glUniform1f(sizeID, size); // glUniform changes based on the the inputted datatype
+    // glUniform4f(colorID, color[0], color[1], color[2], color[3]);
 
     // While loop repeats until window is told to close or user closes window
     while(!glfwWindowShouldClose(main_window)) {
@@ -172,8 +178,9 @@ int main() {
 
         // Update uniforms with ImGui values
         shaderProgram.Activate(); // Activate program
-        glUniform1f(glGetUniformLocation(shaderProgram.ID, "size"), size);
-        glUniform4f(glGetUniformLocation(shaderProgram.ID, "color"), color[0], color[1], color[2], color[3]);
+        glUniform1f(sizeID, size);
+        // glUniform4f(colorID, color[0], color[1], color[2], color[3]);
+        
         vao1.Bind(); // Bind VAO
 
         // Draw the Triforce
@@ -186,11 +193,11 @@ int main() {
         }
 
         // Create UI Window 
-        ImGui::Begin("Testing a new window!"); // ImGUI window creation
+        ImGui::Begin("Triangle Settings"); // ImGUI window creation
         ImGui::Text("Do you like the triangle?"); // Text that appears in the window
         ImGui::Checkbox("Draw Triangle", &drawTriangle); // Select whether to draw the triangle
         ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
-        ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
+        // ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
         ImGui::End();
 
         // Render UI Window

@@ -11,13 +11,23 @@ Class for containing and handling OpenGL vertex array
 class VAO
 {
 public:
+    // Reference ID for VAO
     GLuint ID;
+
+    // Default VAO constructor
     VAO();
 
-    void LinkVBO(VBO vbo, GLuint layout, GLint size = 3);
+    // Link vertex layout attribute to VAO
+    void LinkAttrib(VBO vbo, GLuint layout, GLuint numComponents = 3, 
+                    GLenum type = GL_FLOAT, GLsizeiptr stride = 0, void* offset = (void*)0);
 
+    // Bind VAO to binding point
     void Bind();
+
+    // Unbind VAO from binding point
     void Unbind();
+
+    // Delete VAO
     void Delete();
 };
 

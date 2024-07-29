@@ -16,26 +16,34 @@ Parameters
 vbo : VBO
     Target vertex buffer object to link to vertex array
 layout : GLuint
-    Specifies the index of the generic vertex attribute to be modified.
-size : GLint
-    Number of points per vertex attribute (Default 3 for (X,Y,Z))
-
+    Specifies the component layout location for the vertex data.
+numComponents : GLint
+    Number of components per layout and vertex, by default 3
+type : GLenum
+    Datatype of the layout components
+stride : Lsizeiptr
+    Distance in bytes between each vertex, by default 0
+offset : void *
+    Offset pointer of a layout from start of vertex in bytes
+    (for example the offset between coordinate data and color data)
 Returns
 -------
 None
 */
-void VAO::LinkVBO(VBO vbo, GLuint layout, GLint size){
+void VAO::LinkAttrib(VBO vbo, GLuint layout, GLuint numComponents, 
+                    GLenum type, GLsizeiptr stride, void* offset){
 
     vbo.Bind(); // Bind vbo to binding point for use
 
     // Configure VAO with VBO
     // - Position of Vertex Attribute
-    // - Number of Values per Vertex
-    // - Value type
+    // - Number of Components per Layout
+    // - Component type
     // - Identify whether or not values are integers
-    // - Size of data per vertex
-    // - Offset
-    glVertexAttribPointer(layout, size, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    // - Size of layout data per vertex or
+    //   distance in bytes between each layout in vertex
+    // - Offset from start of datastream
+    glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
     // Enable Vertex Attribute Array
     glEnableVertexAttribArray(layout);
 
