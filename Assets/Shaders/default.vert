@@ -11,9 +11,14 @@ out vec2 texCoord;
 // NEVER DECLARE UNIFORMS IF THEY GO UNUSED
 uniform float size;
 
+// Transformation matrices
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main()
 {
-    gl_Position = vec4(size * aPos.x, size * aPos.y, size * aPos.z, 1.0);
+    gl_Position = proj * view * model * vec4(size * aPos, 1.0);
     // Assign colors from vertex data to color
     color = aColor;
     texCoord = aTex;

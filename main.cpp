@@ -14,6 +14,11 @@
 #include "Assets/Buffers/VBO.h"
 #include "Assets/Buffers/EBO.h"
 
+// Matrix Headers
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 // Texture Headers
 #include "Assets/Textures/texture.h"
 
@@ -76,6 +81,29 @@ GLuint square_indices[] =
     0, 3, 2  // Lower triangle
 };
 
+// ******************
+// * Define Pyramid *
+// ******************
+
+GLfloat pyramid_vertices[] =
+{ //     X,Y,Z Coordinates      /       RGB Color        /    Texture Coordinates    //
+    -0.5f,   0.0f,     0.5f,       0.83f, 0.78f, 0.44f,       0.00f, 0.00f,          // Top Left of Base
+    -0.5f,   0.0f,    -0.5f,       0.83f, 0.78f, 0.44f,       5.00f, 0.00f,          // Bottom Left of Base
+     0.5f,   0.0f,    -0.5f,       0.83f, 0.78f, 1.44f,       0.00f, 0.00f,          // Bottom Right of Base
+     0.5f,   0.0f,     0.5f,       0.83f, 0.78f, 1.44f,       5.00f, 0.00f,          // Top Right of base
+     0.0f,   0.8f,     0.0f,       0.92f, 0.86f, 0.76f,       2.50f, 5.00f           // Peak of Pyramid
+};
+
+GLuint pyramid_indices[] = 
+{
+    0, 1, 2,
+    0, 2, 3,
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4
+};
+
 int main() {
     // *******************
     // * Initialize glfw *
@@ -131,9 +159,9 @@ int main() {
     vao1.Bind();
 
     // Vertex Buffer Object (VBO)
-    VBO vbo1(square_vertices, sizeof(square_vertices));
+    VBO vbo1(pyramid_vertices, sizeof(pyramid_vertices));
     // Index Buffer Object (EBO)
-    EBO ebo1(square_indices, sizeof(square_indices));
+    EBO ebo1(pyramid_indices, sizeof(pyramid_indices));
 
     // Link vbo layouts to corresponding vao
     // Position Coordinate layout (layout 0)
@@ -166,12 +194,14 @@ int main() {
     // Set Background color
     // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f) 
     // Navy Blue: (0.07f, 0.13f, 0.17f, 1.0f)
-    Color bg_color(float(25.0/255.0), float(25.0/255.0), float(122.0/255.0), 1.0f); 
+    Color bg_color((float)(25.0/255.0), (float)(25.0/255.0), (float)(122.0/255.0), 1.0f); 
 
-    // Triangle attributes
+    // Shape attributes
     // -------------------
-    bool drawTriangle = true; // Triangle visibility
+    bool drawShape = true; // Triangle visibility
     float size = 1.0f; // Triangle size
+    float rotation = glm::radians(0.0f); // Initial rotation value
+    bool autoRotate = false;
     // float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
 
     // Ignore mouse inputs with imGUI enabled
@@ -183,29 +213,115 @@ int main() {
     GLuint sizeID = glGetUniformLocation(shaderProgram.ID, "size");
     // GLunit colorID = glGetUniformLocation(shaderProgram.ID, "color");
 
-
     // Load Texture 
-    Texture logo("Assets/Textures/logo.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
-    logo.texUnit(shaderProgram, "tex0", 0);
+    Texture tex("Assets/Textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
+    tex.texUnit(shaderProgram, "tex0", 0);
+
+ 
+    double prevTime = glfwGetTime();
+
+    // Enable depth testing in OpenGL rendering
+    glEnable(GL_DEPTH_TEST);
 
     // While loop repeats until window is told to close or user closes window
     while(!glfwWindowShouldClose(main_window)) {
         // Clear back buffer and set it to color with RGBA float values
         glClearColor(bg_color.R, bg_color.G, bg_color.B, bg_color.A);
-        // Execute command above on color buffer
-        glClear(GL_COLOR_BUFFER_BIT);
+        
+        // Clear Color and Depth buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Create new UI Frame, inform opengl3 and glfw
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        shaderProgram.Activate(); // Activate program
+        shaderProgram.Activate(); // Activate program   
+
+        // **************
+        // * Delta Time *
+        // **************
+
+        // Rotate every 1/60th of a second
+        double currTime = glfwGetTime();
+        if (currTime - prevTime >= 1 / 60) {
+            if (autoRotate) {
+                rotation += 0.5f;
+            }
+            prevTime = currTime;
+        }
+
+        // *****************
+        // * View Matrices *
+        // *****************
+
+        // Initialize matrices for conversion between view spaces
+        // All should take place after shader program activation
+
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 proj = glm::mat4(1.0f);
+
+        // Rotate the model using the following parameters
+        //  - Matrix to rotate
+        //  - Rotation value in radians
+        //  - Axis of rotation
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        // Move the Camera view
+        // Note: When modifying the camera, it is actually the world that moves around
+        // the viewport rather than the viewport moving around the world.
+        // The linear algebra reflects this behavior.
+        // Note that for the z-axis, positive is towards and negative is away
+        //                                           Down   Away
+        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+
+        // Set the perspective using the following parameters:
+        //  - FOV in radians
+        //  - Aspect ratio of screen
+        //  - Closest point 
+        //  - Furthest point
+        proj = glm::perspective(glm::radians(45.0f), (float)(width/height), 0.1f, 100.0f);
+
+
+        // Obtain matrix values from vertex shader
+
+        // model uniform location
+        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+
+        // Set uniform matrix value to the value from the main function
+        // Parameters:
+        //  - Location of uniform
+        //  - Uniform count
+        //  - Whether or not to transpose matrix
+        //  - Pointer to matrix
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        // model uniform location
+        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+
+        // Set uniform matrix value to the value from the main function
+        // Parameters:
+        //  - Location of uniform
+        //  - Uniform count
+        //  - Whether or not to transpose matrix
+        //  - Pointer to matrix
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        // model uniform location
+        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+
+        // Set uniform matrix value to the value from the main function
+        // Parameters:
+        //  - Location of uniform
+        //  - Uniform count
+        //  - Whether or not to transpose matrix
+        //  - Pointer to matrix
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         // Update uniforms values after activation
         glUniform1f(sizeID, size);
         // glUniform4f(colorID, color[0], color[1], color[2], color[3]);
-        logo.Bind();
+        tex.Bind();
         
         vao1.Bind(); // Bind VAO
 
@@ -214,15 +330,19 @@ int main() {
         //  - Specify number of indices 
         //  - Specify datatype of indices
         //  - Identify index of indices
-        if (drawTriangle){ 
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        if (drawShape){ 
+            glDrawElements(GL_TRIANGLES, sizeof(pyramid_indices)/sizeof(int), GL_UNSIGNED_INT, 0);
         }
 
         // Create UI Window 
-        ImGui::Begin("ShapeSettings"); // ImGUI window creation
+        ImGui::Begin("Shape Settings"); // ImGUI window creation
         ImGui::Text("Do you like this shape?"); // Text that appears in the window
-        ImGui::Checkbox("Draw Shape", &drawTriangle); // Select whether to draw the triangle
+        ImGui::Checkbox("Draw Shape", &drawShape); // Select whether to draw the shape
         ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
+        ImGui::Checkbox("Auto Rotate", &autoRotate); // Select whether shape should automatically rotate
+        if (!autoRotate) {
+            ImGui::SliderAngle("Rotation", &rotation, -360.0*24, 360*24);
+        }
         // ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
         ImGui::End();
 
@@ -245,7 +365,7 @@ int main() {
     vao1.Delete();
     vbo1.Delete();
     ebo1.Delete();
-    logo.Delete();
+    tex.Delete();
     shaderProgram.Delete();
 
     glfwDestroyWindow(main_window); // Close window when complete
