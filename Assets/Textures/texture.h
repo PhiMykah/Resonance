@@ -19,7 +19,7 @@ class Texture
         Texture(const char * image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD);
 
         // Assign texture to texture unit in shader
-        void texUnit(Shader shader, const char* uniform, GLuint unit);
+        void texUnit(Shader& shader, const char* uniform, GLuint unit);
         
         // Bind texture to binding point
         void Bind();

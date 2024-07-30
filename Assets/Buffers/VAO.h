@@ -18,7 +18,7 @@ public:
     VAO();
 
     // Link vertex layout attribute to VAO
-    void LinkAttrib(VBO vbo, GLuint layout, GLuint numComponents = 3, 
+    void LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents = 3, 
                     GLenum type = GL_FLOAT, GLsizeiptr stride = 0, void* offset = (void*)0);
 
     // Bind VAO to binding point

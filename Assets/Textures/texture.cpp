@@ -102,7 +102,7 @@ Allocate texture to texture unit and link coordinates
 
 Parameters
 ----------
-shader : Shader
+shader : Shader&
     Targe shader to activate when binding texture unit
 
 uniform : const char *
@@ -115,7 +115,7 @@ Returns
 -------
 None
 */
-void Texture::texUnit(Shader shader, const char *uniform, GLuint unit)
+void Texture::texUnit(Shader& shader, const char *uniform, GLuint unit)
 {
     // Obtain sampler2D var from fragment shader for use in prgram
     GLuint texUni = glGetUniformLocation(shader.ID, uniform);

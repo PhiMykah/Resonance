@@ -13,7 +13,7 @@ Link vertex buffer object to this vertex array with given layout
 
 Parameters
 ----------
-vbo : VBO
+vbo : VBO&
     Target vertex buffer object to link to vertex array
 layout : GLuint
     Specifies the component layout location for the vertex data.
@@ -30,7 +30,7 @@ Returns
 -------
 None
 */
-void VAO::LinkAttrib(VBO vbo, GLuint layout, GLuint numComponents, 
+void VAO::LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents, 
                     GLenum type, GLsizeiptr stride, void* offset){
 
     vbo.Bind(); // Bind vbo to binding point for use
