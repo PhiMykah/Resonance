@@ -4,6 +4,7 @@
 
 bffr = Assets/Buffers
 shdr = Assets/Shaders
+txtre = Assets/Textures
 
 # ---------
 # VARIABLES
@@ -15,10 +16,12 @@ LDFLAGS= -L./Assets/Libraries/lib -lrt -lm -ldl -lglfw3
 
 BUFFERS = $(bffr)/VBO.o $(bffr)/EBO.o $(bffr)/VAO.o
 SHADERS = $(shdr)/shader.o
-OBJ = $(BUFFERS) $(SHADERS)
+TEXTURES = $(txtre)/texture.o
+
+OBJ = $(BUFFERS) $(SHADERS) $(TEXTURES)
 
 # Reference files
-glad = glad.c
+glad = glad.c stb.cpp
 
 IMGUI = imgui/imgui.cpp \
 		imgui/imgui_demo.cpp imgui/imgui_draw.cpp \
@@ -37,7 +40,7 @@ IMGUI = imgui/imgui.cpp \
 
 all: main clean
 
-main: buffers.o shader.o
+main: buffers.o shader.o texture.o
 	$(CXX) $(CXXFLAGS) main.cpp $(glad) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
 
 clean:
@@ -50,3 +53,6 @@ buffers.o:
 
 shader.o:
 	$(CXX) $(CXXFLAGS) -c $(shdr)/shaderClass.cpp -o $(shdr)/shader.o $(LDFLAGS)
+
+texture.o:
+	$(CXX) $(CXXFLAGS) -c $(txtre)/texture.cpp -o $(txtre)/texture.o $(LDFLAGS)
