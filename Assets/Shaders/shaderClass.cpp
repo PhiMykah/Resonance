@@ -11,7 +11,7 @@ filename : const char *
 Returns
 -------
 contents : std::string
-    Contents of the file represented as a C++ string 
+    Contents of the file represented as a C++ string
 */
 std::string get_file_contents(const char * filename)
 {
@@ -21,14 +21,14 @@ std::string get_file_contents(const char * filename)
         std::string contents; // String to hold contents of the file
 
         // Seek to the end of the file and obtain the length of the file
-        in.seekg(0, std::ios::end); 
+        in.seekg(0, std::ios::end);
         contents.resize(in.tellg());
 
         // Return to the beginning of the file and read to the end
         in.seekg(0, std::ios::beg);
         in.read(&contents[0], contents.size());
         in.close(); // Don't forget to close the file!
-        
+
         return(contents);
     }
     throw(errno);
@@ -46,7 +46,7 @@ fragmentFile : const char *
 
 Returns
 -------
-None
+Shader object
 */
 Shader::Shader(const char * vertexFile, const char * fragmentFile){
     std::string vertexCode = get_file_contents(vertexFile);
@@ -78,7 +78,7 @@ Shader::Shader(const char * vertexFile, const char * fragmentFile){
     // Compile source code to machine code
     glCompileShader(fragmentShader);
     compileErrors(fragmentShader, "FRAGMENT");
-    
+
     // Create shader program and store as the Shader class ID, attach, then wrap shaders into shader program
     ID = glCreateProgram();
     glAttachShader(ID, vertexShader);

@@ -26,11 +26,12 @@ stride : Lsizeiptr
 offset : void *
     Offset pointer of a layout from start of vertex in bytes
     (for example the offset between coordinate data and color data)
+
 Returns
 -------
-None
+VAO Object
 */
-void VAO::LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents, 
+void VAO::LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents,
                     GLenum type, GLsizeiptr stride, void* offset){
 
     vbo.Bind(); // Bind vbo to binding point for use

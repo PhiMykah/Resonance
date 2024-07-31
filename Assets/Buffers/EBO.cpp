@@ -14,10 +14,14 @@ usage : GLenum
         - STREAM suggests the data will be initialized once and used a few times
         - STATIC suggests the data will be initialized once and used many times
         - DYNAMIC suggests the data will be initialized and used many times
-    - Specify data usage action (DRAW, READ, COPY) 
+    - Specify data usage action (DRAW, READ, COPY)
         - DRAW suggests the data will be drawn on the screen
-        - READ suggests the data will be read 
+        - READ suggests the data will be read
         - COPY suggests that the data will be copied
+
+Returns
+-------
+EBO Object
 */
 EBO::EBO(GLuint * indices, GLsizeiptr size, GLenum usage){
     glGenBuffers(1, &ID);

@@ -1,5 +1,5 @@
 #ifndef SHADER_CLASS_H
-#define SHADER_CLASS_H 
+#define SHADER_CLASS_H
 
 // Include headers for obtaining shader source code
 #include <glad/glad.h>
@@ -12,7 +12,7 @@
 std::string get_file_contents(const char * filename);
 
 /*
-Object for loading vertex and fragment shaders by source code to 
+Object for loading vertex and fragment shaders by source code to
 a new program
 */
 class Shader

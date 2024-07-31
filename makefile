@@ -2,9 +2,10 @@
 # PATHS
 # ---------
 
-bffr = Assets/Buffers
-shdr = Assets/Shaders
-txtre = Assets/Textures
+bffr= Assets/Buffers
+shdr= Assets/Shaders
+txtre= Assets/Textures
+cam= Assets/Camera
 
 # ---------
 # VARIABLES
@@ -14,11 +15,13 @@ CXX=g++
 CXXFLAGS= -g -Wall -std=c++17 -I./Assets/Libraries/include -I./imgui
 LDFLAGS= -L./Assets/Libraries/lib -lrt -lm -ldl -lglfw3
 
-BUFFERS = $(bffr)/VBO.o $(bffr)/EBO.o $(bffr)/VAO.o
-SHADERS = $(shdr)/shader.o
-TEXTURES = $(txtre)/texture.o
+BUFFERS= $(bffr)/VBO.o $(bffr)/EBO.o $(bffr)/VAO.o
+SHADERS= $(shdr)/shader.o
+TEXTURES= $(txtre)/texture.o
+CAMERA= $(cam)/camera.o
 
-OBJ = $(BUFFERS) $(SHADERS) $(TEXTURES)
+DEPS= buffers.o shader.o texture.o camera.o
+OBJ= $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA)
 
 # Reference files
 glad = glad.c stb.cpp
@@ -28,7 +31,6 @@ IMGUI = imgui/imgui.cpp \
 		imgui/imgui_impl_glfw.cpp \
 		imgui/imgui_impl_opengl3.cpp \
 		imgui/imgui_tables.cpp imgui/imgui_widgets.cpp
-
 
 # ----------------
 # MAKEFILE SCRIPTS
@@ -40,7 +42,7 @@ IMGUI = imgui/imgui.cpp \
 
 all: main clean
 
-main: buffers.o shader.o texture.o
+main: $(DEPS)
 	$(CXX) $(CXXFLAGS) main.cpp $(glad) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
 
 clean:
@@ -54,5 +56,8 @@ buffers.o:
 shader.o:
 	$(CXX) $(CXXFLAGS) -c $(shdr)/shaderClass.cpp -o $(shdr)/shader.o $(LDFLAGS)
 
-texture.o:
+texture.o: shader.o
 	$(CXX) $(CXXFLAGS) -c $(txtre)/texture.cpp -o $(txtre)/texture.o $(LDFLAGS)
+
+camera.o: shader.o
+	$(CXX) $(CXXFLAGS) -c $(cam)/camera.cpp -o $(cam)/camera.o $(LDFLAGS)

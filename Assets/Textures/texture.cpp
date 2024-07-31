@@ -28,9 +28,9 @@ magLOD : GLenum
 
 Returns
 -------
-None
+Texture object
 */
-Texture::Texture(const char * image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){  
+Texture::Texture(const char * image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
     // Assigns the type of the texture ot the texture object
     type = texType;
     int width, height, numColCh;

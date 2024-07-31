@@ -7,7 +7,7 @@ lib/
 imgui/
 
 # User Settings files
-*.ini 
+*.ini
 
 # Compiled Object files
 *.slo
@@ -42,3 +42,6 @@ main
 
 # VSCODE
 .vscode/
+
+# Testing Files
+.clangd

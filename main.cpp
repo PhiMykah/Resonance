@@ -22,9 +22,12 @@
 // Texture Headers
 #include "Assets/Textures/texture.h"
 
+// Camera Header(s)
+#include "Assets/Camera/camera.h"
+
 // C/C++ Library Headers
 #include <iostream>
-#include <math.h> 
+#include <math.h>
 
 struct Color
 {
@@ -56,9 +59,9 @@ GLfloat triangle_vertices[] =
 };
 
 // Initialize Index buffer to tell vertex shader the order to form primitives
-GLuint triangle_indices[] = 
+GLuint triangle_indices[] =
 {
-    0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5   
+    0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5
     3, 2, 4, // Lower right triangle uses vertices 3, 2, and 4
     5, 4, 1, // Top triangle uses vertices 5, 4, and 1
 };
@@ -67,7 +70,7 @@ GLuint triangle_indices[] =
 // * Define Square *
 // *****************
 
-GLfloat square_vertices[] = 
+GLfloat square_vertices[] =
 { //     X,Y,Z Coordinates      /       RGB Color        /    Texture Coordinates    //
     -0.5f,  -0.5f,     0.0f,       1.00f, 0.00f, 0.00f,       0.00f, 0.00f,          // Bottom left corner
     -0.5f,   0.5f,     0.0f,       0.00f, 1.00f, 0.00f,       0.00f, 1.00f,          // Top left corner
@@ -75,7 +78,7 @@ GLfloat square_vertices[] =
      0.5f,  -0.5f,     0.0f,       1.00f, 1.00f, 1.00f,       1.00f, 0.00f           // Bottom right corner
 };
 
-GLuint square_indices[] = 
+GLuint square_indices[] =
 {
     0, 2, 1, // Upper triangle
     0, 3, 2  // Lower triangle
@@ -94,7 +97,7 @@ GLfloat pyramid_vertices[] =
      0.0f,   0.8f,     0.0f,       0.92f, 0.86f, 0.76f,       2.50f, 5.00f           // Peak of Pyramid
 };
 
-GLuint pyramid_indices[] = 
+GLuint pyramid_indices[] =
 {
     0, 1, 2,
     0, 2, 3,
@@ -123,15 +126,15 @@ int main() {
     int height = 800;
 
     const char * win_name = "Shape Simulator"; // Window name
-    // Designated fullscreen monitor 
-    GLFWmonitor * fullscreen = NULL; //glfwGetPrimaryMonitor(); 
+    // Designated fullscreen monitor
+    GLFWmonitor * fullscreen = NULL; //glfwGetPrimaryMonitor();
 
     // Initialize window with the following parameters:
     //  width, height, name, fullscreen monitor, and context object sharing
-    GLFWwindow * main_window = glfwCreateWindow(width, height, win_name, fullscreen, NULL); 
+    GLFWwindow * main_window = glfwCreateWindow(width, height, win_name, fullscreen, NULL);
 
     // Since window returns null if the window fails to initialize, check for failure
-    if (main_window == NULL) 
+    if (main_window == NULL)
     {
         std::cout << "Failed to create GLFW window!" << std::endl;
         glfwTerminate(); // Terminate glfw processes
@@ -143,7 +146,7 @@ int main() {
     // * Initialize GL *
     // *****************
     gladLoadGL();
-    
+
     // Set openGL to render from top left corner (0,0) to bottom right corner (width, height)
     glViewport(0,0, width, height);
 
@@ -192,16 +195,16 @@ int main() {
     // *****************************
 
     // Set Background color
-    // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f) 
+    // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f)
     // Navy Blue: (0.07f, 0.13f, 0.17f, 1.0f)
-    Color bg_color((float)(25.0/255.0), (float)(25.0/255.0), (float)(122.0/255.0), 1.0f); 
+    Color bg_color((float)(25.0/255.0), (float)(25.0/255.0), (float)(122.0/255.0), 1.0f);
 
     // Shape attributes
     // -------------------
     bool drawShape = true; // Triangle visibility
     float size = 1.0f; // Triangle size
-    float rotation = glm::radians(0.0f); // Initial rotation value
-    bool autoRotate = false;
+    // float rotation = glm::radians(0.0f); // Initial rotation value
+    // bool autoRotate = false;
     // float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
 
     // Ignore mouse inputs with imGUI enabled
@@ -213,12 +216,13 @@ int main() {
     GLuint sizeID = glGetUniformLocation(shaderProgram.ID, "size");
     // GLunit colorID = glGetUniformLocation(shaderProgram.ID, "color");
 
-    // Load Texture 
+    // Load Texture
     Texture tex("Assets/Textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
     tex.texUnit(shaderProgram, "tex0", 0);
 
- 
-    double prevTime = glfwGetTime();
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+    // double prevTime = glfwGetTime();
 
     // Enable depth testing in OpenGL rendering
     glEnable(GL_DEPTH_TEST);
@@ -227,7 +231,7 @@ int main() {
     while(!glfwWindowShouldClose(main_window)) {
         // Clear back buffer and set it to color with RGBA float values
         glClearColor(bg_color.R, bg_color.G, bg_color.B, bg_color.A);
-        
+
         // Clear Color and Depth buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -236,113 +240,53 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        shaderProgram.Activate(); // Activate program   
+        shaderProgram.Activate(); // Activate program
 
         // **************
         // * Delta Time *
         // **************
 
-        // Rotate every 1/60th of a second
-        double currTime = glfwGetTime();
-        if (currTime - prevTime >= 1 / 60) {
-            if (autoRotate) {
-                rotation += 0.5f;
-            }
-            prevTime = currTime;
-        }
+        // // Rotate every 1/60th of a second
+        // double currTime = glfwGetTime();
+        // if (currTime - prevTime >= 1.0 / 60.0) {
+        //     if (autoRotate) {
+        //         rotation += 0.5f;
+        //     }
+        //     prevTime = currTime;
+        // }
 
-        // *****************
-        // * View Matrices *
-        // *****************
+        // *******************
+        // * Camera Settings *
+        // *******************
 
-        // Initialize matrices for conversion between view spaces
-        // All should take place after shader program activation
-
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 proj = glm::mat4(1.0f);
-
-        // Rotate the model using the following parameters
-        //  - Matrix to rotate
-        //  - Rotation value in radians
-        //  - Axis of rotation
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        // Move the Camera view
-        // Note: When modifying the camera, it is actually the world that moves around
-        // the viewport rather than the viewport moving around the world.
-        // The linear algebra reflects this behavior.
-        // Note that for the z-axis, positive is towards and negative is away
-        //                                           Down   Away
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-
-        // Set the perspective using the following parameters:
-        //  - FOV in radians
-        //  - Aspect ratio of screen
-        //  - Closest point 
-        //  - Furthest point
-        proj = glm::perspective(glm::radians(45.0f), (float)(width/height), 0.1f, 100.0f);
-
-
-        // Obtain matrix values from vertex shader
-
-        // model uniform location
-        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-
-        // Set uniform matrix value to the value from the main function
-        // Parameters:
-        //  - Location of uniform
-        //  - Uniform count
-        //  - Whether or not to transpose matrix
-        //  - Pointer to matrix
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        // model uniform location
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-
-        // Set uniform matrix value to the value from the main function
-        // Parameters:
-        //  - Location of uniform
-        //  - Uniform count
-        //  - Whether or not to transpose matrix
-        //  - Pointer to matrix
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-        // model uniform location
-        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
-
-        // Set uniform matrix value to the value from the main function
-        // Parameters:
-        //  - Location of uniform
-        //  - Uniform count
-        //  - Whether or not to transpose matrix
-        //  - Pointer to matrix
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+        camera.Input(main_window);
+        camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
         // Update uniforms values after activation
         glUniform1f(sizeID, size);
         // glUniform4f(colorID, color[0], color[1], color[2], color[3]);
         tex.Bind();
-        
+
         vao1.Bind(); // Bind VAO
 
         // Draw the Triforce
         //  - Select Triangle primitive
-        //  - Specify number of indices 
+        //  - Specify number of indices
         //  - Specify datatype of indices
         //  - Identify index of indices
-        if (drawShape){ 
+        if (drawShape){
             glDrawElements(GL_TRIANGLES, sizeof(pyramid_indices)/sizeof(int), GL_UNSIGNED_INT, 0);
         }
 
-        // Create UI Window 
+        // Create UI Window
         ImGui::Begin("Shape Settings"); // ImGUI window creation
         ImGui::Text("Do you like this shape?"); // Text that appears in the window
         ImGui::Checkbox("Draw Shape", &drawShape); // Select whether to draw the shape
         ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
-        ImGui::Checkbox("Auto Rotate", &autoRotate); // Select whether shape should automatically rotate
-        if (!autoRotate) {
-            ImGui::SliderAngle("Rotation", &rotation, -360.0*24, 360*24);
-        }
+        // ImGui::Checkbox("Auto Rotate", &autoRotate); // Select whether shape should automatically rotate
+        // if (!autoRotate) {
+        //     ImGui::SliderAngle("Rotation", &rotation, -360.0*24, 360*24);
+        // }
         // ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
         ImGui::End();
 
@@ -350,12 +294,12 @@ int main() {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        // Swap the buffers to update the screen each frame !! 
+        // Swap the buffers to update the screen each frame !!
         glfwSwapBuffers(main_window);
         // Update window events every loop, such as resizing, moving, min-max, and other events
         glfwPollEvents();
     }
-    
+
     // Close ImGui and Delete Objects
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
