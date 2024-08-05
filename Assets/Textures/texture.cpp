@@ -30,7 +30,7 @@ Returns
 -------
 Texture object
 */
-Texture::Texture(const char * image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
+Texture::Texture(const char * image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
     // Assigns the type of the texture ot the texture object
     type = texType;
     int width, height, numColCh;
@@ -47,8 +47,9 @@ Texture::Texture(const char * image, GLenum texType, GLenum slot, GLenum format,
 
     // Activate texture unit, aka the texture container
     // Texture containers hold about 16 textures concurrently
-    glActiveTexture(slot); // Use texture container 0
-    glBindTexture(texType, ID); // Bind texture to texture container 0
+    glActiveTexture(GL_TEXTURE0 + slot); // Use texture container based on slot
+    unit = slot;
+    glBindTexture(texType, ID); // Bind texture to texture container based on slot
 
     // ********************
     // * Texture Settings *
@@ -137,6 +138,7 @@ None
 */
 void Texture::Bind()
 {
+    glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(type, ID);
 }
 

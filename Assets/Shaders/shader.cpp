@@ -1,4 +1,4 @@
-#include "shaderClass.h"
+#include "shader.h"
 
 /*
 Obtain the contents of a file and return a string containing the data.

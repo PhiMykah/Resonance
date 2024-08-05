@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <stb/stb_image.h>
 
-#include "../Shaders/shaderClass.h"
+#include "../Shaders/shader.h"
 
 class Texture
 {
@@ -15,8 +15,10 @@ class Texture
         // Texture's datatype
         GLenum type;
 
+        GLuint unit;
+
         // Constructor for texture given parameters for initialization
-        Texture(const char * image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD);
+        Texture(const char * image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD);
 
         // Assign texture to texture unit in shader
         void texUnit(Shader& shader, const char* uniform, GLuint unit);
