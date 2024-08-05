@@ -25,6 +25,8 @@ class Camera
         // Camera up direction (which way is up for the camera)
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
+        glm::mat4 cameraMatrix = glm::mat4(1.0f);
+
         // Prevents the camera from jumping around when first clicking left click
         bool firstClick = true;
 
@@ -40,8 +42,11 @@ class Camera
         // Main camera constructor
         Camera(int width, int height, glm::vec3 position);
 
-        // Send the view and projection matrices of the camera to the shader
-        void Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
+        // Update the view and projection matrices of the camera
+        void UpdateMatrix(float FOVdeg, float nearPlane, float farPlane);
+
+        // Export the camera matrix to the vertex Shader
+        void Matrix(Shader& shader, const char* uniform);
 
         // Camera input handler
         void Input(GLFWwindow * window);

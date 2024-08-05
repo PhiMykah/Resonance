@@ -30,7 +30,7 @@ Camera::Camera(int width, int height, glm::vec3 position){
     Camera::position = position;
 }
 
-/* Obtain camera's matrix view through matrix multiplication
+/*
 
 Parameters
 ----------
@@ -42,7 +42,22 @@ nearPlane : float
 
 farPlane : float
     Far cut-off plane for which no objects are rendered
+*/
+void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane){
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
 
+    view = glm::lookAt(position, position + orientation, up);
+    projection = glm::perspective(glm::radians(FOVdeg), (float)(float(width)/(float)(height)), nearPlane, farPlane);
+
+    cameraMatrix = projection * view;
+}
+
+
+/* Export camera matrix to shader 
+
+Parameters
+----------
 shader : Shader&
     Shader to send the uniform matrix to
 
@@ -53,14 +68,8 @@ Returns
 -------
 None
 */
-void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform){
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-
-    view = glm::lookAt(position, position + orientation, up);
-    projection = glm::perspective(glm::radians(FOVdeg), (float)(float(width)/(float)(height)), nearPlane, farPlane);
-
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
+void Camera::Matrix(Shader& shader, const char* uniform){
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
 /* Handle the camera controls for the view
@@ -100,7 +109,7 @@ void Camera::Input(GLFWwindow * window){
        speed = DEFAULT_SPEED;
     }
 
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS){
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         // Prevents camera from jumping on the first click
@@ -136,7 +145,7 @@ void Camera::Input(GLFWwindow * window){
 		// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
 		glfwSetCursorPos(window, (double(width) / 2), (double(height) / 2));
     }
-    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
+    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE){
         // Unhides cursor since camera is not looking around
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
