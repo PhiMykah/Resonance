@@ -96,6 +96,23 @@ GLuint pyramid_indices[] =
 	13, 15, 14 // Facing side
 };
 
+// ****************
+// * Define Plane *
+// ****************
+GLfloat plane_vertices[] = 
+{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
+	-1.0f, 0.0f,  1.0f,     0.00f, 0.00f, 0.00f, 	 0.0f, 0.0f,      0.0f,  1.0f, 0.0f,
+	-1.0f, 0.0f, -1.0f,     0.00f, 0.00f, 0.00f,	 0.0f, 1.0f,      0.0f,  1.0f, 0.0f,
+	 1.0f, 0.0f, -1.0f,     0.00f, 0.00f, 0.00f,	 1.0f, 1.0f,      0.0f,  1.0f, 0.0f,
+	 1.0f, 0.0f,  1.0f,     0.00f, 0.00f, 0.00f,	 1.0f, 0.0f,      0.0f,  1.0f, 0.0f,
+};
+
+GLuint plane_indices[] = 
+{
+    0, 1, 2,
+    0, 2, 3
+};
+
 } // namespace Shapes
 
 #endif // !SHAPES_H

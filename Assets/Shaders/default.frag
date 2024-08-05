@@ -13,8 +13,11 @@ in vec3 Normal;
 // Input object's current position from vert shader to frag shader
 in vec3 currPos;
 
-// Obtain texture unit from main function
+// Obtain albedo texture unit from main function
 uniform sampler2D tex0;
+
+// Obtain specular texture unit from main function
+uniform sampler2D tex1;
 
 // Color obtained from the light source
 uniform vec4 lightColor;
@@ -41,9 +44,10 @@ void main()
    float specularLight = 0.5f;
    vec3 viewDirection = normalize(camPos - currPos);
    vec3 reflectionDirection = reflect(-lightDirection, normal);
-   float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 8);
+   float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
    float specular = specAmount * specularLight;
 
-   // Final output color
-   FragColor = texture(tex0, texCoord) * lightColor * (diffuse + ambient + specular);
+   // Final output color 
+   //           Primary Texture Color based on ambient and Diffused light + Specular map using texture 
+   FragColor = (texture(tex0, texCoord) * (diffuse + ambient) + texture(tex1, texCoord).r * specular) * lightColor;
 }

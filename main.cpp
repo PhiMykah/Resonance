@@ -62,8 +62,15 @@ GLuint light_indices[] =
         4, 5, 6,
         4, 6, 7};
 
+// Define Shape Verts & indices
+#define vertices Shapes::plane_vertices
+#define indices Shapes::plane_indices
+
 int main()
 {
+
+    
+    
     // *******************
     // * Initialize glfw *
     // *******************
@@ -118,9 +125,9 @@ int main()
     vao1.Bind();
 
     // Vertex Buffer Object (VBO)
-    VBO vbo1(Shapes::pyramid_vertices, sizeof(Shapes::pyramid_vertices));
+    VBO vbo1(vertices, sizeof(vertices));
     // Index Buffer Object (EBO)
-    EBO ebo1(Shapes::pyramid_indices, sizeof(Shapes::pyramid_indices));
+    EBO ebo1(indices, sizeof(indices));
 
     // Link vbo layouts to corresponding vao
     // Position Coordinate layout (layout 0)
@@ -226,9 +233,13 @@ int main()
     // GLunit colorID = glGetUniformLocation(shader_program.ID, "color");
 
     // Load Texture
-    Texture tex("Assets/Textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
-    tex.texUnit(shader_program, "tex0", 0);
+    Texture albedo("Assets/Textures/Alb/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
+    albedo.texUnit(shader_program, "tex0", 0);
+    // Load Specular Map for Texture
+    Texture specular("Assets/Textures/Spec/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+    specular.texUnit(shader_program, "tex1", 1);
 
+    // Initialize camera view
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // double prevTime = glfwGetTime();
@@ -283,19 +294,23 @@ int main()
 
         // Update uniforms values after activation
         glUniform1f(sizeID, size);
-        // glUniform4f(colorID, color[0], color[1], color[2], color[3]);
-        tex.Bind();
+        //glUniform4f(colorID, color[0], color[1], color[2], color[3]);
 
-        vao1.Bind(); // Bind VAO
+        // Bind Textures
+        albedo.Bind();
+        specular.Bind();
 
-        // Draw the Triforce
+        // Bind VAO
+        vao1.Bind();
+
+        // Draw the Shape
         //  - Select Triangle primitive
         //  - Specify number of indices
         //  - Specify datatype of indices
         //  - Identify index of indices
         if (drawShape)
         {
-            glDrawElements(GL_TRIANGLES, sizeof(Shapes::pyramid_indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
         }
 
         light_shader.Activate();
@@ -337,7 +352,8 @@ int main()
     vao1.Delete();
     vbo1.Delete();
     ebo1.Delete();
-    tex.Delete();
+    albedo.Delete();
+    specular.Delete();
     shader_program.Delete();
 
     light_vao.Delete();
