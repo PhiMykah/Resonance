@@ -8,22 +8,13 @@
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
 
-// Shader Headers
-#include "Shader.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
+// Object Headers
+#include "Mesh.h"
 
 // Matrix Headers
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-// Texture Headers
-#include "Texture.h"
-
-// Camera Header(s)
-#include "Camera.h"
 
 // C/C++ Library Headers
 #include <iostream>
@@ -36,31 +27,33 @@
 // * Define Lighting Cube *
 // ************************
 
-GLfloat light_vertices[] =
-    { //     COORDINATES      //
-        -0.1f, -0.1f, 0.1f,
-        -0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f, 0.1f,
-        -0.1f, 0.1f, 0.1f,
-        -0.1f, 0.1f, -0.1f,
-        0.1f, 0.1f, -0.1f,
-        0.1f, 0.1f, 0.1f};
+Vertex light_vertices[] =
+{ //     COORDINATES     //
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+};
 
 GLuint light_indices[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 4, 7,
-        0, 7, 3,
-        3, 7, 6,
-        3, 6, 2,
-        2, 6, 5,
-        2, 5, 1,
-        1, 5, 4,
-        1, 4, 8,
-        4, 5, 6,
-        4, 6, 7};
+{
+    0, 1, 2,
+    0, 2, 3,
+    0, 4, 7,
+    0, 7, 3,
+    3, 7, 6,
+    3, 6, 2,
+    2, 6, 5,
+    2, 5, 1,
+    1, 5, 4,
+    1, 4, 8,
+    4, 5, 6,
+    4, 6, 7
+};
 
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
@@ -113,55 +106,38 @@ int main()
     // Set openGL to render from top left corner (0,0) to bottom right corner (width, height)
     glViewport(0, 0, width, height);
 
+
+    // *****************
+    // * Load Textures *
+    // *****************
+    Texture textures[]
+    {
+        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
+        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
+    };
     // *************************************************
     // * Initialize Shaders, Vertex Array, and Buffers *
     // *************************************************
-    // Vertex array object MUST be created before vertex buffer object
-    // Vertex buffer is a different kind of buffer than the front and back buffer
 
+    // Initialize shader program
     Shader shader_program("Assets/Shaders/default.vert", "Assets/Shaders/default.frag");
-    // Vertex Array Object (VAO)
-    VAO vao1;
-    vao1.Bind();
 
-    // Vertex Buffer Object (VBO)
-    VBO vbo1(vertices, sizeof(vertices));
-    // Index Buffer Object (EBO)
-    EBO ebo1(indices, sizeof(indices));
+    // Create vectors for vertices, indices, and textures,
+    Vertices verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+    Indices ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
 
-    // Link vbo layouts to corresponding vao
-    // Position Coordinate layout (layout 0)
-    vao1.LinkAttrib(vbo1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void *)0);
-    // Color layout (layout 1)
-    vao1.LinkAttrib(vbo1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void *)(3 * sizeof(float)));
-    // Texture coordinate layout (layout 2)
-    vao1.LinkAttrib(vbo1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void *)(6 * sizeof(float)));
-    // Normals (layout 3)
-    vao1.LinkAttrib(vbo1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void *)(8 * sizeof(float)));
-    // Unbind vao, vbo, and ebo to avoid further modifications
-    vao1.Unbind();
-    vbo1.Unbind();
-    ebo1.Unbind();
-
+    // Create Mesh with given vectors
+    Mesh shape(verts, ind, tex);
+    
     // Light Shader Initialization
-
     Shader light_shader("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 
-    // Initialize and bind light VAO
-    VAO light_vao;
-    light_vao.Bind();
-
-    // Initialize Light VBO and EBO
-    VBO light_vbo(light_vertices, sizeof(light_vertices));
-    EBO light_ebo(light_indices, sizeof(light_indices));
-
-    // Link light VBO to corresponding VAO
-    light_vao.LinkAttrib(light_vbo, 0, 3, GL_FLOAT, 3 * sizeof(float), (void *)0);
-
-    // Unbind vao, vbo, and ebo to avoid further modifications
-    light_vao.Unbind();
-    light_vbo.Unbind();
-    light_ebo.Unbind();
+    // Create vectors for vertices, indices, and textures
+    // Textures will be the same since light does not utilize textures
+    Vertices light_verts(light_vertices, light_vertices + sizeof(light_vertices) / sizeof(Vertex));
+    Indices light_ind(light_indices, light_indices + sizeof(light_indices) / sizeof(GLuint));
+    Mesh light(light_verts, light_ind, tex);
 
     // *************************
     // * Creating Light Object *
@@ -232,13 +208,6 @@ int main()
     GLuint sizeID = glGetUniformLocation(shader_program.ID, "size");
     // GLunit colorID = glGetUniformLocation(shader_program.ID, "color");
 
-    // Load Texture
-    Texture albedo("Assets/Textures/Alb/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
-    albedo.texUnit(shader_program, "tex0", 0);
-    // Load Specular Map for Texture
-    Texture specular("Assets/Textures/Spec/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
-    specular.texUnit(shader_program, "tex1", 1);
-
     // Initialize camera view
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
@@ -286,37 +255,14 @@ int main()
         // Update camera matrix based on view plane and FOV
         camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
-        // Set camera position in shader
-        glUniform3f(glGetUniformLocation(shader_program.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-
-        // Export camera matrix to the vertex shader
-        camera.Matrix(shader_program, "camMatrix");
-
         // Update uniforms values after activation
         glUniform1f(sizeID, size);
         //glUniform4f(colorID, color[0], color[1], color[2], color[3]);
 
-        // Bind Textures
-        albedo.Bind();
-        specular.Bind();
-
-        // Bind VAO
-        vao1.Bind();
-
-        // Draw the Shape
-        //  - Select Triangle primitive
-        //  - Specify number of indices
-        //  - Specify datatype of indices
-        //  - Identify index of indices
-        if (drawShape)
-        {
-            glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+        if (drawShape){
+            shape.Draw(shader_program, camera);
         }
-
-        light_shader.Activate();
-        camera.Matrix(light_shader, "camMatrix");
-        light_vao.Bind();
-        glDrawElements(GL_TRIANGLES, sizeof(light_indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+        light.Draw(light_shader, camera);
 
         // Create UI Window
         ImGui::Begin("Shape Settings");                // ImGUI window creation
@@ -349,16 +295,7 @@ int main()
     // * Delete GL objects created *
     // *****************************
 
-    vao1.Delete();
-    vbo1.Delete();
-    ebo1.Delete();
-    albedo.Delete();
-    specular.Delete();
     shader_program.Delete();
-
-    light_vao.Delete();
-    light_vbo.Delete();
-    light_ebo.Delete();
     light_shader.Delete();
 
     glfwDestroyWindow(main_window); // Close window when complete

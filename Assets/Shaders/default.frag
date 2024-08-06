@@ -1,23 +1,23 @@
 #version 460 core
 out vec4 FragColor;
 
+// Input object's current position from vert shader to frag shader
+in vec3 currPos;
+
+// Input normal vectors from vert shader to frag shader
+in vec3 Normal;
+
 // Inputs color from vert shader to frag shader
 in vec3 color;
 
 // Input texture coordinate mapping from vert shader to frag shader
 in vec2 texCoord;
 
-// Input normal vectors from vert shader to frag shader
-in vec3 Normal;
-
-// Input object's current position from vert shader to frag shader
-in vec3 currPos;
-
 // Obtain albedo texture unit from main function
-uniform sampler2D tex0;
+uniform sampler2D diffuse0;
 
 // Obtain specular texture unit from main function
-uniform sampler2D tex1;
+uniform sampler2D specular0;
 
 // Color obtained from the light source
 uniform vec4 lightColor;
@@ -63,7 +63,7 @@ vec4 pointLight(){
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
-   return (texture(tex0, texCoord) * (diffuse * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * lightColor;
+   return (texture(diffuse0, texCoord) * (diffuse * intensity + ambient) + texture(specular0, texCoord).r * specular * intensity) * lightColor;
 }
 
 // Directional light is light where the source is considered so far away
@@ -92,7 +92,7 @@ vec4 directionalLight(){
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
-   return (texture(tex0, texCoord) * (diffuse + ambient) + texture(tex1, texCoord).r * specular) * lightColor;
+   return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
 }
 
 // Spot light will light up a conic area emitting from the source
@@ -130,7 +130,7 @@ vec4 spotLight(){
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
-   return (texture(tex0, texCoord) * (diffuse * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * lightColor;
+   return (texture(diffuse0, texCoord) * (diffuse * intensity + ambient) + texture(specular0, texCoord).r * specular * intensity) * lightColor;
 }
 
 void main()

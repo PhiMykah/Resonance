@@ -17,15 +17,17 @@ HEADERS= -I./$(h)
 CXXFLAGS= -g -Wall -std=c++17 -I./$(a)/Libraries/include $(HEADERS) -I./imgui
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
+SHAPES= $(h)/Shapes.h
+
 BUFFERS= $(a)/VBO.o $(a)/EBO.o $(a)/VAO.o
 SHADERS= $(a)/Shader.o
 TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
-SHAPES= $(h)/Shapes.h
+MESH= $(a)/Mesh.o
 
-DEPS= Buffers.o Shader.o Texture.o Camera.o
+DEPS= Buffers.o Shader.o Texture.o Camera.o Mesh.o
 
-OBJ= $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(SHAPES)
+OBJ= $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(SHAPES)
 
 # Reference files
 glad = glad.c stb.cpp
@@ -65,3 +67,6 @@ Texture.o: Shader.o
 
 Camera.o: Shader.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Camera.cpp -o $(a)/Camera.o $(LDFLAGS)
+
+Mesh.o : Shader.o Buffers.o Camera.o Texture.o
+	$(CXX) $(CXXFLAGS) -c $(src)/Mesh.cpp -o $(a)/Mesh.o $(LDFLAGS)

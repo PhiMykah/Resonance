@@ -8,7 +8,7 @@ Parameters
 image : const char *
     Image file path represented as character array
 
-texType : GLenum
+GL_TEXTURE_2D : GLenum
     Dataype of texture, such as "GL_TEXTURE_2D"
 
 slot : GLenum
@@ -30,9 +30,10 @@ Returns
 -------
 Texture object
 */
-Texture::Texture(const char * image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
+Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
     // Assigns the type of the texture ot the texture object
     type = texType;
+
     int width, height, numColCh;
     stbi_set_flip_vertically_on_load(true);
     // Loads image using file path while populating the following parameters:
@@ -49,7 +50,7 @@ Texture::Texture(const char * image, GLenum texType, GLuint slot, GLenum format,
     // Texture containers hold about 16 textures concurrently
     glActiveTexture(GL_TEXTURE0 + slot); // Use texture container based on slot
     unit = slot;
-    glBindTexture(texType, ID); // Bind texture to texture container based on slot
+    glBindTexture(GL_TEXTURE_2D, ID); // Bind texture to texture container based on slot
 
     // ********************
     // * Texture Settings *
@@ -60,15 +61,15 @@ Texture::Texture(const char * image, GLenum texType, GLuint slot, GLenum format,
     //  - Type of texture
     //  - Texture attriubute we wish to modify
     //  - Updated setting for texture attribute
-    glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, minLOD);
-	glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, magLOD);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minLOD);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magLOD);
 
     // Choose image repeat style, e.g. repeat or nearest repeat
     // Options are: GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, and GL_CLAMP_TO_BORDER
     // These image repeat settings are on a per axis basis
     //  - Each axis is labelled s, t, and r for x,y, and z axes respectively
-    glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Set texture border color
     // float flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -86,16 +87,16 @@ Texture::Texture(const char * image, GLenum texType, GLuint slot, GLenum format,
     //  - Texture border (legacy compatibility)
     //  - Color channels the image has (RGB for image formats without alpha channels)
     //  - Pixel Datatype
-    glTexImage2D(texType, 0, GL_RGBA, width, height, 0, format, pixelType, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, pixelType, bytes);
 
     // Generate mipmap will generate multiple versions of the texture at varying sizes for distance
-    glGenerateMipmap(texType);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     // Delete image data from memory after allocation
     stbi_image_free(bytes);
 
     // Unbinds the OpenGL Texture object so that it can't accidentally be modified
-	glBindTexture(texType, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 /*
@@ -139,7 +140,7 @@ None
 void Texture::Bind()
 {
     glActiveTexture(GL_TEXTURE0 + unit);
-    glBindTexture(type, ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
 }
 
 /*
@@ -155,7 +156,7 @@ None
 */
 void Texture::Unbind()
 {
-    glBindTexture(type, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 /*

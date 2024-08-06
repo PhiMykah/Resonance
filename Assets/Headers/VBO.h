@@ -1,7 +1,17 @@
 #ifndef VBO_CLASS_H
 #define VBO_CLASS_H
 
+#include <vector>
+#include <glm/glm.hpp>
 #include <glad/glad.h>
+
+struct Vertex
+{
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec3 color;
+    glm::vec2 texUV;
+};
 
 /*
 ### Vertex Buffer Object (VBO)
@@ -14,7 +24,7 @@ class VBO
         GLuint ID;
 
         // VBO constructor for storing vertex data and VBO information
-        VBO(GLfloat* vertices, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW);
+        VBO(std::vector<Vertex>& vertices, GLenum usage = GL_STATIC_DRAW);
 
         // Bind VBO to binding point
         void Bind();

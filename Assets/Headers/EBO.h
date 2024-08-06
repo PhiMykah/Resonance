@@ -1,6 +1,7 @@
 #ifndef EBO_CLASS_H
 #define EBO_CLASS_H
 
+#include <vector>
 #include <glad/glad.h>
 
 /*
@@ -14,7 +15,7 @@ class EBO
         GLuint ID;
 
         // EBO constructor for storing index array and EBO information
-        EBO(GLuint* indices, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW);
+        EBO(std::vector<GLuint> indices, GLenum usage = GL_STATIC_DRAW);
 
         // Bind EBO to binding point
         void Bind();

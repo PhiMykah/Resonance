@@ -23,10 +23,10 @@ Returns
 -------
 EBO Object
 */
-EBO::EBO(GLuint * indices, GLsizeiptr size, GLenum usage){
+EBO::EBO(std::vector<GLuint> indices, GLenum usage){
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), usage);
 }
 
 /*

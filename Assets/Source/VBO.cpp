@@ -23,10 +23,10 @@ Returns
 -------
 VBO Object
 */
-VBO::VBO(GLfloat * vertices, GLsizeiptr size, GLenum usage){
+VBO::VBO(std::vector<Vertex>& vertices, GLenum usage){
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, size, vertices, usage);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), usage);
 }
 
 /*
