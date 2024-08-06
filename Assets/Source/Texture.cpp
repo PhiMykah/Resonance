@@ -1,4 +1,4 @@
-#include "texture.h"
+#include "Texture.h"
 
 /*
 Main texture constructor for creating OpenGL texture object

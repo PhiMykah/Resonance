@@ -9,10 +9,10 @@
 #include <stb/stb_image.h>
 
 // Shader Headers
-#include "Assets/Shaders/shader.h"
-#include "Assets/Buffers/VAO.h"
-#include "Assets/Buffers/VBO.h"
-#include "Assets/Buffers/EBO.h"
+#include "Shader.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -20,17 +20,17 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Texture Headers
-#include "Assets/Textures/texture.h"
+#include "Texture.h"
 
 // Camera Header(s)
-#include "Assets/Camera/camera.h"
+#include "Camera.h"
 
 // C/C++ Library Headers
 #include <iostream>
 #include <math.h>
 
 // Other Headers
-#include "Assets/shapes.h"
+#include "Shapes.h"
 
 // ************************
 // * Define Lighting Cube *
