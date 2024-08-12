@@ -39,9 +39,13 @@ imgui/
 *.out
 *.app
 main
+draw
 
 # VSCODE
 .vscode/
 
 # Testing Files
 .clangd
+
+# gitignore Source Code
+rd/

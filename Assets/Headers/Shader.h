@@ -12,8 +12,8 @@
 std::string get_file_contents(const char * filename);
 
 /*
-Object for loading vertex and fragment shaders by source code to
-a new program
+Object for loading vertex and fragment shaders 
+by source code to a new program
 */
 class Shader
 {

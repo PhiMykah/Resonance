@@ -19,15 +19,16 @@ LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.h
 
+BACKEND= $(a)/Backend.o
 BUFFERS= $(a)/VBO.o $(a)/EBO.o $(a)/VAO.o
 SHADERS= $(a)/Shader.o
 TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
 MESH= $(a)/Mesh.o
 
-DEPS= Buffers.o Shader.o Texture.o Camera.o Mesh.o
+DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o
 
-OBJ= $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(SHAPES)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(SHAPES)
 
 # Reference files
 glad = glad.c stb.cpp
@@ -48,11 +49,17 @@ IMGUI = imgui/imgui.cpp \
 
 all: main clean
 
+draw: $(DEPS)
+	$(CXX) $(CXXFLAGS) -I./rd draw.cpp $(glad) $(OBJ) $(IMGUI) -o draw $(LDFLAGS)
+
 main: $(DEPS)
 	$(CXX) $(CXXFLAGS) main.cpp $(glad) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
 
 clean:
 	rm -rf $(a)/*.o
+
+Backend.o:
+	$(CXX) $(CXXFLAGS) -c $(src)/Backend.cpp -o $(a)/Backend.o $(LDFLAGS)
 
 Buffers.o:
 	$(CXX) $(CXXFLAGS) -c $(src)/VBO.cpp -o $(a)/VBO.o $(LDFLAGS)

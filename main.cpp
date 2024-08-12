@@ -1,12 +1,5 @@
-// GUI Headers
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
-// Primary Headers
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stb/stb_image.h>
+// Backend Headers and Source Code
+#include "Backend.h"
 
 // Object Headers
 #include "Mesh.h"
@@ -61,33 +54,17 @@ GLuint light_indices[] =
 
 int main()
 {
+    // GLFW parameters
 
-    
-    
-    // *******************
-    // * Initialize glfw *
-    // *******************
+    int width = 800; // Window width
+    int height = 800; // Window height
+    const char *title = "Shape Simulator"; // Window name
+    GLFWmonitor *fullscreen = NULL; // Use `glfwGetPrimaryMonitor()` for fullscreen
+
     glfwInit();
-
-    // Give glfw information about opengl version (4.6)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-
-    // Give glfw information about opengl profile
-    // Currently running the CORE profile with modern functions
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Dimensions of window
-    int width = 800;
-    int height = 800;
-
-    const char *win_name = "Shape Simulator"; // Window name
-    // Designated fullscreen monitor
-    GLFWmonitor *fullscreen = NULL; // glfwGetPrimaryMonitor();
-
-    // Initialize window with the following parameters:
+    // Initialize glfw window with the following parameters:
     //  width, height, name, fullscreen monitor, and context object sharing
-    GLFWwindow *main_window = glfwCreateWindow(width, height, win_name, fullscreen, NULL);
+    GLFWwindow *main_window = initWindow(width, height, title, fullscreen);
 
     // Since window returns null if the window fails to initialize, check for failure
     if (main_window == NULL)
@@ -172,15 +149,7 @@ int main()
     // ********************
     // * Initialize IMGUI *
     // ********************
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    // Create input/output handler
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    // Choose imgui style
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(main_window, true);
-    ImGui_ImplOpenGL3_Init("#version 460"); // Specify initi    alization based on version of OpenGL
+    ImGuiIO io = initIMGUI(main_window);
 
     // *****************************
     // * Initialize Loop Variables *
@@ -286,19 +255,15 @@ int main()
         glfwPollEvents();
     }
 
-    // Close ImGui and Delete Objects
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
     // *****************************
-    // * Delete GL objects created *
+    // * Deletion and Deallocation *
     // *****************************
 
-    shader_program.Delete();
-    light_shader.Delete();
-
+    closeIMGUI(); // Close ImGui and remove GL link
+    shader_program.Delete();        // Delete main shader program
+    light_shader.Delete();          // Delete light shader program
     glfwDestroyWindow(main_window); // Close window when complete
     glfwTerminate();                // Terminate glfw process
+
     return 0;
 }

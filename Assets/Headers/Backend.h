@@ -1,0 +1,24 @@
+#ifndef BACKEND_H
+#define BACKEND_H
+
+// GUI Headers
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+// Primary Headers
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+GLFWwindow * initWindow(int width, int height, const char * title, GLFWmonitor *fullscreen, GLFWwindow *share = NULL);
+
+ImGuiIO initIMGUI(GLFWwindow * window);
+
+void closeIMGUI();
+
+#endif // !BACKEND_H
