@@ -3,6 +3,7 @@
 
 // Object Headers
 #include "Mesh.h"
+#include "NMRMesh.h"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -58,7 +59,7 @@ int main()
 
     int width = 800; // Window width
     int height = 800; // Window height
-    const char *title = "Shape Simulator"; // Window name
+    const char *title = "Resonance"; // Window name
     GLFWmonitor *fullscreen = NULL; // Use `glfwGetPrimaryMonitor()` for fullscreen
 
     glfwInit();
@@ -92,12 +93,34 @@ int main()
         Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
         Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
     };
-    // *************************************************
-    // * Initialize Shaders, Vertex Array, and Buffers *
-    // *************************************************
+    // **********************
+    // * Initialize Shaders *
+    // **********************
 
     // Initialize shader program
     Shader shader_program("Assets/Shaders/default.vert", "Assets/Shaders/default.frag");
+    
+    // Light Shader Initialization
+    Shader light_shader("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+
+    Shader nmr_shader("Assets/Shaders/nmr.vert", "Assets/Shaders/nmr.frag");
+
+    // ***********************
+    // * Creating NMR Object *
+    // ***********************
+
+    std::string file = "./smo.ft2";
+    NMRMesh nmr(file);
+    
+    // Initialize NMR Object
+    glm::vec4 point_color = glm::vec4(1.0, 192.0/255.0, 203.0/255.0, 1.0);
+    glm::vec3 nmr_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::mat4 nmr_model = glm::mat4(1.0f);
+    nmr_model = glm::translate(nmr_model, nmr_pos);
+    
+    // *************************
+    // * Creating Plane Object *
+    // *************************
 
     // Create vectors for vertices, indices, and textures,
     Vertices verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
@@ -106,9 +129,15 @@ int main()
 
     // Create Mesh with given vectors
     Mesh shape(verts, ind, tex);
-    
-    // Light Shader Initialization
-    Shader light_shader("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+
+    // Initialize pyramid object position
+    glm::vec3 shape_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::mat4 shape_model = glm::mat4(1.0f);
+    shape_model = glm::translate(shape_model, shape_pos);
+
+    // *************************
+    // * Creating Light Object *
+    // *************************
 
     // Create vectors for vertices, indices, and textures
     // Textures will be the same since light does not utilize textures
@@ -116,22 +145,17 @@ int main()
     Indices light_ind(light_indices, light_indices + sizeof(light_indices) / sizeof(GLuint));
     Mesh light(light_verts, light_ind, tex);
 
-    // *************************
-    // * Creating Light Object *
-    // *************************
-
     // Form color of object based on the light
-    glm::vec4 light_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 light_color = WHITE;
 
     // Initialize light object
     glm::vec3 light_pos = glm::vec3(0.5f, 0.5f, 0.5f);
     glm::mat4 light_model = glm::mat4(1.0f);
     light_model = glm::translate(light_model, light_pos);
 
-    // Initialize pyramid object position
-    glm::vec3 pyramid_pos = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::mat4 pyramid_model = glm::mat4(1.0f);
-    pyramid_model = glm::translate(pyramid_model, pyramid_pos);
+    // **************************
+    // * Export Data to Shaders *
+    // **************************
 
     // Export light object to light shader
     light_shader.Activate();
@@ -139,12 +163,21 @@ int main()
     glUniformMatrix4fv(light_model_ID, 1, GL_FALSE, glm::value_ptr(light_model));
     // Export light color to light shader
     glUniform4f(glGetUniformLocation(light_shader.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
-    // Export pyramid object to shader program
+
+
+    // Export shape object to shader program
     shader_program.Activate();
-    glUniformMatrix4fv(glGetUniformLocation(shader_program.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramid_model));
+    glUniformMatrix4fv(glGetUniformLocation(shader_program.ID, "model"), 1, GL_FALSE, glm::value_ptr(shape_model));
     // Export light color and position to shader program
     glUniform4f(glGetUniformLocation(shader_program.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
     glUniform3f(glGetUniformLocation(shader_program.ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
+
+    // Export NMR object to NMR shader
+    nmr_shader.Activate();
+    GLuint nmr_model_ID = glGetUniformLocation(nmr_shader.ID, "model");
+    glUniformMatrix4fv(nmr_model_ID, 1, GL_FALSE, glm::value_ptr(nmr_model));
+    // Export point color to nmr shader
+    glUniform4f(glGetUniformLocation(nmr_shader.ID, "pointColor"), point_color.x, point_color.y, point_color.z, point_color.w);
 
     // ********************
     // * Initialize IMGUI *
@@ -159,7 +192,8 @@ int main()
     // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f)
     // Navy Blue: (0.07f, 0.13f, 0.17f, 1.0f)
     glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
-
+    // glm::vec4 bg_color = glm::vec4((float)(28.0 / 255.0), (float)(30.0 / 255.0), (float)(41.0 / 255.0), 1.0f);
+    
     // Shape attributes
     // -------------------
     bool drawShape = true; // Triangle visibility
@@ -232,6 +266,7 @@ int main()
             shape.Draw(shader_program, camera);
         }
         light.Draw(light_shader, camera);
+        nmr.Draw(nmr_shader, camera);
 
         // Create UI Window
         ImGui::Begin("Shape Settings");                // ImGUI window creation

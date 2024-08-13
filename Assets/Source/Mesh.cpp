@@ -1,6 +1,14 @@
 #include "Mesh.h"
 
+Mesh::Mesh(){
+
+}
+
 Mesh::Mesh(Vertices& vertices, Indices& indices, Textures& textures){
+    Mesh::initMesh(vertices, indices, textures);
+}
+
+void Mesh::initMesh(Vertices& vertices, Indices& indices, Textures& textures){
     Mesh::vertices = vertices;
     Mesh::indices = indices;
     Mesh::textures = textures;

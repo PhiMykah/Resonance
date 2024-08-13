@@ -15,6 +15,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define WHITE glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+#define BLACK glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+
 GLFWwindow * initWindow(int width, int height, const char * title, GLFWmonitor *fullscreen, GLFWwindow *share = NULL);
 
 ImGuiIO initIMGUI(GLFWwindow * window);

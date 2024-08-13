@@ -14,6 +14,7 @@ tex= $(a)/Textures
 
 CXX=g++
 HEADERS= -I./$(h)
+NMRFLAGS= -DNMR64 -DLINUX -I./rd
 CXXFLAGS= -g -Wall -std=c++17 -I./$(a)/Libraries/include $(HEADERS) -I./imgui
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
@@ -25,10 +26,17 @@ SHADERS= $(a)/Shader.o
 TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
 MESH= $(a)/Mesh.o
+NMR= $(a)/NMRMesh.o
 
-DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o
+DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(SHAPES)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(SHAPES)
+NMR_H= 
+NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
+rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
+rd/inquire.o rd/testsize.o rd/namelist.o rd/vutil.o rd/syscalls.o \
+rd/getstat.o rd/rand.o rd/specunit.o rd/raise.o \
+rd/conrecnx.o rd/drawaxis.o rd/paper.o
 
 # Reference files
 glad = glad.c stb.cpp
@@ -50,11 +58,10 @@ IMGUI = imgui/imgui.cpp \
 all: main clean
 
 draw: $(DEPS)
-	$(CXX) $(CXXFLAGS) -I./rd draw.cpp $(glad) $(OBJ) $(IMGUI) -o draw $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(NMRFLAGS) draw.cpp $(glad) $(NMR_OBJ) $(OBJ) $(IMGUI) -o draw $(LDFLAGS)
 
 main: $(DEPS)
-	$(CXX) $(CXXFLAGS) main.cpp $(glad) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
-
+	$(CXX) $(CXXFLAGS) $(NMRFLAGS) main.cpp $(glad) $(NMR_OBJ) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
 clean:
 	rm -rf $(a)/*.o
 
@@ -77,3 +84,6 @@ Camera.o: Shader.o
 
 Mesh.o : Shader.o Buffers.o Camera.o Texture.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Mesh.cpp -o $(a)/Mesh.o $(LDFLAGS)
+
+NMRMesh.o : Mesh.o
+	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/NMRMesh.cpp -o $(a)/NMRMesh.o $(LDFLAGS)

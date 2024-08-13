@@ -20,9 +20,13 @@ class Mesh
         Textures textures;
         VAO vao;
 
+        Mesh();
+
         Mesh(Vertices& vertices, Indices& indices, Textures& textures);
 
         void Draw(Shader& shader, Camera& camera);
+    protected:
+        void initMesh(Vertices& vertices, Indices& indices, Textures& textures);
 };
 
 #endif // !MESH_CLASS_H
