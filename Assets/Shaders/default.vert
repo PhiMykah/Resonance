@@ -26,7 +26,7 @@ void main()
 {
     // Calculate current position
     //                                match glm to gltf
-    currPos = vec3(model * translation * -rotation * scale * vec4(size * aPos, 1.0));
+    currPos = vec3(model * translation * rotation * scale * vec4(size * aPos, 1.0));
     // Assigns the normal vectors from the vertex data to "Normal"
     Normal = aNormal;
     // Assign colors from vertex data to color

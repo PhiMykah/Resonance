@@ -1,6 +1,7 @@
 #include "NMRMesh.h"
 
 NMRMesh::NMRMesh(std::string file){
+    primative = GL_POINTS;
     int error;
     char * inName = &file[0];
 

@@ -30,7 +30,6 @@ class NMRMesh : Mesh
 {
     public:
         float * mat;
-        GLenum primative = GL_POINTS;
         float fdata[FDATASIZE];
         int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount, qSize;
         NMR_INT totalSize;

@@ -10,5 +10,5 @@ uniform mat4 scale; // Scale matrix
 
 void main()
 {
-    gl_Position = camMatrix * model * translation * -rotation * scale * vec4(aPos, 1.0f);
+    gl_Position = camMatrix * model * translation * rotation * scale * vec4(aPos, 1.0f);
 }

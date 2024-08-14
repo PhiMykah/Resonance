@@ -303,7 +303,7 @@ Textures Model::getTextures(){
 		{
 			// Determine the type of texture based on the name of the texture file.
             // `baseColor` is diffuse, `metallicRoughness` is roughness but may be used as specular. 
-			if (texPath.find("baseColor") != std::string::npos)
+			if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 			{
 				Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", loadedTex.size(), GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR);
 				textures.push_back(diffuse);
@@ -311,7 +311,7 @@ Textures Model::getTextures(){
 				loadedTexNames.push_back(texPath);
 			}
 			// Load specular texture
-			else if (texPath.find("metallicRoughness") != std::string::npos)
+			else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
 			{
                 // This does not work fully as specular since metallicRoughness is meant for physically based rendering
 				Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", loadedTex.size(), GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);

@@ -105,7 +105,7 @@ int main()
     NMRMesh nmr(file);
     
     // Initialize NMR Object
-    glm::vec4 point_color = glm::vec4(1.0, 192.0/255.0, 203.0/255.0, 1.0);
+    glm::vec4 point_color = WHITE;
     glm::vec3 nmr_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::mat4 nmr_model = glm::mat4(1.0f);
     nmr_model = glm::translate(nmr_model, nmr_pos);
@@ -185,13 +185,20 @@ int main()
 
     // Enable depth testing in OpenGL rendering
     glEnable(GL_DEPTH_TEST);
+    // Enable OpenGL depth buffer function
+    // Determines whether to pass or fail an incoming depth value
+    // in comparison to a stored depth value
+    // Options: GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL
+    // GL_GEQUAL, GL_ALWAYS
+    glDepthFunc(GL_LESS);
 
     // ***************
     // * Load Models *
     // ***************
 
     Model model("Assets/Models/Sword/scene.gltf");
-    Model light("Assets/Models/Sphere/scene.gltf");
+    Model ground("Assets/Models/ground/scene.gltf");
+    Model trees("Assets/Models/trees/scene.gltf");
 
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
@@ -239,6 +246,8 @@ int main()
         if (drawShape){
             model.Draw(shader_program, camera);
         }
+        ground.Draw(shader_program, camera);
+        trees.Draw(shader_program, camera);
         nmr.Draw(nmr_shader, camera);
 
         // Create UI Window
