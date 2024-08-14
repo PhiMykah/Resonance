@@ -27,10 +27,11 @@ TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
 MESH= $(a)/Mesh.o
 NMR= $(a)/NMRMesh.o
+MODEL= $(a)/Model.o
 
-DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o
+DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o Model.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(SHAPES)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(SHAPES)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -87,3 +88,6 @@ Mesh.o : Shader.o Buffers.o Camera.o Texture.o
 
 NMRMesh.o : Mesh.o
 	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/NMRMesh.cpp -o $(a)/NMRMesh.o $(LDFLAGS)
+
+Model.o : Mesh.o
+	$(CXX) $(CXXFLAGS) -c $(src)/Model.cpp -o $(a)/Model.o $(LDFLAGS)

@@ -18,7 +18,7 @@ class Texture
         GLuint unit;
 
         // Constructor for texture given parameters for initialization
-        Texture(const char * image, const char * texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD);
+        Texture(const char * image, const char * texType, GLuint slot, GLenum minLOD, GLenum magLOD);
 
         // Assign texture to texture unit in shader
         void texUnit(Shader& shader, const char* uniform, GLuint unit);

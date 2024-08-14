@@ -30,14 +30,15 @@ class NMRMesh : Mesh
 {
     public:
         float * mat;
+        GLenum primative = GL_POINTS;
         float fdata[FDATASIZE];
         int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount, qSize;
         NMR_INT totalSize;
 
         NMRMesh(std::string file); //Vertices& vertices, Indices& indices, Textures& textures
-
-        void Draw(Shader& shader, Camera& camera);
         
+        void Draw(Shader& shader, Camera& camera);
+
     private:
         void NMRToVertex();
         void NMR2DToVertex();

@@ -14,19 +14,26 @@ out vec3 color;
 out vec2 texCoord;
 
 // NEVER DECLARE UNIFORMS IF THEY GO UNUSED
-uniform float size; // Object size
 uniform mat4 camMatrix; // Camera view matrix
 uniform mat4 model; // Model data for object
+uniform mat4 translation; // Translation matrix
+uniform mat4 rotation; // Rotation matrix
+uniform mat4 scale; // Scale matrix
+
+uniform float size; // Object size
+
 void main()
 {
     // Calculate current position
-    currPos = vec3(model * vec4(size * aPos, 1.0));
+    //                                match glm to gltf
+    currPos = vec3(model * translation * -rotation * scale * vec4(size * aPos, 1.0));
     // Assigns the normal vectors from the vertex data to "Normal"
     Normal = aNormal;
     // Assign colors from vertex data to color
     color = aColor;
     // Assigns the texture coordinates from the vertex data to "texCoord"
-    texCoord = aTex;
+    // Rotate texture coords by 90 deg to match gltf standards
+    texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
 
     // Outputs position and coordinates of all vertices
     gl_Position = camMatrix * vec4(currPos, 1.0);

@@ -30,7 +30,7 @@ Returns
 -------
 Texture object
 */
-Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum format, GLenum pixelType, GLenum minLOD, GLenum magLOD){
+Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum minLOD, GLenum magLOD){
     // Assigns the type of the texture ot the texture object
     type = texType;
 
@@ -75,6 +75,23 @@ Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum f
     // float flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
+
+    GLenum colCh = GL_RGBA;
+    switch (numColCh)
+    {
+    case 4:
+        colCh = GL_RGBA;
+        break;
+    case 3:
+        colCh = GL_RGB;
+        break;
+    case 1:
+        colCh = GL_RED;
+    default:
+        throw std::invalid_argument("Automatic Texture type recognition failed please use RGBA, RGB, or RED");
+        break;
+    }
+
     // **********************
     // * Texture Generation *
     // **********************
@@ -87,7 +104,7 @@ Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum f
     //  - Texture border (legacy compatibility)
     //  - Color channels the image has (RGB for image formats without alpha channels)
     //  - Pixel Datatype
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, pixelType, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, colCh, GL_UNSIGNED_BYTE, bytes);
 
     // Generate mipmap will generate multiple versions of the texture at varying sizes for distance
     glGenerateMipmap(GL_TEXTURE_2D);

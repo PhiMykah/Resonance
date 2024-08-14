@@ -4,6 +4,7 @@
 // Object Headers
 #include "Mesh.h"
 #include "NMRMesh.h"
+#include "Model.h"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -84,15 +85,6 @@ int main()
     // Set openGL to render from top left corner (0,0) to bottom right corner (width, height)
     glViewport(0, 0, width, height);
 
-
-    // *****************
-    // * Load Textures *
-    // *****************
-    Texture textures[]
-    {
-        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
-        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
-    };
     // **********************
     // * Initialize Shaders *
     // **********************
@@ -117,37 +109,13 @@ int main()
     glm::vec3 nmr_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::mat4 nmr_model = glm::mat4(1.0f);
     nmr_model = glm::translate(nmr_model, nmr_pos);
-    
-    // *************************
-    // * Creating Plane Object *
-    // *************************
-
-    // Create vectors for vertices, indices, and textures,
-    Vertices verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-    Indices ind(indices, indices + sizeof(indices) / sizeof(GLuint));
-    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    // Create Mesh with given vectors
-    Mesh shape(verts, ind, tex);
-
-    // Initialize pyramid object position
-    glm::vec3 shape_pos = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::mat4 shape_model = glm::mat4(1.0f);
-    shape_model = glm::translate(shape_model, shape_pos);
 
     // *************************
     // * Creating Light Object *
     // *************************
 
-    // Create vectors for vertices, indices, and textures
-    // Textures will be the same since light does not utilize textures
-    Vertices light_verts(light_vertices, light_vertices + sizeof(light_vertices) / sizeof(Vertex));
-    Indices light_ind(light_indices, light_indices + sizeof(light_indices) / sizeof(GLuint));
-    Mesh light(light_verts, light_ind, tex);
-
     // Form color of object based on the light
     glm::vec4 light_color = WHITE;
-
     // Initialize light object
     glm::vec3 light_pos = glm::vec3(0.5f, 0.5f, 0.5f);
     glm::mat4 light_model = glm::mat4(1.0f);
@@ -167,7 +135,6 @@ int main()
 
     // Export shape object to shader program
     shader_program.Activate();
-    glUniformMatrix4fv(glGetUniformLocation(shader_program.ID, "model"), 1, GL_FALSE, glm::value_ptr(shape_model));
     // Export light color and position to shader program
     glUniform4f(glGetUniformLocation(shader_program.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
     glUniform3f(glGetUniformLocation(shader_program.ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
@@ -219,6 +186,13 @@ int main()
     // Enable depth testing in OpenGL rendering
     glEnable(GL_DEPTH_TEST);
 
+    // ***************
+    // * Load Models *
+    // ***************
+
+    Model model("Assets/Models/Sword/scene.gltf");
+    Model light("Assets/Models/Sphere/scene.gltf");
+
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
     {
@@ -263,9 +237,8 @@ int main()
         //glUniform4f(colorID, color[0], color[1], color[2], color[3]);
 
         if (drawShape){
-            shape.Draw(shader_program, camera);
+            model.Draw(shader_program, camera);
         }
-        light.Draw(light_shader, camera);
         nmr.Draw(nmr_shader, camera);
 
         // Create UI Window

@@ -59,37 +59,39 @@ void NMRMesh::NMR2DToVertex(){
 }
 
 void NMRMesh::Draw(Shader& shader, Camera& camera){
+    Mesh::Draw(shader, camera);
+    /*
+        // Activate shader and bind vao to shader
+        shader.Activate();
+        vao.Bind();
 
-    // Activate shader and bind vao to shader
-    shader.Activate();
-    vao.Bind();
+        // Initialize diffuse texture and specular texture count
+        unsigned int numDiffuse = 0;
+        unsigned int numSpecular = 0;
 
-    // Initialize diffuse texture and specular texture count
-    unsigned int numDiffuse = 0;
-    unsigned int numSpecular = 0;
+        // For loop iterates over all textures, and categorizes each texture
+        // as diffuse or specular
+        for (unsigned int i = 0; i < textures.size(); i++) {
+            std::string num;
+            std::string type = textures[i].type;
+            // Increment diffuse texture count if texture is diffuse
+            if (type == "diffuse") {
+                num = std::to_string(numDiffuse++); // Increment happens after line is run
+            }
+            // Increment specular texture count if texture is specular
+            else if (type == "specular") {
+                num = std::to_string(numSpecular++); // Increment happens after line is run
+            }
 
-    // For loop iterates over all textures, and categorizes each texture
-    // as diffuse or specular
-    for (unsigned int i = 0; i < textures.size(); i++) {
-        std::string num;
-        std::string type = textures[i].type;
-        // Increment diffuse texture count if texture is diffuse
-        if (type == "diffuse") {
-            num = std::to_string(numDiffuse++); // Increment happens after line is run
+            // Add texture to texUnit based on number given
+            textures[i].texUnit(shader, (type + num).c_str(), i);
+            // Bind the texture to shader
+            textures[i].Bind();
         }
-        // Increment specular texture count if texture is specular
-        else if (type == "specular") {
-            num = std::to_string(numSpecular++); // Increment happens after line is run
-        }
+        // Send camera position to shader and perform camera matrix calculations
+        glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+        camera.Matrix(shader, "camMatrix");
 
-        // Add texture to texUnit based on number given
-        textures[i].texUnit(shader, (type + num).c_str(), i);
-        // Bind the texture to shader
-        textures[i].Bind();
-    }
-    // Send camera position to shader and perform camera matrix calculations
-    glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-    camera.Matrix(shader, "camMatrix");
-
-    glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, 0);
+    */
 }
