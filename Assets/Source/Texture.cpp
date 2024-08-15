@@ -87,6 +87,7 @@ Texture::Texture(const char * image, const char * texType, GLuint slot, GLenum m
         break;
     case 1:
         colCh = GL_RED;
+        break;
     default:
         throw std::invalid_argument("Automatic Texture type recognition failed please use RGBA, RGB, or RED");
         break;

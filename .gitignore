@@ -38,8 +38,8 @@ imgui/
 *.exe
 *.out
 *.app
-main
-draw
+main*
+draw*
 
 # VSCODE
 .vscode/
@@ -51,4 +51,4 @@ draw
 *.dat
 
 # gitignore Source Code
-rd/
+rd*/

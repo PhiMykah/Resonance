@@ -20,27 +20,32 @@ extern "C" {
 #include "prec.h"
 #include "rand.h"
 #include "atof.h"
+#include "nmrgraphics.h"
 }
-
-#define Vertices std::vector<Vertex>
-#define Indices std::vector<GLuint>
-#define Textures std::vector<Texture>
 
 class NMRMesh : Mesh
 {
     public:
-        float * mat;
-        float fdata[FDATASIZE];
-        int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount, qSize;
-        NMR_INT totalSize;
-
-        NMRMesh(std::string file); //Vertices& vertices, Indices& indices, Textures& textures
+        NMRMesh(std::string file, GLenum primative = GL_TRIANGLES); //Vertices& vertices, Indices& indices, Textures& textures
         
         void Draw(Shader& shader, Camera& camera);
 
     private:
+        // Private functions
+
         void NMRToVertex();
         void NMR2DToVertex();
+
+        // Private Variables
+
+        int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount;
+        float fdata[FDATASIZE];
+        NMR_INT totalSize;
+        int qSize, vertexCount, indexCount;
+        float minVal, maxVal;
+        float * mat;
+        float * vertexList = (float *)NULL;
+        int * indexList = (int *)NULL;
 };
 
 #endif // !NMRMESH_CLASS_H

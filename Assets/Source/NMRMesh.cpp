@@ -1,18 +1,39 @@
 #include "NMRMesh.h"
 
-NMRMesh::NMRMesh(std::string file){
-    primative = GL_POINTS;
+NMRMesh::NMRMesh(std::string file, GLenum primative){
+    NMRMesh::primative = primative;
+
     int error;
-    char * inName = &file[0];
+    char * inName = &file[0];    
+    char errorMsg[64];
 
     error = readNMR( inName, NMRMesh::fdata, &mat, NMRMesh::sizeList, NMRMesh::qSizeList, &totalSize, &qSize, &dimCount);
 
     if (error != 0) {
-        std::cout << "Error whilst reading NMR file! Error code " << error << std::endl;
-        return;
+        sprintf(errorMsg, "Error whilst reading NMR file! Error code %d", error);
+        throw std::runtime_error(errorMsg);
+    }
+
+    minVal = vecMin64(mat, totalSize);
+    maxVal = vecMax64(mat, totalSize);
+
+    error = mat2mesh(&vertexList, &vertexCount, &indexList, &indexCount, mat, qSize*sizeList[XLOC], sizeList[YLOC], minVal, maxVal, (float)0.01);
+
+    if (error != 0) {
+        sprintf(errorMsg, "Error whilst converting to mesh! Error code %d", error);
+        throw std::runtime_error(errorMsg);
     }
 
     NMRToVertex();
+
+    NMRMesh::textures.push_back(
+        Texture("Assets/Textures/Alb/3f4647ff.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR) // Load diffusion texture
+    );
+
+    NMRMesh::textures.push_back(
+        Texture("Assets/Textures/Spec/FFFFFFFF.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
+    );
+
     // Consider emptying mat here since data is now in vertices
     initMesh(NMRMesh::vertices, NMRMesh::indices, NMRMesh::textures);
 }
@@ -28,6 +49,30 @@ void NMRMesh::NMRToVertex(){
 };
 
 void NMRMesh::NMR2DToVertex(){
+    for (size_t i = 0; i < indexCount; i++)
+    {
+        NMRMesh::vertices.push_back(
+            Vertex
+            {
+                glm::vec3(vertexList[indexList[i]],
+                          vertexList[indexList[i] + 1],
+                          vertexList[indexList[i] + 2]),
+                glm::vec3(0.0, 1.0, 0.0),
+                glm::vec3(1.0, 1.0, 1.0)
+            }
+        );
+
+        if (i >= 0) {
+            NMRMesh::indices.push_back((GLuint) i);
+        } else {
+            NMRMesh::indices.push_back((GLuint) -1 * i);
+        }
+    }
+    
+}
+
+/*
+    {
     glm::vec3 multi_index = glm::vec3(0.0);
     glm::vec3 maxSizes = glm::vec3(sizeList[0], sizeList[1], sizeList[2]);
     glm::vec3 coordinates;
@@ -57,8 +102,7 @@ void NMRMesh::NMR2DToVertex(){
 
         indx++;
     }
-}
-
+*/
 void NMRMesh::Draw(Shader& shader, Camera& camera){
     Mesh::Draw(shader, camera);
     /*

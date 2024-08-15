@@ -34,6 +34,7 @@ uniform vec3 camPos;
 vec4 pointLight(){
    // Vector of light to target position
    vec3 lightVec = lightPos - currPos;
+   
    // Calculate distance that light travels by length of vector
    float dist = length(lightVec);
 

@@ -37,7 +37,7 @@ NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
 rd/inquire.o rd/testsize.o rd/namelist.o rd/vutil.o rd/syscalls.o \
 rd/getstat.o rd/rand.o rd/specunit.o rd/raise.o \
-rd/conrecnx.o rd/drawaxis.o rd/paper.o
+rd/conrecnx.o rd/drawaxis.o rd/paper.o rd/nmrgraphics.o
 
 # Reference files
 glad = glad.c stb.cpp
