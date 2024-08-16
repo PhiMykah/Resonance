@@ -1,5 +1,9 @@
 #include "NMRMesh.h"
 
+NMRMesh::NMRMesh(){
+
+}
+
 NMRMesh::NMRMesh(std::string file, GLenum primative){
     NMRMesh::primative = primative;
 

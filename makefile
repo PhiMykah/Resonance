@@ -7,6 +7,7 @@ h = $(a)/Headers
 src = $(a)/Source
 shdr= $(a)/Shaders
 tex= $(a)/Textures
+inc= $(a)/Libraries/include
 
 # ---------
 # VARIABLES
@@ -20,6 +21,7 @@ LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.h
 
+IGFD = ImGuiFileDialog
 BACKEND= $(a)/Backend.o
 BUFFERS= $(a)/VBO.o $(a)/EBO.o $(a)/VAO.o
 SHADERS= $(a)/Shader.o
@@ -29,9 +31,9 @@ MESH= $(a)/Mesh.o
 NMR= $(a)/NMRMesh.o
 MODEL= $(a)/Model.o
 
-DEPS= Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o Model.o
+DEPS= $(IGFD).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o Model.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(SHAPES)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(a)/$(IGFD).o $(SHAPES)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -66,6 +68,8 @@ main: $(DEPS)
 clean:
 	rm -rf $(a)/*.o
 
+$(IGFD).o:
+	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGFD)/$(IGFD).cpp -o $(a)/$(IGFD).o $(LDFLAGS)
 Backend.o:
 	$(CXX) $(CXXFLAGS) -c $(src)/Backend.cpp -o $(a)/Backend.o $(LDFLAGS)
 

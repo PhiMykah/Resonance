@@ -26,6 +26,7 @@ extern "C" {
 class NMRMesh : Mesh
 {
     public:
+        NMRMesh();
         NMRMesh(std::string file, GLenum primative = GL_TRIANGLES); //Vertices& vertices, Indices& indices, Textures& textures
         
         void Draw(Shader& shader, Camera& camera);

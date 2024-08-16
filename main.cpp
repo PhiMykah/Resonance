@@ -54,6 +54,28 @@ GLuint light_indices[] =
 #define vertices Shapes::plane_vertices
 #define indices Shapes::plane_indices
 
+void drawFileDialog(std::string& file) { //
+    // open Dialog Simple
+    if (ImGui::Begin("File")) {
+        if (ImGui::Button("Load NMR File")) {
+            IGFD::FileDialogConfig config;
+            config.path = ".";
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".fid,.ft2,.ft3,.ft4,.*", config);
+        }
+    }
+    ImGui::End();
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog
+        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+        // std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+        file = ImGuiFileDialog::Instance()->GetFilePathName();
+        }
+        
+        ImGuiFileDialog::Instance()->Close();
+    }
+}
+
 int main()
 {
     // GLFW parameters
@@ -101,9 +123,9 @@ int main()
     // * Creating NMR Object *
     // ***********************
 
-    std::string file = "./hn.ft2";
-    NMRMesh nmr(file);
-    
+    std::string nmrFile;
+    std::string currFile;
+
     // Initialize NMR Object
     glm::vec4 point_color = glm::vec4(0.85f, 0.85f, 0.90f, 1.0f);
     glm::vec3 nmr_pos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -216,6 +238,8 @@ int main()
     Model ground("Assets/Models/ground/scene.gltf");
     // Model trees("Assets/Models/trees/scene.gltf");
 
+    NMRMesh * nmrMesh = (NMRMesh *) NULL;
+
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
     {
@@ -270,7 +294,6 @@ int main()
 
         if (drawShape){
             model.Draw(shader_program, camera);
-            nmr.Draw(shader_program, camera);
         }
 
         light.Draw(light_shader, camera, light_model, light_pos);
@@ -291,6 +314,19 @@ int main()
 
         ImGui::End();
 
+        drawFileDialog(nmrFile);
+
+        if (!nmrFile.empty() && currFile != nmrFile) {
+            if (nmrMesh != NULL) {
+                delete nmrMesh;
+            }
+            nmrMesh = new NMRMesh(nmrFile);
+            currFile = nmrFile;
+        }
+        if (drawShape && nmrMesh != NULL){
+            nmrMesh->Draw(shader_program, camera);
+        }
+
         // Render UI Window
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -305,6 +341,9 @@ int main()
     // * Deletion and Deallocation *
     // *****************************
 
+    if (nmrMesh != NULL) {
+        delete nmrMesh;
+    }
     closeIMGUI(); // Close ImGui and remove GL link
     shader_program.Delete();        // Delete main shader program
     light_shader.Delete();          // Delete light shader program
