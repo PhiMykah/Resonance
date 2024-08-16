@@ -140,7 +140,7 @@ None
 void Shader::compileErrors(unsigned int shader, const char * type){
     GLint hasCompiled;
     const char * prog = "PROGRAM";
-    GLsizei logSize = 1024;
+    const GLsizei logSize = 1024;
     char infoLog[logSize];
 	if (type != prog){
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
