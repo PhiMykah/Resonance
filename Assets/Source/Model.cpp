@@ -184,7 +184,7 @@ std::vector<float> Model::getFloats(json accessor){
 
     // Loop over data and store information in temporary array.
     // Then convert byte data to float values, and store in vector
-    for (unsigned int i = dataBegin; i < dataBegin + dataLength; i) {
+    for (unsigned int i = dataBegin; i < dataBegin + dataLength;){
         unsigned char bytes[] = { data[i++], data[i++], data[i++], data[i++]};
         float value;
         // Convert bytes data to float 
@@ -226,7 +226,7 @@ Indices Model::getIndices(json accessor){
     case 5125: // Datatype is unsigned int
         // Loop over data and store information in temporary array.
         // Then convert byte data to unsigned int values, and store in vector as GLuint
-        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 4; i)
+        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 4;)
         {
             unsigned char bytes[] = { data[i++], data[i++], data[i++], data[i++]};
             unsigned int value;
@@ -238,7 +238,7 @@ Indices Model::getIndices(json accessor){
     case 5123: // Datatype is unsigned short
         // Loop over data and store information in temporary array.
         // Then convert byte data to unsigned short values, and store in vector as GLuint
-        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 2; i)
+        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 2;)
         {
             unsigned char bytes[] = { data[i++], data[i++] };
             unsigned short value;
@@ -250,7 +250,7 @@ Indices Model::getIndices(json accessor){
     case 5122: // Datatype is short
         // Loop over data and store information in temporary array.
         // Then convert byte data to short values, and store in vector as GLuint
-        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 2; i)
+        for (unsigned int i = dataBegin; i < byteOffset + accByteOffset + count * 2;)
         {
             unsigned char bytes[] = { data[i++], data[i++] };
             short value;
@@ -334,7 +334,7 @@ Vertices Model::assembleVertices
     Vertices vertices;
     // Iterate over all vectors to create vertices
     // (Positions is chosen arbitrarily since they should all be of equal size)
-    for (int i = 0; i < positions.size(); i++)
+    for (unsigned int i = 0; i < positions.size(); i++)
     {
         vertices.push_back
         (
@@ -355,8 +355,10 @@ Vertices Model::assembleVertices
 std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec){
 
     std::vector<glm::vec2> vectors;
-    for (int i = 0; i < floatVec.size(); i){
-        vectors.push_back(glm::vec2(floatVec[i++], floatVec[i++]));
+    for (unsigned int i = 0; i < floatVec.size();){
+        float x = floatVec[i++];
+        float y = floatVec[i++];
+        vectors.push_back(glm::vec2(x, y));
     }
     return vectors;
 }
@@ -364,8 +366,11 @@ std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec){
 std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec){
 
     std::vector<glm::vec3> vectors;
-    for (int i = 0; i < floatVec.size(); i){
-        vectors.push_back(glm::vec3(floatVec[i++], floatVec[i++], floatVec[i++]));
+    for (unsigned int i = 0; i < floatVec.size();){
+        float x = floatVec[i++];
+        float y = floatVec[i++];
+        float z = floatVec[i++];
+        vectors.push_back(glm::vec3(x, y, z));
     }
     return vectors;
 }
@@ -373,8 +378,12 @@ std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec){
 std::vector<glm::vec4> Model::groupFloatsVec4(std::vector<float> floatVec){
 
     std::vector<glm::vec4> vectors;
-    for (int i = 0; i < floatVec.size(); i){
-        vectors.push_back(glm::vec4(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]));
+    for (unsigned int i = 0; i < floatVec.size();){
+        float x = floatVec[i++];
+        float y = floatVec[i++];
+        float z = floatVec[i++];
+        float w = floatVec[i++];
+        vectors.push_back(glm::vec4(x, y, z, w));
     }
     return vectors;
 }

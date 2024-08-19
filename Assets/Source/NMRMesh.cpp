@@ -53,7 +53,7 @@ void NMRMesh::NMRToVertex(){
 };
 
 void NMRMesh::NMR2DToVertex(){
-    for (size_t i = 0; i < indexCount; i++)
+    for (int i = 0; i < indexCount; i++)
     {
         NMRMesh::vertices.push_back(
             Vertex
