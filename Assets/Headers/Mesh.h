@@ -12,6 +12,9 @@
 #define Indices std::vector<GLuint>
 #define Textures std::vector<Texture>
 
+/*
+Mesh Object which holds information such as the verts, indices, and textures
+*/
 class Mesh
 {
     public:
@@ -21,10 +24,14 @@ class Mesh
         GLenum primative = GL_TRIANGLES;
         VAO vao;
 
+        // Empty constructor for Mesh object
         Mesh();
 
+        // Initialize mesh given vertices, indices, and textures
         Mesh(Vertices& vertices, Indices& indices, Textures& textures);
 
+        // Draw mesh to given camera viewport with given shader
+        // Additionally, modify mesh with given translation, rotation, and scale
         void Draw
         (
             Shader& shader,
@@ -36,6 +43,7 @@ class Mesh
         );
         
     protected:
+        // Internal mesh initialization function used by Mesh and its children
         void initMesh(Vertices& vertices, Indices& indices, Textures& textures);
 };
 

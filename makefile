@@ -20,6 +20,7 @@ CXXFLAGS= -g -Wall -std=c++17 -I./$(a)/Libraries/include $(HEADERS) -I./imgui
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.h
+UI= $(h)/UI.h
 
 IGFD = ImGuiFileDialog
 BACKEND= $(a)/Backend.o
@@ -33,7 +34,7 @@ MODEL= $(a)/Model.o
 
 DEPS= $(IGFD).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o Model.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(a)/$(IGFD).o $(SHAPES)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(a)/$(IGFD).o $(SHAPES) $(UI)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \

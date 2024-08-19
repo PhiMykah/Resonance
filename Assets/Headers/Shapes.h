@@ -32,6 +32,7 @@ GLuint triangle_indices[] =
     5, 4, 1, // Top triangle uses vertices 5, 4, and 1
 };
 
+
 // *****************
 // * Define Square *
 // *****************
@@ -49,6 +50,7 @@ GLuint square_indices[] =
     0, 2, 1, // Upper triangle
     0, 3, 2  // Lower triangle
 };
+
 
 // ******************
 // * Define Pyramid *
@@ -90,6 +92,7 @@ GLuint pyramid_indices[] =
 	13, 15, 14 // Facing side
 };
 
+
 // ****************
 // * Define Plane *
 // ****************
@@ -105,6 +108,38 @@ GLuint plane_indices[] =
 {
     0, 1, 2,
     0, 2, 3
+};
+
+
+// ***************
+// * Define Cube *
+// ***************
+Vertex cube_vertices[] =
+{ //     COORDINATES     //
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+};
+
+GLuint cube_indices[] =
+{
+    0, 1, 2,
+    0, 2, 3,
+    0, 4, 7,
+    0, 7, 3,
+    3, 7, 6,
+    3, 6, 2,
+    2, 6, 5,
+    2, 5, 1,
+    1, 5, 4,
+    1, 4, 8,
+    4, 5, 6,
+    4, 6, 7
 };
 
 } // namespace Shapes

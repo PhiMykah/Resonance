@@ -1,5 +1,18 @@
 #include "Model.h"
 
+/*
+Constructor for Model.
+takes in gltf file as argument
+
+Parameters
+----------
+file : const char *
+    Target gltf file that defines model
+
+Returns
+-------
+Model Object
+*/
 Model::Model(const char* file){
 
     std::string text = get_file_contents(file); // Load file into string object
@@ -14,12 +27,38 @@ Model::Model(const char* file){
     traverseNode(0);
 }
 
+/*
+Draw the entire model by drawing each mesh
+
+Parameters
+----------
+shader : Shader&
+    Target shader used for drawing
+camera : Camera&
+    Target viewport object will be drawn in
+
+Returns
+-------
+None
+*/
 void Model::Draw(Shader& shader, Camera & camera){
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i].Mesh::Draw(shader, camera, meshMatrices[i]);
     }
 }
 
+/*
+Loads mesh to model based on json index
+
+Parameters
+----------
+indMesh : unsigned int
+    Index of mesh in JSON meshes dictionary
+
+Returns
+-------
+None
+*/
 void Model::loadMesh(unsigned int indMesh){
 
     // Position accessor indices
@@ -54,6 +93,22 @@ void Model::loadMesh(unsigned int indMesh){
     meshes.push_back(Mesh(vertices, indices, textures));
 }
 
+/*
+Recursively traverses through gltf json nodes 
+and loads each mesh
+
+Parameters
+----------
+nextNode : unsigned int
+    Next node in json tree
+
+matrix : glm::mat4
+    Current model matrix
+
+Returns
+-------
+None
+*/
 void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 {
 	// Current node
@@ -132,6 +187,19 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	}
 }
 
+/*
+Obtain the json data from file 
+and store into byte vector
+
+Parameters
+----------
+None
+
+Returns
+-------
+data : std::vector<unsigned char>
+    Bytes vector containing json data
+*/
 std::vector<unsigned char> Model::getData(){
 
     std::string bytesText; // Hold raw text of file
@@ -148,6 +216,20 @@ std::vector<unsigned char> Model::getData(){
     return data;
 }
 
+/*
+Get floats from json accessor
+(e.g. coordinates, normals, color)
+
+Parameters
+----------
+accessor : json
+    Json-formatted tree for target accessor
+
+Returns
+-------
+floatVec : std::vector<float>
+    Vector of floats from accessor
+*/
 std::vector<float> Model::getFloats(json accessor){
 
     std::vector<float> floatVec;
@@ -195,6 +277,19 @@ std::vector<float> Model::getFloats(json accessor){
     return floatVec;
 }
 
+/*
+Get vertex indices from json accessor
+
+Parameters
+----------
+accessor : json
+    Json-formatted tree for target accessor
+
+Returns
+-------
+indices : Indices
+    Vector of GL unsigned ints from accessor
+*/
 Indices Model::getIndices(json accessor){
 
     Indices indices;
@@ -267,6 +362,18 @@ Indices Model::getIndices(json accessor){
     return indices;
 }
 
+/*
+Obtain image files from json and store in vector
+
+Parameters
+----------
+None
+
+Returns
+-------
+textures : Textures
+    Vertex containing loaded textures
+*/
 Textures Model::getTextures(){
     std::vector<Texture> textures;
 
@@ -325,6 +432,23 @@ Textures Model::getTextures(){
 	return textures;
 }
  
+/*
+Store each position, normal, and textUV triplet into 
+a vertex
+
+Parameters
+----------
+positions : std::vector<glm::vec3> 
+    Mesh's coordinates
+normals : std::vector<glm::vec3>
+    Mesh's normals
+texUVs : std::vector<glm::vec2>
+    Mesh's texUVs
+
+Returns
+-------
+    Vector containing mesh vertices
+*/
 Vertices Model::assembleVertices
 (
     std::vector<glm::vec3> positions,
@@ -351,7 +475,18 @@ Vertices Model::assembleVertices
     return vertices;
 }
 
+/*
+Group every two floats in vector into glm vec2 pairs
 
+Parameters
+----------
+std::vector<float> floatVec
+    Ungrouped floats
+Returns
+-------
+std::vector<glm::vec2> 
+    Grouped floats
+*/
 std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec){
 
     std::vector<glm::vec2> vectors;
@@ -361,6 +496,18 @@ std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec){
     return vectors;
 }
 
+/*
+Group every three floats in vector into glm vec3 pairs
+
+Parameters
+----------
+std::vector<float> floatVec
+    Ungrouped floats
+Returns
+-------
+std::vector<glm::vec3> 
+    Grouped floats
+*/
 std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec){
 
     std::vector<glm::vec3> vectors;
@@ -370,6 +517,18 @@ std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec){
     return vectors;
 }
 
+/*
+Group every four floats in vector into glm vec4 pairs
+
+Parameters
+----------
+std::vector<float> floatVec
+    Ungrouped floats
+Returns
+-------
+std::vector<glm::vec4> 
+    Grouped floats
+*/
 std::vector<glm::vec4> Model::groupFloatsVec4(std::vector<float> floatVec){
 
     std::vector<glm::vec4> vectors;

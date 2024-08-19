@@ -23,18 +23,28 @@ extern "C" {
 #include "nmrgraphics.h"
 }
 
+/*
+Mesh Object for NMR Data
+*/
 class NMRMesh : Mesh
 {
     public:
+        // Empty NMRMesh Object
         NMRMesh();
+
+        // Initialize and create a NMRMesh based on given NMR file and primative
         NMRMesh(std::string file, GLenum primative = GL_TRIANGLES); //Vertices& vertices, Indices& indices, Textures& textures
         
+        // Draw NMRMesh object
         void Draw(Shader& shader, Camera& camera);
 
     private:
         // Private functions
 
+        // Convert NMR data to vertex coordinates
         void NMRToVertex();
+
+        // Convert 2D NMR data to vertex coordinates
         void NMR2DToVertex();
 
         // Private Variables

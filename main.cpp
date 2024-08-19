@@ -17,69 +17,23 @@
 
 // Other Headers
 #include "Shapes.h"
+#include "UI.h"
 
 // ************************
 // * Define Lighting Cube *
 // ************************
 
-Vertex light_vertices[] =
-{ //     COORDINATES     //
-	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
-};
 
-GLuint light_indices[] =
-{
-    0, 1, 2,
-    0, 2, 3,
-    0, 4, 7,
-    0, 7, 3,
-    3, 7, 6,
-    3, 6, 2,
-    2, 6, 5,
-    2, 5, 1,
-    1, 5, 4,
-    1, 4, 8,
-    4, 5, 6,
-    4, 6, 7
-};
 
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
 #define indices Shapes::plane_indices
-
-void drawFileDialog(std::string& file) { //
-    // open Dialog Simple
-    if (ImGui::Begin("File")) {
-        if (ImGui::Button("Load NMR File")) {
-            IGFD::FileDialogConfig config;
-            config.path = ".";
-            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".fid,.ft2,.ft3,.ft4,.*", config);
-        }
-    }
-    ImGui::End();
-
-    // display
-    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog
-        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-        // std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-        file = ImGuiFileDialog::Instance()->GetFilePathName();
-        }
-        
-        ImGuiFileDialog::Instance()->Close();
-    }
-}
+#define light_vertices Shapes::cube_vertices
+#define light_indices Shapes::cube_indices
 
 int main()
 {
     // GLFW parameters
-
     int width = 800; // Window width
     int height = 800; // Window height
     const char *title = "Resonance"; // Window name
@@ -111,13 +65,17 @@ int main()
     // * Initialize Shaders *
     // **********************
 
-    // Initialize shader program
+    // Initialize main shader program
     Shader shader_program("Assets/Shaders/default.vert", "Assets/Shaders/default.frag");
     
-    // Light Shader Initialization
+    // Light shader initialization
     Shader light_shader("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 
+    // NMR shader initialization
     Shader nmr_shader("Assets/Shaders/nmr.vert", "Assets/Shaders/nmr.frag");
+
+    // Stencil outline shader initialization
+    Shader stencil_outline("Assets/Shaders/stencil_outline.vert", "Assets/Shaders/stencil_outline.frag");
 
     // ***********************
     // * Creating NMR Object *
@@ -173,6 +131,7 @@ int main()
     // Export light color and position to shader program
     glUniform4f(glGetUniformLocation(shader_program.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
 
+
     // Export NMR object to NMR shader
     nmr_shader.Activate();
     GLuint nmr_model_ID = glGetUniformLocation(nmr_shader.ID, "model");
@@ -185,28 +144,25 @@ int main()
     // ********************
     ImGuiIO io = initIMGUI(main_window);
 
-    // *****************************
-    // * Initialize Loop Variables *
-    // *****************************
-
-    // Set Background color
-    // Rebecca Purple: (0.4f, 0.2f, 0.6f, 1.0f)
-    // Navy Blue: (0.07f, 0.13f, 0.17f, 1.0f)
-    glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
-    // glm::vec4 bg_color = glm::vec4((float)(28.0 / 255.0), (float)(30.0 / 255.0), (float)(41.0 / 255.0), 1.0f);
-    
-    // Shape attributes
-    // -------------------
-    bool drawShape = true; // Triangle visibility
-    float size = 1.0f;     // Triangle size
-    // float rotation = glm::radians(0.0f); // Initial rotation value
-    // bool autoRotate = false;
-    // float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Triangle color
-
     // Ignore mouse inputs with imGUI enabled
     // if (!io.WantCaptureMouse) {
     //     // Handle input
     // }
+    
+    // ******************************
+    // * Initialize Loop Attributes *
+    // ******************************
+
+    // Set Background color
+    glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
+    
+    // Object attributes
+    bool drawShape = true; // Object visibility
+    float size = 1.0f;     // Object size
+
+    // Stencil attributes
+    float outline = 0.50f; // Stencil buffer outline
+    float stencil_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Stencil buffer color
 
     // Light Attributes 
     float light_distance = 1;
@@ -214,12 +170,13 @@ int main()
 
     // Pointer to uniform variable size from shader
     GLuint sizeID = glGetUniformLocation(shader_program.ID, "size");
-    // GLunit colorID = glGetUniformLocation(shader_program.ID, "color");
 
     // Initialize camera view
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
-    // double prevTime = glfwGetTime();
+    // **********************
+    // * Initialize Buffers *
+    // **********************
 
     // Enable depth testing in OpenGL rendering
     glEnable(GL_DEPTH_TEST);
@@ -229,6 +186,23 @@ int main()
     // Options: GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL
     // GL_GEQUAL, GL_ALWAYS
     glDepthFunc(GL_LESS);
+
+    // Enable stencil buffer
+    glEnable(GL_STENCIL_TEST);
+    // Define stencil operations based on whether 
+    // The stencil test fails, the stencil test passes but the depth test fails,
+    // and when both tests pass.
+    // Possible arguments: GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, 
+    // GL_INCR_WRAP, GL_DECR, GL_DECR_WRAP, and GL_INVERT
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    // Enable Face Culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
+    
+    // Disable VSYNC
+    // glfwSwapInterval(0);
 
     // ***************
     // * Load Models *
@@ -240,14 +214,52 @@ int main()
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
 
+    // *****************
+    // * Frame Counter *
+    // *****************
+
+    double prevTime = 0.0;
+    double currTime = 0.0;
+    double timeDiff;
+    unsigned int frameCounter = 0;
+
+    // ****************** WHILE LOOP *************************
+
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
     {
+        // Update Frame Counter 
+
+        // Get current time for frame rate
+        currTime = glfwGetTime();
+        // Calculate time difference
+        timeDiff = currTime - prevTime;
+        frameCounter++;
+        // Calulate framerate every 30th of a second
+        if (timeDiff >= 1.0 / 30.0){
+            // Display fps based on frames within timespan
+            std::string FPS = std::to_string((1.0 / timeDiff) * frameCounter);
+
+            // Display ms based on difference relative to frames
+            std::string ms = std::to_string((timeDiff / frameCounter) * 1000);
+
+            // Generate frame message and print to window title
+            std::string newTitle;
+            newTitle += title;
+            newTitle += " - ";
+            std::string frameMsg = newTitle + FPS + "FPS / " + ms + "ms";
+            glfwSetWindowTitle(main_window, frameMsg.c_str());
+
+            // Update previous time and reset frame counter
+            prevTime = currTime;
+            frameCounter = 0;
+        }
+
         // Clear back buffer and set it to color with RGBA float values
         glClearColor(bg_color.x, bg_color.y, bg_color.z, bg_color.w);
 
-        // Clear Color and Depth buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Clear Color, Depth, and Stencil buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Create new UI Frame, inform opengl3 and glfw
         ImGui_ImplOpenGL3_NewFrame();
@@ -255,19 +267,6 @@ int main()
         ImGui::NewFrame();
 
         shader_program.Activate(); // Activate program
-
-        // **************
-        // * Delta Time *
-        // **************
-
-        // // Rotate every 1/60th of a second
-        // double currTime = glfwGetTime();
-        // if (currTime - prevTime >= 1.0 / 60.0) {
-        //     if (autoRotate) {
-        //         rotation += 0.5f;
-        //     }
-        //     prevTime = currTime;
-        // }
 
         // *******************
         // * Camera Settings *
@@ -281,7 +280,6 @@ int main()
 
         // Update uniforms values after activation
         glUniform1f(sizeID, size);
-        //glUniform4f(colorID, color[0], color[1], color[2], color[3]);
 
         // *************************
         // * Light Object Settings *
@@ -292,27 +290,38 @@ int main()
         // Send updated light position to shader program
         glUniform3f(glGetUniformLocation(shader_program.ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
 
-        if (drawShape){
-            model.Draw(shader_program, camera);
-        }
+        // *******************
+        // * Buffer Settings *
+        // *******************
 
-        light.Draw(light_shader, camera, light_model, light_pos);
+        // Enable writing to entire stencil buffer
+        //            function | ref | bitwise AND mask
+        glStencilFunc(GL_ALWAYS,  1,    0xFF);
+        glStencilMask(0xFF);
+
+        // *******************
+        // * Main UI Drawing *
+        // *******************
 
         // Create UI Window
         ImGui::Begin("Spectra");                // ImGUI window creation
         ImGui::Text("Do you like this shape?");        // Text that appears in the window
         ImGui::Checkbox("Draw Shape", &drawShape);     // Select whether to draw the shape
         ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
-        ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f);
-        ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f);
-
-        // ImGui::Checkbox("Auto Rotate", &autoRotate); // Select whether shape should automatically rotate
-        // if (!autoRotate) {
-        //     ImGui::SliderAngle("Rotation", &rotation, -360.0*24, 360*24);
-        // }
-        // ImGui::ColorEdit4("Color", color); // Fancy color editor that appears in the window
-
+        ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
+        ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f); // Angle on circle that light object is positioned at
+        // Complete UI Window definition
         ImGui::End();
+        
+        // ******************
+        // * OpenGL Drawing *
+        // ******************
+
+        if (drawShape){
+            model.Draw(shader_program, camera);
+        }
+
+        light.Draw(light_shader, camera, light_model, light_pos);
 
         drawFileDialog(nmrFile);
 
@@ -326,6 +335,35 @@ int main()
         if (drawShape && nmrMesh != NULL){
             nmrMesh->Draw(shader_program, camera);
         }
+        
+        // *******************************
+        // * Post Processing & Rendering *
+        // *******************************
+
+        // Pass stencil test only when not equal to one
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        // Disable writing to stencil mask to avoid modifying afterwards
+        glStencilMask(0x00);
+        // Disable depth buffer to avoid modifying
+        glDisable(GL_DEPTH_TEST);
+
+        stencilUI(stencil_outline, outline, stencil_color);
+        
+        // Redraw objects with post-processing
+
+        if (drawShape){
+            model.Draw(stencil_outline, camera);
+
+            if (nmrMesh != NULL) {
+                nmrMesh->Draw(stencil_outline, camera);
+            }
+        }
+        
+        // Clear stencil mask and stencil test
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        // Re-enable depth buffer
+        glEnable(GL_DEPTH_TEST);
 
         // Render UI Window
         ImGui::Render();
@@ -348,6 +386,7 @@ int main()
     shader_program.Delete();        // Delete main shader program
     light_shader.Delete();          // Delete light shader program
     nmr_shader.Delete();            // Delete nmr shader program
+    stencil_outline.Delete();       // Delete stencil shader program
     glfwDestroyWindow(main_window); // Close window when complete
     glfwTerminate();                // Terminate glfw process
 
