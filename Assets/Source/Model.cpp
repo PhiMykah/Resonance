@@ -356,9 +356,7 @@ std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec){
 
     std::vector<glm::vec2> vectors;
     for (unsigned int i = 0; i < floatVec.size();){
-        float x = floatVec[i++];
-        float y = floatVec[i++];
-        vectors.push_back(glm::vec2(x, y));
+        vectors.push_back(glm::vec2(floatVec[i++], floatVec[i++]));
     }
     return vectors;
 }
@@ -367,10 +365,7 @@ std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec){
 
     std::vector<glm::vec3> vectors;
     for (unsigned int i = 0; i < floatVec.size();){
-        float x = floatVec[i++];
-        float y = floatVec[i++];
-        float z = floatVec[i++];
-        vectors.push_back(glm::vec3(x, y, z));
+        vectors.push_back(glm::vec3(floatVec[i++], floatVec[i++], floatVec[i++]));
     }
     return vectors;
 }
@@ -379,11 +374,7 @@ std::vector<glm::vec4> Model::groupFloatsVec4(std::vector<float> floatVec){
 
     std::vector<glm::vec4> vectors;
     for (unsigned int i = 0; i < floatVec.size();){
-        float x = floatVec[i++];
-        float y = floatVec[i++];
-        float z = floatVec[i++];
-        float w = floatVec[i++];
-        vectors.push_back(glm::vec4(x, y, z, w));
+        vectors.push_back(glm::vec4(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]));
     }
     return vectors;
 }
