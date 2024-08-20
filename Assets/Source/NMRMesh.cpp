@@ -107,8 +107,12 @@ void NMRMesh::NMR2DToVertex(){
         indx++;
     }
 */
-void NMRMesh::Draw(Shader& shader, Camera& camera){
-    Mesh::Draw(shader, camera);
+void NMRMesh::Draw(
+    Shader& shader, Camera& camera, 
+    glm::mat4 matrix, glm::vec3 translation,
+    glm::quat rotation, glm::vec3 scale
+    ){
+    Mesh::Draw(shader, camera, matrix, translation, rotation, scale);
     /*
         // Activate shader and bind vao to shader
         shader.Activate();

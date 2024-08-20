@@ -171,9 +171,6 @@ int main()
     // Pointer to uniform variable size from shader
     GLuint sizeID = glGetUniformLocation(shader_program.ID, "size");
 
-    // Initialize camera view
-    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
-
     // **********************
     // * Initialize Buffers *
     // **********************
@@ -204,6 +201,30 @@ int main()
     // Disable VSYNC
     // glfwSwapInterval(0);
 
+    /* 
+       Choose Color + Alpha blending settings
+       --------------------------------------
+       Parameters are sfactor and dfactor,
+       Where sfactor determines the formula for the source 
+       color (fragment shader) and the dfactor determines
+       the formula for the destination color (color buffer)
+       Possible Constants: (The initial value is GL_ZERO)
+       GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR,
+       GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, 
+       GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
+       GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA,
+       GL_ONE_MINUS_CONSTANT_ALPHA. 
+    */
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    /* 
+       glBlendEquation is also an option to customize the function.
+       Arguments include GL_FUNC_ADD, GL_FUNC_SUBTRACT,
+       GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX
+
+       glBlendFuncSeparate() Also allows function modification
+       But with RGB and Alpha separate
+    */
+
     // ***************
     // * Load Models *
     // ***************
@@ -213,6 +234,9 @@ int main()
     // Model trees("Assets/Models/trees/scene.gltf");
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
+
+    // Initialize camera view
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // *****************
     // * Frame Counter *
@@ -346,6 +370,8 @@ int main()
         glStencilMask(0x00);
         // Disable depth buffer to avoid modifying
         glDisable(GL_DEPTH_TEST);
+        // Enable rgb + alpha blending
+        glEnable(GL_BLEND);
 
         stencilUI(stencil_outline, outline, stencil_color);
         
@@ -359,12 +385,16 @@ int main()
             }
         }
         
+        // Disable RGB + Alpha blending
+        glDisable(GL_BLEND);
         // Clear stencil mask and stencil test
         glStencilMask(0xFF);
         glStencilFunc(GL_ALWAYS, 0, 0xFF);
         // Re-enable depth buffer
         glEnable(GL_DEPTH_TEST);
 
+
+        
         // Render UI Window
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
