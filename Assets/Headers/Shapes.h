@@ -128,18 +128,18 @@ Vertex cube_vertices[] =
 
 GLuint cube_indices[] =
 {
-    0, 1, 2,
-    0, 2, 3,
-    0, 4, 7,
-    0, 7, 3,
-    3, 7, 6,
-    3, 6, 2,
-    2, 6, 5,
-    2, 5, 1,
-    1, 5, 4,
-    1, 4, 8,
-    4, 5, 6,
-    4, 6, 7
+    0, 1, 2, // 		Clockwise triangle (Bottom 1)
+    0, 2, 3, // 		Clockwise triangle (Bottom 2)
+    0, 7, 4, // Counter-Clockwise triangle (Front 1)
+    0, 3, 7, // Counter-Clockwise triangle (Front 2)
+    3, 6, 7, // Counter Clockwise triangle (Right 1)
+    3, 2, 6, // Counter-Clockwise triangle (Right 2)
+    2, 5, 6, // 		Clockwise triangle (Back 1)
+    2, 1, 5, //			Clockwise triangle (Back 2)
+    1, 4, 5, //			Clockwise triangle (Left 1)
+    1, 8, 4, //			Clockwise triangle (Left 2)
+    4, 6, 5, // Counter-Clockwise triangle (Top 1)
+    4, 7, 6  // Counter-Clockwise triangle (Top 2)
 };
 
 } // namespace Shapes
