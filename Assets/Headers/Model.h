@@ -13,7 +13,12 @@ public:
     Model(const char* file);
 
     // Draw model using provided shader and camera
-    void Draw(Shader& shader, Camera & camera);
+    void Draw(
+        Shader& shader, Camera & camera,
+        glm::vec3 globalTranslation = glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::quat globalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
+        glm::vec3 globalScale = glm::vec3(1.0f, 1.0f, 1.0f)
+    );
 private:
     const char* file; // File containing model data
     std::vector<unsigned char> data; // Data for model stored in bytes

@@ -45,7 +45,10 @@ void Mesh::Draw(
     glm::mat4 matrix,
     glm::vec3 translation,
     glm::quat rotation,
-    glm::vec3 scale
+    glm::vec3 scale,
+    glm::vec3 globalTranslation,
+    glm::quat globalRotation,
+    glm::vec3 globalScale
 ){
 
     // Activate shader and bind vao to shader
@@ -85,10 +88,21 @@ void Mesh::Draw(
     glm::mat4 rot = glm::mat4(1.0f);
     glm::mat4 sca = glm::mat4(1.0f);
 
+    // Global transformation matrices
+
+    glm::mat4 gtrans = glm::mat4(1.0f);
+    glm::mat4 grot = glm::mat4(1.0f);
+    glm::mat4 gsca = glm::mat4(1.0f);
+
     // Apply translation, rotation, and scale to transformation matrices
     trans = glm::translate(trans, translation);
     rot = glm::mat4_cast(rotation);
     sca = glm::scale(sca, scale);
+
+    // Apply translation, rotation, and scale, to global transformation matrices
+    gtrans = glm::translate(gtrans, globalTranslation);
+    grot = glm::mat4_cast(globalRotation);
+    gsca = glm::scale(gsca, globalScale);
 
     // Send transformation matrices and model matrix to shader
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
@@ -96,6 +110,10 @@ void Mesh::Draw(
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
     
+    // Send global transformation matrices and model matrix to shader
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "gTranslation"), 1, GL_FALSE, glm::value_ptr(gtrans));
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "gRotation"), 1, GL_FALSE, glm::value_ptr(grot));
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "gScale"), 1, GL_FALSE, glm::value_ptr(gsca));
 
     glDrawElements(primative, indices.size(), GL_UNSIGNED_INT, 0);
 }

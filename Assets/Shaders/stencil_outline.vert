@@ -14,11 +14,15 @@ uniform mat4 translation; // Translation matrix
 uniform mat4 rotation; // Rotation matrix
 uniform mat4 scale; // Scale matrix
 
+uniform mat4 gTranslation; // Global Translation matrix
+uniform mat4 gRotation; // Global Rotation matrix
+uniform mat4 gScale; // Global Scale matrix
+
 uniform float outlining; // Outline thickness
 uniform vec4 color; // Outline color
 
 void main(){
-    vec3 currPos = vec3(model * translation * rotation * scale * vec4(aPos + aNormal * (outlining * 0.08), 1.0f));
+    vec3 currPos =  vec3(gTranslation * gRotation * gScale * (model * translation * rotation * scale * vec4(aPos + aNormal * (outlining * 0.08), 1.0f)));
 
     outlineColor = color;
     

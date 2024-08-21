@@ -20,13 +20,16 @@ uniform mat4 translation; // Translation matrix
 uniform mat4 rotation; // Rotation matrix
 uniform mat4 scale; // Scale matrix
 
-uniform float size; // Object size
+uniform mat4 gTranslation; // Global Translation matrix
+uniform mat4 gRotation; // Global Rotation matrix
+uniform mat4 gScale; // Global Scale matrix
 
 void main()
 {
-    // Calculate current position
-    //                                match glm to gltf
-    currPos = vec3(model * translation * rotation * scale * vec4(size * aPos, 1.0));
+    // Calculate current position   
+                    // Global transform                 //                      Local Transform
+    currPos = vec3(gTranslation * gRotation * gScale * (model * translation * rotation * scale * vec4(aPos, 1.0)));
+
     // Assigns the normal vectors from the vertex data to "Normal"
     Normal = aNormal;
     // Assign colors from vertex data to color

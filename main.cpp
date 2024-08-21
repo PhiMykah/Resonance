@@ -14,6 +14,8 @@
 // C/C++ Library Headers
 #include <iostream>
 #include <math.h>
+#include<filesystem>
+namespace fs = std::filesystem;
 
 // Other Headers
 #include "Shapes.h"
@@ -30,6 +32,7 @@
 #define indices Shapes::plane_indices
 #define light_vertices Shapes::cube_vertices
 #define light_indices Shapes::cube_indices
+#define rect Shapes::rectangle_vertices
 
 int main()
 {
@@ -65,17 +68,31 @@ int main()
     // * Initialize Shaders *
     // **********************
 
+    std::string shader_path = fs::current_path().string() + "/Assets/Shaders/";
+
     // Initialize main shader program
-    Shader shader_program("Assets/Shaders/default.vert", "Assets/Shaders/default.frag");
+    Shader shader_program(
+        (shader_path + "default.vert").c_str(), 
+        (shader_path + "default.frag").c_str()
+    );
     
     // Light shader initialization
-    Shader light_shader("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+    Shader light_shader(
+        (shader_path + "light.vert").c_str(),
+        (shader_path + "light.frag").c_str()
+    );
 
     // NMR shader initialization
-    Shader nmr_shader("Assets/Shaders/nmr.vert", "Assets/Shaders/nmr.frag");
+    Shader nmr_shader(
+        (shader_path + "nmr.vert").c_str(),
+        (shader_path + "nmr.frag").c_str()
+    );
 
     // Stencil outline shader initialization
-    Shader stencil_outline("Assets/Shaders/stencil_outline.vert", "Assets/Shaders/stencil_outline.frag");
+    Shader stencil_outline(
+        (shader_path + "stencil_outline.vert").c_str(),
+        (shader_path + "stencil_outline.frag").c_str()
+    );
 
     // ***********************
     // * Creating NMR Object *
@@ -158,7 +175,15 @@ int main()
     
     // Object attributes
     bool drawShape = true; // Object visibility
-    float size = 1.0f;     // Object size
+    float objSize = 0.250;     // Object size
+    glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
+    glm::vec3 objScale = glm::vec3(1.0);
+    glm::quat rot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
+    // NMR attributes
+    float nmrSize = 1.0;
+    glm::vec3 nmrPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 nmrScale = glm::vec3(1.0);
 
     // Stencil attributes
     float outline = 0.50f; // Stencil buffer outline
@@ -194,9 +219,9 @@ int main()
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // Enable Face Culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_FRONT);
+    // glFrontFace(GL_CCW);
     
     // Disable VSYNC
     // glfwSwapInterval(0);
@@ -226,7 +251,7 @@ int main()
     */
 
     // ***************
-    // * Load Models *
+    // * Load Assets *
     // ***************
 
     Model model("Assets/Models/Sword/scene.gltf");
@@ -281,7 +306,6 @@ int main()
 
         // Clear back buffer and set it to color with RGBA float values
         glClearColor(bg_color.x, bg_color.y, bg_color.z, bg_color.w);
-
         // Clear Color, Depth, and Stencil buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -301,9 +325,6 @@ int main()
 
         // Update camera matrix based on view plane and FOV
         camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
-
-        // Update uniforms values after activation
-        glUniform1f(sizeID, size);
 
         // *************************
         // * Light Object Settings *
@@ -331,7 +352,9 @@ int main()
         ImGui::Begin("Spectra");                // ImGUI window creation
         ImGui::Text("Do you like this shape?");        // Text that appears in the window
         ImGui::Checkbox("Draw Shape", &drawShape);     // Select whether to draw the shape
-        ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
+        ImGui::InputFloat3("Translation", glm::value_ptr(nmrPos)); // Move Object
+        ImGui::SliderFloat("Scale", &nmrSize, 0.5, 5); // Scale Object
+        // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
         ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
         ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f); // Angle on circle that light object is positioned at
         // Complete UI Window definition
@@ -342,7 +365,7 @@ int main()
         // ******************
 
         if (drawShape){
-            model.Draw(shader_program, camera);
+            model.Draw(shader_program, camera, objPos, rot, objSize * objScale);
         }
 
         light.Draw(light_shader, camera, light_model, light_pos);
@@ -357,7 +380,7 @@ int main()
             currFile = nmrFile;
         }
         if (drawShape && nmrMesh != NULL){
-            nmrMesh->Draw(shader_program, camera);
+            nmrMesh->Draw(shader_program, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
         }
         
         // *******************************
@@ -378,10 +401,10 @@ int main()
         // Redraw objects with post-processing
 
         if (drawShape){
-            model.Draw(stencil_outline, camera);
+            model.Draw(stencil_outline, camera, objPos, rot, objSize * objScale);
 
             if (nmrMesh != NULL) {
-                nmrMesh->Draw(stencil_outline, camera);
+                nmrMesh->Draw(stencil_outline, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
             }
         }
         

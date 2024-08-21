@@ -142,6 +142,22 @@ GLuint cube_indices[] =
     4, 7, 6  // Counter-Clockwise triangle (Top 2)
 };
 
+
+// ********************
+// * Define Rectangle *
+// ********************
+float rectangle_vertices[] =
+{
+	// Coords    // texCoords
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	-1.0f, -1.0f,  0.0f, 0.0f,
+	-1.0f,  1.0f,  0.0f, 1.0f,
+
+	 1.0f,  1.0f,  1.0f, 1.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	-1.0f,  1.0f,  0.0f, 1.0f
+};
+
 } // namespace Shapes
 
 #endif // !SHAPES_H

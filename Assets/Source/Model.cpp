@@ -41,9 +41,17 @@ Returns
 -------
 None
 */
-void Model::Draw(Shader& shader, Camera & camera){
+void Model::Draw(
+    Shader& shader, Camera & camera,
+    glm::vec3 globalTranslation,
+    glm::quat globalRotation,
+    glm::vec3 globalScale
+    ){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].Mesh::Draw(shader, camera, meshMatrices[i], meshTranslations[i], meshRotations[i], meshScales[i]);
+        meshes[i].Mesh::Draw(shader, camera,
+            meshMatrices[i], meshTranslations[i], 
+            meshRotations[i], meshScales[i],
+            globalTranslation, globalRotation, globalScale);
     }
 }
 
