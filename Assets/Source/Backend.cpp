@@ -33,7 +33,8 @@ GLFWwindow * initWindow(int width, int height,
     // Give glfw information about opengl profile
     // Currently running the CORE profile with modern functions
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    glfwWindowHint(GLFW_STENCIL_BITS, 8);
+    
     return glfwCreateWindow(width, height, title, fullscreen, share);
 }
 

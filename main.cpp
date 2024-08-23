@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "NMRMesh.h"
 #include "Model.h"
+#include "Cubemap.h"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -21,21 +22,20 @@ namespace fs = std::filesystem;
 #include "Shapes.h"
 #include "UI.h"
 
-// ************************
-// * Define Lighting Cube *
-// ************************
-
-
-
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
 #define indices Shapes::plane_indices
 #define light_vertices Shapes::cube_vertices
 #define light_indices Shapes::cube_indices
 #define rect Shapes::rectangle_vertices
+#define skybox_vertices Shapes::skybox_vertices
+#define skybox_indices Shapes::skybox_indices
 
 int main()
 {
+    // Assets path
+    std::string assets = fs::current_path().string() + "/Assets/";
+
     // GLFW parameters
     int width = 800; // Window width
     int height = 800; // Window height
@@ -68,7 +68,7 @@ int main()
     // * Initialize Shaders *
     // **********************
 
-    std::string shader_path = fs::current_path().string() + "/Assets/Shaders/";
+    std::string shader_path = assets + "Shaders/";
 
     // Initialize main shader program
     Shader shader_program(
@@ -94,6 +94,12 @@ int main()
         (shader_path + "stencil_outline.frag").c_str()
     );
 
+    // Skybox shader initialization
+    Shader skybox_shader(
+        (shader_path + "skybox.vert").c_str(),
+        (shader_path + "skybox.frag").c_str()
+    );
+
     // ***********************
     // * Creating NMR Object *
     // ***********************
@@ -113,8 +119,8 @@ int main()
 
     Texture textures[]
     {
-        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
-        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
+        Texture((assets + "Textures/Alb/planks.png").c_str(), "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
+        Texture((assets + "Textures/Spec/planksSpec.png").c_str(), "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
     };
 
     // Create vectors for vertices, indices, and textures
@@ -156,6 +162,10 @@ int main()
     // Export point color to nmr shader
     glUniform4f(glGetUniformLocation(nmr_shader.ID, "pointColor"), point_color.x, point_color.y, point_color.z, point_color.w);
 
+    // Export skybox texture to skybox shader
+    skybox_shader.Activate();
+    glUniform1i(glGetUniformLocation(skybox_shader.ID, "skybox"), 0);
+
     // ********************
     // * Initialize IMGUI *
     // ********************
@@ -192,9 +202,6 @@ int main()
     // Light Attributes 
     float light_distance = 1;
     float light_rotation = glm::radians(0.0f); // Initial rotation value
-
-    // Pointer to uniform variable size from shader
-    GLuint sizeID = glGetUniformLocation(shader_program.ID, "size");
 
     // **********************
     // * Initialize Buffers *
@@ -254,8 +261,8 @@ int main()
     // * Load Assets *
     // ***************
 
-    Model model("Assets/Models/Sword/scene.gltf");
-    Model ground("Assets/Models/ground/scene.gltf");
+    // Model model((assets + "Models/Sword/scene.gltf").c_str());
+    // Model ground((assets + "Models/ground/scene.gltf").c_str());
     // Model trees("Assets/Models/trees/scene.gltf");
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
@@ -271,6 +278,18 @@ int main()
     double currTime = 0.0;
     double timeDiff;
     unsigned int frameCounter = 0;
+
+    // *********************
+    // * Skybox Generation *
+    // *********************
+
+    // Define path
+    std::string skybox_path = assets + "Textures/Skybox/AutumnFieldPureSky/";
+    FileType format = PNG;
+
+    Cubemap skybox(skybox_path.c_str(), format);
+
+    skybox.BindTextures();
 
     // ****************** WHILE LOOP *************************
 
@@ -364,9 +383,14 @@ int main()
         // * OpenGL Drawing *
         // ******************
 
-        if (drawShape){
-            model.Draw(shader_program, camera, objPos, rot, objSize * objScale);
-        }
+        glDisable(GL_STENCIL_TEST);
+        // Draw skybox
+        skybox.DrawSkybox(skybox_shader, camera, width, height);
+        glEnable(GL_STENCIL_TEST);
+
+        // if (drawShape){
+        //     model.Draw(shader_program, camera, objPos, rot, objSize * objScale);
+        // }
 
         light.Draw(light_shader, camera, light_model, light_pos);
 
@@ -382,7 +406,7 @@ int main()
         if (drawShape && nmrMesh != NULL){
             nmrMesh->Draw(shader_program, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
         }
-        
+
         // *******************************
         // * Post Processing & Rendering *
         // *******************************
@@ -401,7 +425,7 @@ int main()
         // Redraw objects with post-processing
 
         if (drawShape){
-            model.Draw(stencil_outline, camera, objPos, rot, objSize * objScale);
+            // model.Draw(stencil_outline, camera, objPos, rot, objSize * objScale);
 
             if (nmrMesh != NULL) {
                 nmrMesh->Draw(stencil_outline, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
@@ -416,8 +440,6 @@ int main()
         // Re-enable depth buffer
         glEnable(GL_DEPTH_TEST);
 
-
-        
         // Render UI Window
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
