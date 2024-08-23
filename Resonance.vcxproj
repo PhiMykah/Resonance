@@ -22,6 +22,7 @@
     <ClCompile Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Assets\Source\Backend.cpp" />
     <ClCompile Include="Assets\Source\Camera.cpp" />
+    <ClCompile Include="Assets\Source\Cubemap.cpp" />
     <ClCompile Include="Assets\Source\EBO.cpp" />
     <ClCompile Include="Assets\Source\Mesh.cpp" />
     <ClCompile Include="Assets\Source\Model.cpp" />
@@ -39,33 +40,100 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="rd\cmndargs.c" />
-    <ClCompile Include="rd\conrecnx.c" />
-    <ClCompile Include="rd\dataio.c" />
-    <ClCompile Include="rd\drawaxis.c" />
-    <ClCompile Include="rd\example.c" />
-    <ClCompile Include="rd\fdataio.c" />
-    <ClCompile Include="rd\fdatap.c" />
-    <ClCompile Include="rd\getstat.c" />
-    <ClCompile Include="rd\inquire.c" />
-    <ClCompile Include="rd\memory.c" />
-    <ClCompile Include="rd\namelist.c" />
-    <ClCompile Include="rd\nmrgraphics.c" />
-    <ClCompile Include="rd\paper.c" />
-    <ClCompile Include="rd\raise.c" />
-    <ClCompile Include="rd\rand.c" />
-    <ClCompile Include="rd\readnmr.c" />
-    <ClCompile Include="rd\specunit.c" />
-    <ClCompile Include="rd\stralloc.c" />
-    <ClCompile Include="rd\syscalls.c" />
-    <ClCompile Include="rd\testsize.c" />
-    <ClCompile Include="rd\token.c" />
-    <ClCompile Include="rd\vutil.c" />
+    <ClCompile Include="rd\cmndargs.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\conrecnx.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\dataio.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\drawaxis.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\example.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\fdataio.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\fdatap.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\getstat.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\inquire.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\memory.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\namelist.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\nmrgraphics.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\paper.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\raise.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\rand.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\readnmr.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\specunit.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\stralloc.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\syscalls.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\testsize.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\token.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="rd\vutil.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="stb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Headers\Backend.h" />
     <ClInclude Include="Assets\Headers\Camera.h" />
+    <ClInclude Include="Assets\Headers\Cubemap.h" />
     <ClInclude Include="Assets\Headers\EBO.h" />
     <ClInclude Include="Assets\Headers\Mesh.h" />
     <ClInclude Include="Assets\Headers\Model.h" />
@@ -143,6 +211,25 @@
     <Image Include="Assets\Textures\Alb\brick.png" />
     <Image Include="Assets\Textures\Alb\logo.jpg" />
     <Image Include="Assets\Textures\Alb\planks.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\back.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\bottom.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\cube_map.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\front.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\left.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\right.png" />
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\top.png" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\back.jpg" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\bottom.jpg" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\front.jpg" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\left.jpg" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\right.jpg" />
+    <Image Include="Assets\Textures\Skybox\CloudySky\top.jpg" />
+    <Image Include="Assets\Textures\Skybox\Paris\back.png" />
+    <Image Include="Assets\Textures\Skybox\Paris\bottom.png" />
+    <Image Include="Assets\Textures\Skybox\Paris\front.png" />
+    <Image Include="Assets\Textures\Skybox\Paris\left.png" />
+    <Image Include="Assets\Textures\Skybox\Paris\right.png" />
+    <Image Include="Assets\Textures\Skybox\Paris\top.png" />
     <Image Include="Assets\Textures\Spec\FFFFFFFF.png" />
     <Image Include="Assets\Textures\Spec\planksSpec.png" />
   </ItemGroup>
@@ -213,9 +300,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)imgui;$(ProjectDir)ImGuiFileDialog;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -243,9 +333,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NMR64;LINUX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;_DEBUG;_CONSOLE;NMR64;LINUX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)imgui;$(ProjectDir)ImGuiFileDialog;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

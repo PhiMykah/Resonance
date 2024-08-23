@@ -70,6 +70,18 @@
     <Filter Include="Resource Files\NMRFiles">
       <UniqueIdentifier>{10e5d5bc-ec07-4c45-8870-135643845343}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\Skybox">
+      <UniqueIdentifier>{e59113eb-5513-4526-9885-3e638d277912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\Skybox\AutumnFieldPureSky">
+      <UniqueIdentifier>{89fad0c5-4684-4bc3-a705-57fa42736bf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\Skybox\CloudySky">
+      <UniqueIdentifier>{90629c07-2d30-464d-8e30-006afaef44ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\Skybox\Paris">
+      <UniqueIdentifier>{d657ce5d-de55-4c71-8f41-82840a3c9d35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -200,6 +212,9 @@
     </ClCompile>
     <ClCompile Include="rd\conrecnx.c">
       <Filter>Source Files\nmr</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Source\Cubemap.cpp">
+      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,6 +365,9 @@
     <ClInclude Include="rd\vutil.h">
       <Filter>Header Files\nmr</Filter>
     </ClInclude>
+    <ClInclude Include="Assets\Headers\Cubemap.h">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\light.vert">
@@ -437,6 +455,63 @@
     </Image>
     <Image Include="Assets\Models\trees\specular.png">
       <Filter>Resource Files\Models\trees</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\back.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\bottom.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\cube_map.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\front.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\left.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\right.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\AutumnFieldPureSky\top.png">
+      <Filter>Resource Files\Textures\Skybox\AutumnFieldPureSky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\back.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\bottom.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\front.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\left.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\right.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\CloudySky\top.jpg">
+      <Filter>Resource Files\Textures\Skybox\CloudySky</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\back.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\bottom.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\front.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\left.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\right.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Skybox\Paris\top.png">
+      <Filter>Resource Files\Textures\Skybox\Paris</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
