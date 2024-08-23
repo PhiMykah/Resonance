@@ -100,6 +100,12 @@ int main()
         (shader_path + "skybox.frag").c_str()
     );
 
+    // Projection shader initialization
+    Shader projection_shader(
+        (shader_path + "projection.vert").c_str(),
+        (shader_path + "projection.frag").c_str()
+    );
+
     // ***********************
     // * Creating NMR Object *
     // ***********************
@@ -183,17 +189,23 @@ int main()
     // Set Background color
     glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
     
+    // General attributes
+    glm::quat rot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
     // Object attributes
     bool drawShape = true; // Object visibility
     float objSize = 0.250;     // Object size
     glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
     glm::vec3 objScale = glm::vec3(1.0);
-    glm::quat rot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     // NMR attributes
     float nmrSize = 1.0;
-    glm::vec3 nmrPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 nmrPos = glm::vec3(0.0f);
     glm::vec3 nmrScale = glm::vec3(1.0);
+
+    // Bounding box attributes
+    glm::vec3 bbPos = glm::vec3(0.0f);
+    glm::vec3 bbScale = glm::vec3(1.0);
 
     // Stencil attributes
     float outline = 0.50f; // Stencil buffer outline
@@ -269,6 +281,10 @@ int main()
 
     // Initialize camera view
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+    Cubemap boundingBox((assets + "Textures/Skybox/SolidColor/").c_str(), PNG);
+
+    boundingBox.BindTextures();
 
     // *****************
     // * Frame Counter *
@@ -406,6 +422,13 @@ int main()
         if (drawShape && nmrMesh != NULL){
             nmrMesh->Draw(shader_program, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
         }
+
+        // Draw bounding box with inverted culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        glFrontFace(GL_CCW);
+        boundingBox.Draw(projection_shader, camera, glm::mat4(1.0), bbPos, rot, nmrSize * bbScale);
+        glDisable(GL_CULL_FACE);
 
         // *******************************
         // * Post Processing & Rendering *
