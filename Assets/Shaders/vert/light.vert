@@ -8,7 +8,13 @@ uniform mat4 translation; // Translation matrix
 uniform mat4 rotation; // Rotation matrix
 uniform mat4 scale; // Scale matrix
 
+out DATA
+{
+    mat4 projection;
+} data_out;
+
 void main()
 {
-    gl_Position = camMatrix * model * translation * rotation * scale * vec4(aPos, 1.0f);
+    gl_Position = model * translation * rotation * scale * vec4(aPos, 1.0f);
+    data_out.projection = camMatrix;
 }

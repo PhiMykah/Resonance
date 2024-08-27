@@ -53,7 +53,7 @@ vec4 pointLight(){
    vec3 lightDirection = normalize(lightVec);
 
    // Current light implementation: Diffuse Lighting
-   float diffuse = max(abs(dot(normal, lightDirection)), 0.0f); // Include absolute for better shading
+   float diffuse = max(dot(normal, lightDirection), 0.0f);
 
    // Calculate specular light
    float specularLight = 0.5f;
@@ -62,9 +62,9 @@ vec4 pointLight(){
    float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
    float specular = specAmount * specularLight;
 
-   // Ignore fragments that contain alpha values less than 0.1
-   if (texture(diffuse0, texCoord).a < 0.1)
-      discard;
+   // // Ignore fragments that contain alpha values less than 0.1
+   // if (texture(diffuse0, texCoord).a < 0.1)
+   //    discard;
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
@@ -86,7 +86,7 @@ vec4 directionalLight(){
    vec3 lightDirection = normalize(lightVec);
 
    // Current light implementation: Diffuse Lighting
-   float diffuse = max(abs(dot(normal, lightDirection)), 0.0f); // Include absolute for better shading
+   float diffuse = max(dot(normal, lightDirection), 0.0f);
 
    // Calculate specular light
    float specularLight = 0.5f;
@@ -95,9 +95,9 @@ vec4 directionalLight(){
    float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
    float specular = specAmount * specularLight;
 
-   // Ignore fragments that contain alpha values less than 0.1
-   if (texture(diffuse0, texCoord).a < 0.1)
-      discard;
+   // // Ignore fragments that contain alpha values less than 0.1
+   // if (texture(diffuse0, texCoord).a < 0.1)
+   //    discard;
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
@@ -123,7 +123,7 @@ vec4 spotLight(){
    vec3 lightDirection = normalize(lightVec);
 
    // Current light implementation: Diffuse Lighting
-   float diffuse = max(abs(dot(normal, lightDirection)), 0.0f); // Include absolute for better shading
+   float diffuse = max(dot(normal, lightDirection), 0.0f);
 
    // Calculate specular light
    float specularLight = 0.5f;
@@ -137,9 +137,9 @@ vec4 spotLight(){
    // Obtain intensity by clamping angle to the outer and inner cones
    float intensity = clamp((angle - outerCone) / (innerCone - outerCone), 0.0f, 1.0f);
 
-   // Ignore fragments that contain alpha values less than 0.1
-   if (texture(diffuse0, texCoord).a < 0.1)
-      discard;
+   // // Ignore fragments that contain alpha values less than 0.1
+   // if (texture(diffuse0, texCoord).a < 0.1)
+   //    discard;
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 

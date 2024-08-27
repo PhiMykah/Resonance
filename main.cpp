@@ -1,5 +1,5 @@
 // Backend Headers and Source Code
-#include "Backend.h"
+#include "Assets/Headers/Backend.h"
 
 // Object Headers
 #include "Mesh.h"
@@ -69,41 +69,54 @@ int main()
     // **********************
 
     std::string shader_path = assets + "Shaders/";
-
+    std::string shader_name = "default";
+    
+    std::string sf = shaderFile(shader_path, shader_name, VERT);
     // Initialize main shader program
     Shader shader_program(
-        (shader_path + "default.vert").c_str(), 
-        (shader_path + "default.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
     
     // Light shader initialization
+    shader_name = "light";
     Shader light_shader(
-        (shader_path + "light.vert").c_str(),
-        (shader_path + "light.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
     // NMR shader initialization
+    shader_name = "nmr";
     Shader nmr_shader(
-        (shader_path + "nmr.vert").c_str(),
-        (shader_path + "nmr.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
     // Stencil outline shader initialization
+    shader_name = "stencil_outline";
     Shader stencil_outline(
-        (shader_path + "stencil_outline.vert").c_str(),
-        (shader_path + "stencil_outline.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
     // Skybox shader initialization
+    shader_name = "skybox";
     Shader skybox_shader(
-        (shader_path + "skybox.vert").c_str(),
-        (shader_path + "skybox.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
     // Projection shader initialization
+    shader_name = "projection";
     Shader projection_shader(
-        (shader_path + "projection.vert").c_str(),
-        (shader_path + "projection.frag").c_str()
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
     // ***********************
@@ -194,9 +207,9 @@ int main()
 
     // Object attributes
     bool drawShape = true; // Object visibility
-    float objSize = 0.250;     // Object size
-    glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
-    glm::vec3 objScale = glm::vec3(1.0);
+    // float objSize = 0.250;     // Object size
+    // glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
+    // glm::vec3 objScale = glm::vec3(1.0);
 
     // NMR attributes
     float nmrSize = 1.0;
@@ -212,7 +225,7 @@ int main()
     float stencil_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Stencil buffer color
 
     // Light Attributes 
-    float light_distance = 1;
+    float light_distance = 0.8;
     float light_rotation = glm::radians(0.0f); // Initial rotation value
 
     // **********************

@@ -1,7 +1,10 @@
 #version 460 core
 layout (location = 0) in vec3 aPos;
 
-out vec3 texCoords;
+out DATA
+{
+    vec3 texCoords;
+} data_out;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -15,5 +18,5 @@ void main()
     gl_Position = vec4(pos.x, pos.y, pos.w, pos.w);
     // Flip z axis value since cubemaps are left handed coordinates
     // whilst OpenGL uses right handed coordinates
-    texCoords = vec3(aPos.x, aPos.y, -aPos.z);
+    data_out.texCoords = vec3(aPos.x, aPos.y, -aPos.z);
 }

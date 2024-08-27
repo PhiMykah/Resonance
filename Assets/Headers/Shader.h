@@ -11,6 +11,16 @@
 
 std::string get_file_contents(const char * filename);
 
+// Define shader operations
+enum ShaderType
+{
+    VERT,
+    FRAG,
+    GEOM
+};
+
+std::string shaderFile(std::string shader_path, std::string name, ShaderType shader_type);
+
 /*
 Object for loading vertex and fragment shaders 
 by source code to a new program
@@ -22,7 +32,7 @@ class Shader
         GLuint ID;
 
         // Constructor that builds shader program from vertex and fragment shaders
-        Shader(const char* vertexFile, const char* fragmentFile);
+        Shader(const char* vertexFile, const char* fragmentFile, const char* geometryFile);
 
         // Activate shader program
         void Activate();

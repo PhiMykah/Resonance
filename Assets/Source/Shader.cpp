@@ -34,6 +34,32 @@ std::string get_file_contents(const char * filename)
     throw(errno);
 }
 
+std::string shaderFile(std::string shader_path, std::string name, ShaderType shader_type){
+    std::string type_dir;
+    std::string suffix;
+
+    switch (shader_type)
+    {
+    case VERT:
+        type_dir = "vert/";
+        suffix = ".vert";
+        break;
+    case FRAG:
+        type_dir = "frag/";
+        suffix = ".frag";
+        break;
+    case GEOM:
+        type_dir = "geom/";
+        suffix = ".geom";
+        break;
+    default:
+        std::string file;
+        return file;
+    }
+
+    return shader_path + type_dir + name + suffix;
+}
+
 /*
 Main Constructor for Shader class object
 
@@ -48,12 +74,16 @@ Returns
 -------
 Shader object
 */
-Shader::Shader(const char * vertexFile, const char * fragmentFile){
+Shader::Shader(const char * vertexFile, const char * fragmentFile, const char * geometryFile){
     std::string vertexCode = get_file_contents(vertexFile);
     std::string fragmentCode = get_file_contents(fragmentFile);
+    std::string geometryCode = get_file_contents(geometryFile);
 
     const char* vertexSource = vertexCode.c_str();
     const char* fragmentSource = fragmentCode.c_str();
+    const char* geometrySource = geometryCode.c_str();
+
+    // ****** VERTEX SHADER ********
 
     // Initialize vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -67,6 +97,8 @@ Shader::Shader(const char * vertexFile, const char * fragmentFile){
     glCompileShader(vertexShader);
     compileErrors(vertexShader, "VERTEX");
 
+    // ****** FRAGMENT SHADER *********
+
     // Initialize fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -79,16 +111,34 @@ Shader::Shader(const char * vertexFile, const char * fragmentFile){
     glCompileShader(fragmentShader);
     compileErrors(fragmentShader, "FRAGMENT");
 
+    // ****** GEOMETRY SHADER ***********
+
+    // Initialize geometry shader
+    GLuint geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+
+    // Provide source for geometry shader
+    // Parameters:
+    // reference value, screen count, source code, array of string lengths
+    glShaderSource(geometryShader, 1, &geometrySource, NULL);
+
+    // Compile source code into machine code 
+    glCompileShader(geometryShader);
+    compileErrors(geometryShader, "GEOMETRY");
+
+    // ******** SHADER PROGRAM ******** 
+
     // Create shader program and store as the Shader class ID, attach, then wrap shaders into shader program
     ID = glCreateProgram();
     glAttachShader(ID, vertexShader);
     glAttachShader(ID, fragmentShader);
+    glAttachShader(ID, geometryShader);
     glLinkProgram(ID);
     compileErrors(ID, "PROGRAM");
 
     // Remove shaders now that the shaders are loaded to the program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    glDeleteShader(geometryShader);
 }
 
 /*

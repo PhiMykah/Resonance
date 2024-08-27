@@ -3,7 +3,12 @@
 layout (location = 0) in vec3 aPos; // Position array
 layout(location = 1) in vec3 aNormal; // Normal array
 
-out vec4 outlineColor;
+out DATA
+{
+    vec4 outlineColor;
+    mat4 projection;
+} data_out;
+
 
 // NEVER DECLARE UNIFORMS IF THEY GO UNUSED
 
@@ -22,9 +27,8 @@ uniform float outlining; // Outline thickness
 uniform vec4 color; // Outline color
 
 void main(){
-    vec3 currPos =  vec3(gTranslation * gRotation * gScale * (model * translation * rotation * scale * vec4(aPos + aNormal * (outlining * 0.08), 1.0f)));
+    gl_Position = gTranslation * gRotation * gScale * (model * translation * rotation * scale * vec4(aPos + aNormal * (outlining * 0.08), 1.0f));
 
-    outlineColor = color;
-    
-    gl_Position = camMatrix * vec4(currPos, 1.0);
+    data_out.outlineColor = color;
+    data_out.projection = camMatrix;
 }
