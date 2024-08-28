@@ -29,6 +29,12 @@ VBO::VBO(std::vector<Vertex>& vertices, GLenum usage){
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), usage);
 }
 
+VBO::VBO(std::vector<LineVertex>& vertices, GLenum usage) {
+    glGenBuffers(1, &ID);
+    glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(LineVertex), vertices.data(), usage);
+}
+
 /*
 Bind buffer to binding point
 
