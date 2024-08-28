@@ -119,6 +119,14 @@ int main()
         shaderFile(shader_path, shader_name, GEOM).c_str()
     );
 
+    // Normals shader initialization
+    shader_name = "normals";
+    Shader normals_shader(
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
+    );
+
     // ***********************
     // * Creating NMR Object *
     // ***********************
@@ -215,6 +223,10 @@ int main()
     float nmrSize = 1.0;
     glm::vec3 nmrPos = glm::vec3(0.0f);
     glm::vec3 nmrScale = glm::vec3(1.0);
+
+    // Normals display attributes
+    bool showNormals = false;
+    float normalLength = 0.01f;
 
     // Bounding box attributes
     glm::vec3 bbPos = glm::vec3(0.0f);
@@ -383,6 +395,13 @@ int main()
         // Send updated light position to shader program
         glUniform3f(glGetUniformLocation(shader_program.ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
 
+        // **************************
+        // * Normal Vector Settings *
+        // **************************
+
+        normals_shader.Activate();
+        glUniform1f(glGetUniformLocation(normals_shader.ID, "hairLength"), normalLength);
+
         // *******************
         // * Buffer Settings *
         // *******************
@@ -402,6 +421,8 @@ int main()
         ImGui::Checkbox("Draw Shape", &drawShape);     // Select whether to draw the shape
         ImGui::InputFloat3("Translation", glm::value_ptr(nmrPos)); // Move Object
         ImGui::SliderFloat("Scale", &nmrSize, 0.5, 5); // Scale Object
+        ImGui::Checkbox("Show Normals", &showNormals); // Display normal vectors
+        ImGui::SliderFloat("Normals Magnitude", &normalLength, 0.0f, 0.1f); // Length of normal vectors
         // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
         ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
         ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f); // Angle on circle that light object is positioned at
@@ -434,6 +455,9 @@ int main()
         }
         if (drawShape && nmrMesh != NULL){
             nmrMesh->Draw(shader_program, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
+            if (showNormals) {
+                nmrMesh->Draw(normals_shader, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
+            }
         }
 
         // Draw bounding box with inverted culling
