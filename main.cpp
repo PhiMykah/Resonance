@@ -2,6 +2,7 @@
 #include "Assets/Headers/Backend.h"
 
 // Object Headers
+#include "Line.h"
 #include "Mesh.h"
 #include "NMRMesh.h"
 #include "Model.h"
@@ -122,6 +123,14 @@ int main()
     // Normals shader initialization
     shader_name = "normals";
     Shader normals_shader(
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
+    );
+
+    // Line shader initialization
+    shader_name = "lines";
+    Shader line_shader(
         shaderFile(shader_path, shader_name, VERT).c_str(),
         shaderFile(shader_path, shader_name, FRAG).c_str(),
         shaderFile(shader_path, shader_name, GEOM).c_str()
@@ -302,6 +311,20 @@ int main()
     // Model ground((assets + "Models/ground/scene.gltf").c_str());
     // Model trees("Assets/Models/trees/scene.gltf");
 
+    std::vector<LineVertex> axis_points;
+
+    axis_points.push_back({
+        glm::vec3(-1.5f,  0.0f,  0.0f),
+        glm::vec3( 1.0f,  0.0f,  0.0f),
+    });
+    axis_points.push_back({
+        glm::vec3( 1.5f, 0.0f, 0.0f),
+        glm::vec3( 1.0f, 0.0f,  0.0f)
+    });
+
+    Indices line_points = {0, 1};
+    Line axis_lines(axis_points, line_points);
+
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
 
     // Initialize camera view
@@ -458,6 +481,7 @@ int main()
             if (showNormals) {
                 nmrMesh->Draw(normals_shader, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
             }
+            axis_lines.Draw(line_shader, camera);
         }
 
         // Draw bounding box with inverted culling

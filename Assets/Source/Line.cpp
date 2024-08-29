@@ -26,7 +26,7 @@ void Line::initLines(Vertices& vertices, Indices& indices){
     // Link vbo layouts to corresponding vao
     // Position Coordinate layout (layout 0)
     vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void *)0);
-    // Color layout (layout 2)
+    // Color layout (layout 1)
     vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void *)(6 * sizeof(float)));
     
     // Unbind vao, vbo, and ebo to avoid further modifications

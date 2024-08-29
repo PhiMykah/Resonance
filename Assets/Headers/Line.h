@@ -6,7 +6,6 @@
 #include "VAO.h"
 #include "EBO.h"
 #include "Camera.h"
-#include "Texture.h"
 
 #define Vertices std::vector<LineVertex>
 #define Indices std::vector<GLuint>

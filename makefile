@@ -14,7 +14,7 @@ inc= $(a)/Libraries/include
 # ---------
 
 CXX=g++
-HEADERS= -I./$(h)
+HEADERS= -I./$(h) -DGLM_ENABLE_EXPERIMENTAL
 NMRFLAGS= -DNMR64 -DLINUX -I./rd
 CXXFLAGS= -g -Wall -std=c++17 -I./$(a)/Libraries/include $(HEADERS) -I./imgui
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
@@ -29,13 +29,14 @@ SHADERS= $(a)/Shader.o
 TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
 MESH= $(a)/Mesh.o
+LINE= $(a)/Line.o
 NMR= $(a)/NMRMesh.o
 MODEL= $(a)/Model.o
 CUBEMAP = $(a)/Cubemap.o
 
-DEPS= $(IGFD).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o NMRMesh.o Model.o Cubemap.o
+DEPS= $(IGFD).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(SHAPES) $(UI)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(SHAPES) $(UI)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -91,6 +92,9 @@ Camera.o: Shader.o
 
 Mesh.o : Shader.o Buffers.o Camera.o Texture.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Mesh.cpp -o $(MESH) $(LDFLAGS)
+
+Line.o : Buffers.o Camera.o Texture.o
+	$(CXX) $(CXXFLAGS) -c $(src)/Line.cpp -o $(LINE) $(LDFLAGS)
 
 NMRMesh.o : Mesh.o
 	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/NMRMesh.cpp -o $(NMR) $(LDFLAGS)
