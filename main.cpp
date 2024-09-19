@@ -276,8 +276,8 @@ int main()
     // glCullFace(GL_FRONT);
     // glFrontFace(GL_CCW);
     
-    // Disable VSYNC
-    // glfwSwapInterval(0);
+    // Disable VSYNC by setting to 0
+     glfwSwapInterval(1);
 
     /* 
        Choose Color + Alpha blending settings

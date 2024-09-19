@@ -59,11 +59,14 @@ class NMRMesh : Mesh
         int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount;
         float fdata[FDATASIZE];
         NMR_INT totalSize;
-        int qSize, vertexCount, indexCount;
+        int qSize, vertexCount, indexCount, normCount;
         float minVal, maxVal;
         float * mat;
         float * vertexList = (float *)NULL;
         int * indexList = (int *)NULL;
+        float * normXYZ = (float *)NULL;
+        std::vector<glm::vec3> normals;
+        
 };
 
 #endif // !NMRMESH_CLASS_H

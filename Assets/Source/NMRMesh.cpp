@@ -23,6 +23,8 @@ NMRMesh::NMRMesh(std::string file, GLenum primative){
 
     error = mat2mesh(&vertexList, &vertexCount, &indexList, &indexCount, mat, qSize*sizeList[XLOC], sizeList[YLOC], minVal, maxVal, (float)0.01);
 
+    error = findGridNormals(&normXYZ, &normCount, mat, qSize*sizeList[XLOC], sizeList[YLOC], minVal, maxVal);
+    
     if (error != 0) {
         sprintf(errorMsg, "Error whilst converting to mesh! Error code %d", error);
         throw std::runtime_error(errorMsg);
@@ -61,6 +63,9 @@ void NMRMesh::NMR2DToVertex(){
                 glm::vec3(vertexList[indexList[i]],
                           vertexList[indexList[i] + 1],
                           vertexList[indexList[i] + 2]),
+                glm::vec3(normXYZ[indexList[i]],
+                          normXYZ[indexList[i] + 1],
+                          normXYZ[indexList[i] + 2]),
                 glm::vec3(0.0, 1.0, 0.0),
                 glm::vec3(1.0, 1.0, 1.0)
             }
