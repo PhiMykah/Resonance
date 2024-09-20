@@ -27,6 +27,10 @@ Camera object
 Camera::Camera(int width, int height, glm::vec3 position){
     Camera::width = width;
     Camera::height = height;
+
+    Camera::originalWidth = width;
+    Camera::originalHeight = height;
+
     Camera::position = position;
 }
 
@@ -86,24 +90,26 @@ Returns
 -------
 None
 */
-void Camera::Input(GLFWwindow * window){
+void Camera::Input(GLFWwindow * window, double deltaTime){
+    deltaSpeed = speed * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        position += speed * orientation;
+        
+        position += deltaSpeed * orientation;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        position += speed * -glm::normalize(glm::cross(orientation, up));
+        position += deltaSpeed * -glm::normalize(glm::cross(orientation, up));
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        position += speed * -orientation;
+        position += deltaSpeed * -orientation;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        position += speed * glm::normalize(glm::cross(orientation, up));
+        position += deltaSpeed * glm::normalize(glm::cross(orientation, up));
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        position += speed * up;
+        position += deltaSpeed * up;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
-        position += speed * -up;
+        position += deltaSpeed * -up;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
        speed = 4*DEFAULT_SPEED;
@@ -128,10 +134,19 @@ void Camera::Input(GLFWwindow * window){
 		// Fetches the coordinates of the cursor
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
-		// Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
-		// and then "transforms" them into degrees
-		float rotX = sensitivity * (float)(mouseY - (float(height) / 2)) / height;
-		float rotY = sensitivity * (float)(mouseX - (float(width) / 2)) / width;
+		// Normalize and shift the coordinates of the cursor such that they begin in the middle of the screen
+		
+        // Calculate rot x and rot y normalization
+        float norm_mouse_y = (float)(floor(mouseY) - (float(height) / 2));
+        float norm_mouse_x = (float)(floor(mouseX) - (float(width) / 2));
+
+        // Fix odd number aspect ratio from leading to movement
+        if (abs(norm_mouse_y) == 0.5)  norm_mouse_y = 0.0;
+        if (abs(norm_mouse_x) == 0.5) norm_mouse_x = 0.0;
+
+        // Calculate rotX and rotY
+		float rotX = sensitivity * (norm_mouse_y / height);
+		float rotY = sensitivity * (norm_mouse_x / width);
 
 		// Calculates upcoming vertical change in the Orientation
 		glm::vec3 newOrientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));

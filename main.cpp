@@ -281,7 +281,7 @@ int main()
     // glCullFace(GL_FRONT);
     // glFrontFace(GL_CCW);
     
-    // Disable VSYNC by setting to 0
+    // Enable/Disable VSYNC (1 or 0)
      glfwSwapInterval(1);
 
     /* 
@@ -345,7 +345,7 @@ int main()
 
     double prevTime = 0.0;
     double currTime = 0.0;
-    double timeDiff;
+    double deltaTime;
     unsigned int frameCounter = 0;
 
     // *********************
@@ -373,15 +373,15 @@ int main()
         // Get current time for frame rate
         currTime = glfwGetTime();
         // Calculate time difference
-        timeDiff = currTime - prevTime;
+        deltaTime = currTime - prevTime;
         frameCounter++;
         // Calulate framerate every 30th of a second
-        if (timeDiff >= 1.0 / 30.0){
+        if (deltaTime >= 1.0 / 30.0){
             // Display fps based on frames within timespan
-            std::string FPS = std::to_string((1.0 / timeDiff) * frameCounter);
+            std::string FPS = std::to_string((1.0 / deltaTime) * frameCounter);
 
             // Display ms based on difference relative to frames
-            std::string ms = std::to_string((timeDiff / frameCounter) * 1000);
+            std::string ms = std::to_string((deltaTime / frameCounter) * 1000);
 
             // Generate frame message and print to window title
             std::string newTitle;

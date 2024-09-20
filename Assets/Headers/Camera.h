@@ -32,9 +32,11 @@ class Camera
 
         // Width and height of camera view
         int width, height;
+        int originalWidth, originalHeight;
 
         // Speed of the camera's movement
         float speed = DEFAULT_SPEED;
+        float deltaSpeed = DEFAULT_SPEED;
 
         // Camera's movement sensitivity
         float sensitivity = 100.0f;
@@ -49,6 +51,6 @@ class Camera
         void Matrix(Shader& shader, const char* uniform);
 
         // Camera input handler
-        void Input(GLFWwindow * window);
+        void Input(GLFWwindow * window, double deltaTime = 1.0);
 };
 #endif // !CAMERA_CLASS_H
