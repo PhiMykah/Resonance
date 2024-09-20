@@ -43,7 +43,7 @@ class Camera
         Camera(int width, int height, glm::vec3 position);
 
         // Update the view and projection matrices of the camera
-        void UpdateMatrix(float FOVdeg, float nearPlane, float farPlane);
+        void UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, float farPlane);
 
         // Export the camera matrix to the vertex Shader
         void Matrix(Shader& shader, const char* uniform);

@@ -80,3 +80,26 @@ void closeIMGUI(){
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
+ 
+// *************
+// * Callbacks *
+// *************
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void window_iconify_callback(GLFWwindow* window, int iconified)
+{ 
+    // The window was minimized
+    if (iconified)
+    {
+        glfwWaitEvents();
+    }
+    // The window was restored
+    else
+    {
+        glfwPollEvents();
+    }
+}

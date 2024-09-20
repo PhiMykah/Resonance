@@ -19,6 +19,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <iostream>
+
 #define WHITE glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
 #define BLACK glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 
@@ -28,4 +30,7 @@ ImGuiIO initIMGUI(GLFWwindow * window);
 
 void closeIMGUI();
 
+// Callbacks
+void window_size_callback(GLFWwindow* window, int width, int height);
+void window_iconify_callback(GLFWwindow* window, int iconified);
 #endif // !BACKEND_H

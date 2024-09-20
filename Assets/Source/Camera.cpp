@@ -43,7 +43,10 @@ nearPlane : float
 farPlane : float
     Far cut-off plane for which no objects are rendered
 */
-void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane){
+void Camera::UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, float farPlane){
+    Camera::width = width;
+    Camera::height = height;
+
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
 
@@ -115,7 +118,7 @@ void Camera::Input(GLFWwindow * window){
         // Prevents camera from jumping on the first click
 		if (firstClick)
 		{
-			glfwSetCursorPos(window, double(width) / 2, double(height) / 2);
+			glfwSetCursorPos(window, float(width) / 2, float(height) / 2);
 			firstClick = false;
 		}
 

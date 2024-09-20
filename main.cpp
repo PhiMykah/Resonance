@@ -44,6 +44,7 @@ int main()
     GLFWmonitor *fullscreen = NULL; // Use `glfwGetPrimaryMonitor()` for fullscreen
 
     glfwInit();
+
     // Initialize glfw window with the following parameters:
     //  width, height, name, fullscreen monitor, and context object sharing
     GLFWwindow *main_window = initWindow(width, height, title, fullscreen);
@@ -56,6 +57,10 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(main_window); // Create window
+
+    // Set window Callbacks
+    glfwSetWindowSizeCallback(main_window, window_size_callback);
+    glfwSetWindowIconifyCallback(main_window, window_iconify_callback);
 
     // *****************
     // * Initialize GL *
@@ -360,6 +365,9 @@ int main()
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
     {
+        // Update window size
+        glfwGetWindowSize(main_window, &width, &height);
+
         // Update Frame Counter 
 
         // Get current time for frame rate
@@ -407,7 +415,7 @@ int main()
         camera.Input(main_window);
 
         // Update camera matrix based on view plane and FOV
-        camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
+        camera.UpdateMatrix(width, height, 45.0f, 0.1f, 100.0f);
 
         // *************************
         // * Light Object Settings *
@@ -546,6 +554,10 @@ int main()
     light_shader.Delete();          // Delete light shader program
     nmr_shader.Delete();            // Delete nmr shader program
     stencil_outline.Delete();       // Delete stencil shader program
+    skybox_shader.Delete();         // Delete skybox shader program
+    projection_shader.Delete();     // Delete projection shader program
+    normals_shader.Delete();        // Delete normal shader program
+    line_shader.Delete();           // Delete line shader program
     glfwDestroyWindow(main_window); // Close window when complete
     glfwTerminate();                // Terminate glfw process
 
