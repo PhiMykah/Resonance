@@ -41,94 +41,28 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="rd\cmndargs.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\conrecnx.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\dataio.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\drawaxis.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\example.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\fdataio.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\fdatap.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\getstat.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\inquire.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\memory.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\namelist.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\nmrgraphics.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\paper.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\raise.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\rand.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\readnmr.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\specunit.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\stralloc.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\syscalls.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\testsize.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\token.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="rd\vutil.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
+    <ClCompile Include="rd\cmndargs.c" />
+    <ClCompile Include="rd\conrecnx.c" />
+    <ClCompile Include="rd\dataio.c" />
+    <ClCompile Include="rd\drawaxis.c" />
+    <ClCompile Include="rd\example.c" />
+    <ClCompile Include="rd\fdataio.c" />
+    <ClCompile Include="rd\fdatap.c" />
+    <ClCompile Include="rd\getstat.c" />
+    <ClCompile Include="rd\inquire.c" />
+    <ClCompile Include="rd\memory.c" />
+    <ClCompile Include="rd\namelist.c" />
+    <ClCompile Include="rd\nmrgraphics.c" />
+    <ClCompile Include="rd\paper.c" />
+    <ClCompile Include="rd\raise.c" />
+    <ClCompile Include="rd\rand.c" />
+    <ClCompile Include="rd\readnmr.c" />
+    <ClCompile Include="rd\specunit.c" />
+    <ClCompile Include="rd\stralloc.c" />
+    <ClCompile Include="rd\syscalls.c" />
+    <ClCompile Include="rd\testsize.c" />
+    <ClCompile Include="rd\token.c" />
+    <ClCompile Include="rd\vutil.c" />
     <ClCompile Include="stb.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -194,14 +128,35 @@
     <None Include="Assets\Models\Sword\scene.gltf" />
     <None Include="Assets\Models\trees\scene.bin" />
     <None Include="Assets\Models\trees\scene.gltf" />
-    <None Include="Assets\Shaders\default.frag" />
-    <None Include="Assets\Shaders\default.vert" />
-    <None Include="Assets\Shaders\light.frag" />
-    <None Include="Assets\Shaders\light.vert" />
-    <None Include="Assets\Shaders\nmr.frag" />
-    <None Include="Assets\Shaders\nmr.vert" />
+    <None Include="Assets\Shaders\frag\default.frag" />
+    <None Include="Assets\Shaders\frag\light.frag" />
+    <None Include="Assets\Shaders\frag\lines.frag" />
+    <None Include="Assets\Shaders\frag\nmr.frag" />
+    <None Include="Assets\Shaders\frag\normals.frag" />
+    <None Include="Assets\Shaders\frag\projection.frag" />
+    <None Include="Assets\Shaders\frag\skybox.frag" />
+    <None Include="Assets\Shaders\frag\stencil_outline.frag" />
+    <None Include="Assets\Shaders\geom\default.geom" />
+    <None Include="Assets\Shaders\geom\light.geom" />
+    <None Include="Assets\Shaders\geom\lines.geom" />
+    <None Include="Assets\Shaders\geom\nmr.geom" />
+    <None Include="Assets\Shaders\geom\normals.geom" />
+    <None Include="Assets\Shaders\geom\projection.geom" />
+    <None Include="Assets\Shaders\geom\skybox.geom" />
+    <None Include="Assets\Shaders\geom\stencil_outline.geom" />
+    <None Include="Assets\Shaders\vert\default.vert" />
+    <None Include="Assets\Shaders\vert\light.vert" />
+    <None Include="Assets\Shaders\vert\lines.vert" />
+    <None Include="Assets\Shaders\vert\nmr.vert" />
+    <None Include="Assets\Shaders\vert\normals.vert" />
+    <None Include="Assets\Shaders\vert\projection.vert" />
+    <None Include="Assets\Shaders\vert\skybox.vert" />
+    <None Include="Assets\Shaders\vert\stencil_outline.vert" />
     <None Include="makefile" />
-    <None Include="rd\small.ft2" />
+    <None Include="spectra\ramp.ft2" />
+    <None Include="spectra\ramp_tp.ft2" />
+    <None Include="spectra\small.ft2" />
+    <None Include="spectra\sp.ft2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Models\ground\diffuse.png" />

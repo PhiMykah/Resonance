@@ -55,21 +55,27 @@ void NMRMesh::NMRToVertex(){
 };
 
 void NMRMesh::NMR2DToVertex(){
+    Vertex newVert;
     for (int i = 0; i < indexCount; i++)
     {
-        NMRMesh::vertices.push_back(
-            Vertex
-            {
-                glm::vec3(vertexList[indexList[i]],
-                          vertexList[indexList[i] + 1],
-                          vertexList[indexList[i] + 2]),
-                glm::vec3(normXYZ[indexList[i]],
-                          normXYZ[indexList[i] + 1],
-                          normXYZ[indexList[i] + 2]),
-                glm::vec3(0.0, 1.0, 0.0),
-                glm::vec3(1.0, 1.0, 1.0)
-            }
-        );
+        newVert.position = 
+            glm::vec3(vertexList[indexList[i]],
+            vertexList[indexList[i] + 1],
+            vertexList[indexList[i] + 2]);
+
+        newVert.normal =
+            glm::vec3(normXYZ[indexList[i]],
+                normXYZ[indexList[i] + 1],
+                normXYZ[indexList[i] + 2]);
+
+        newVert.color = 
+            glm::vec3(normXYZ[indexList[i]],
+                normXYZ[indexList[i] + 1],
+                normXYZ[indexList[i] + 2]);
+
+        newVert.texUV = glm::vec2(0.0, 0.0);
+
+        NMRMesh::vertices.push_back(newVert);
 
         if (i >= 0) {
             NMRMesh::indices.push_back((GLuint) i);

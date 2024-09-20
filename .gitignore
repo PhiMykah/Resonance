@@ -39,7 +39,6 @@ imgui/
 *.out
 *.app
 main*
-draw*
 
 # VSCODE
 .vscode/
@@ -95,9 +94,14 @@ bld/
 
 # Testing Files
 .clangd
+
+# NMR gitignore
 *.ft*
 *.fid
 *.dat
+*.com
+*.gnu
 
 # gitignore Source Code
-rd*/
+# rd*/
+glad.c

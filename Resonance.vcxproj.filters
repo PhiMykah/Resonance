@@ -82,6 +82,15 @@
     <Filter Include="Resource Files\Textures\Skybox\Paris">
       <UniqueIdentifier>{d657ce5d-de55-4c71-8f41-82840a3c9d35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\frag">
+      <UniqueIdentifier>{46e1614f-d6cc-4eae-b435-29452c632cb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\geom">
+      <UniqueIdentifier>{dc6e74d9-82f1-41e2-8275-95a86546b8f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\vert">
+      <UniqueIdentifier>{92553c84-e4da-4ba0-b732-7054917caa59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -147,6 +156,18 @@
     <ClCompile Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Source Files\ImGuiFileDialog</Filter>
     </ClCompile>
+    <ClCompile Include="Assets\Source\Cubemap.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Source\Line.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="rd\cmndargs.c">
+      <Filter>Source Files\nmr</Filter>
+    </ClCompile>
+    <ClCompile Include="rd\conrecnx.c">
+      <Filter>Source Files\nmr</Filter>
+    </ClCompile>
     <ClCompile Include="rd\dataio.c">
       <Filter>Source Files\nmr</Filter>
     </ClCompile>
@@ -206,18 +227,6 @@
     </ClCompile>
     <ClCompile Include="rd\vutil.c">
       <Filter>Source Files\nmr</Filter>
-    </ClCompile>
-    <ClCompile Include="rd\cmndargs.c">
-      <Filter>Source Files\nmr</Filter>
-    </ClCompile>
-    <ClCompile Include="rd\conrecnx.c">
-      <Filter>Source Files\nmr</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets\Source\Cubemap.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets\Source\Line.cpp">
-      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,23 +296,11 @@
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialogConfig.h">
       <Filter>Header Files\ImGuiFileDialog</Filter>
     </ClInclude>
-    <ClInclude Include="rd\apod.h">
-      <Filter>Header Files\nmr</Filter>
+    <ClInclude Include="Assets\Headers\Cubemap.h">
+      <Filter>Header Files\main</Filter>
     </ClInclude>
-    <ClInclude Include="rd\atof.h">
-      <Filter>Header Files\nmr</Filter>
-    </ClInclude>
-    <ClInclude Include="rd\cmndargs.h">
-      <Filter>Header Files\nmr</Filter>
-    </ClInclude>
-    <ClInclude Include="rd\conrecnx.h">
-      <Filter>Header Files\nmr</Filter>
-    </ClInclude>
-    <ClInclude Include="rd\dataio.h">
-      <Filter>Header Files\nmr</Filter>
-    </ClInclude>
-    <ClInclude Include="rd\dataio2.h">
-      <Filter>Header Files\nmr</Filter>
+    <ClInclude Include="Assets\Headers\Line.h">
+      <Filter>Header Files\main</Filter>
     </ClInclude>
     <ClInclude Include="rd\dimloc.h">
       <Filter>Header Files\nmr</Filter>
@@ -368,32 +365,26 @@
     <ClInclude Include="rd\vutil.h">
       <Filter>Header Files\nmr</Filter>
     </ClInclude>
-    <ClInclude Include="Assets\Headers\Cubemap.h">
-      <Filter>Header Files\main</Filter>
+    <ClInclude Include="rd\apod.h">
+      <Filter>Header Files\nmr</Filter>
     </ClInclude>
-    <ClInclude Include="Assets\Headers\Line.h">
-      <Filter>Header Files\main</Filter>
+    <ClInclude Include="rd\atof.h">
+      <Filter>Header Files\nmr</Filter>
+    </ClInclude>
+    <ClInclude Include="rd\cmndargs.h">
+      <Filter>Header Files\nmr</Filter>
+    </ClInclude>
+    <ClInclude Include="rd\conrecnx.h">
+      <Filter>Header Files\nmr</Filter>
+    </ClInclude>
+    <ClInclude Include="rd\dataio.h">
+      <Filter>Header Files\nmr</Filter>
+    </ClInclude>
+    <ClInclude Include="rd\dataio2.h">
+      <Filter>Header Files\nmr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\light.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\nmr.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\nmr.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\light.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="Assets\Models\ground\scene.bin">
       <Filter>Resource Files\Models\ground</Filter>
     </None>
@@ -421,11 +412,92 @@
     <None Include=".gitignore">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="rd\small.ft2">
-      <Filter>Resource Files\NMRFiles</Filter>
-    </None>
     <None Include="makefile">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\lines.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\nmr.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\normals.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\projection.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\skybox.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\stencil_outline.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\default.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\frag\light.frag">
+      <Filter>Resource Files\Shaders\frag</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\lines.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\nmr.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\normals.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\projection.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\skybox.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\stencil_outline.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\default.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\geom\light.geom">
+      <Filter>Resource Files\Shaders\geom</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\nmr.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\normals.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\projection.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\skybox.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\stencil_outline.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\default.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\light.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="Assets\Shaders\vert\lines.vert">
+      <Filter>Resource Files\Shaders\vert</Filter>
+    </None>
+    <None Include="spectra\ramp.ft2">
+      <Filter>Resource Files\NMRFiles</Filter>
+    </None>
+    <None Include="spectra\ramp_tp.ft2">
+      <Filter>Resource Files\NMRFiles</Filter>
+    </None>
+    <None Include="spectra\small.ft2">
+      <Filter>Resource Files\NMRFiles</Filter>
+    </None>
+    <None Include="spectra\sp.ft2">
+      <Filter>Resource Files\NMRFiles</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
