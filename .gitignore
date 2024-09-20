@@ -96,6 +96,8 @@ bld/
 .clangd
 
 # NMR gitignore
+
+# NMR gitignore
 *.ft*
 *.fid
 *.dat
