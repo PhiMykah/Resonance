@@ -12,14 +12,14 @@
 extern "C" {
 #include "fdatap.h"
 #include "memory.h"
-#include "cmndargs.h"
-#include "specunit.h"
+//#include "cmndargs.h"
+//#include "specunit.h"
 #include "readnmr.h"
 #include "inquire.h"
 #include "vutil.h"
 #include "prec.h"
 #include "rand.h"
-#include "atof.h"
+//#include "atof.h"
 #include "nmrgraphics.h"
 }
 
