@@ -246,6 +246,7 @@ int main()
     // glm::vec3 objScale = glm::vec3(1.0);
 
     // NMR attributes
+    bool showNMR = false;
     float nmrSize = 1.0;
     glm::vec3 nmrPos = glm::vec3(0.0f);
     glm::vec3 nmrScale = glm::vec3(1.0);
@@ -459,19 +460,27 @@ int main()
         // * Main UI Drawing *
         // *******************
 
-        // Create UI Window
-        ImGui::Begin("Spectra");                // ImGUI window creation
-        ImGui::Text("Do you like this shape?");        // Text that appears in the window
-        ImGui::Checkbox("Draw Shape", &drawShape);     // Select whether to draw the shape
-        ImGui::InputFloat3("Translation", glm::value_ptr(nmrPos)); // Move Object
-        ImGui::SliderFloat("Scale", &nmrSize, 0.5, 5); // Scale Object
-        ImGui::Checkbox("Show Normals", &showNormals); // Display normal vectors
-        ImGui::SliderFloat("Normals Magnitude", &normalLength, 0.0f, 0.1f); // Length of normal vectors
-        // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
-        ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
-        ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f); // Angle on circle that light object is positioned at
-        // Complete UI Window definition
-        ImGui::End();
+        if (showNMR)
+        {
+            // Create UI Window
+            spectraUI(
+                &drawShape, &nmrPos, &nmrSize, &showNormals, 
+                &normalLength, &light_distance, &light_rotation);
+
+            // 
+            // ImGui::Begin("Spectra");                // ImGUI window creation
+            // ImGui::Text("Do you like this shape?");        // Text that appears in the window
+            // ImGui::Checkbox("Draw Shape", &drawShape);     // Select whether to draw the shape
+            // ImGui::InputFloat3("Translation", glm::value_ptr(nmrPos)); // Move Object
+            // ImGui::SliderFloat("Scale", &nmrSize, 0.5, 5); // Scale Object
+            // ImGui::Checkbox("Show Normals", &showNormals); // Display normal vectors
+            // ImGui::SliderFloat("Normals Magnitude", &normalLength, 0.0f, 0.1f); // Length of normal vectors
+            // // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
+            // ImGui::SliderFloat("Light Distance", &light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
+            // ImGui::SliderAngle("Light Rotation", &light_rotation, 0.0f); // Angle on circle that light object is positioned at
+            // // Complete UI Window definition
+            // ImGui::End();
+        }
         
         // ******************
         // * OpenGL Drawing *
@@ -496,8 +505,9 @@ int main()
             }
             nmrMesh = new NMRMesh(nmrFile);
             currFile = nmrFile;
+            showNMR = true;
         }
-        if (drawShape && nmrMesh != NULL){
+        if ((showNMR && drawShape) && nmrMesh != NULL){
             nmrMesh->Draw(shader_program, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
             if (showNormals) {
                 nmrMesh->Draw(normals_shader, camera, glm::mat4(1.0), nmrPos, rot, nmrSize * nmrScale);
@@ -525,7 +535,9 @@ int main()
         // Enable rgb + alpha blending
         glEnable(GL_BLEND);
 
-        stencilUI(stencil_outline, outline, stencil_color);
+        if (showNMR) {
+            stencilUI(stencil_outline, outline, stencil_color);
+        }
         
         // Redraw objects with post-processing
 
