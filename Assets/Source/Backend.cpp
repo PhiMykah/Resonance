@@ -80,7 +80,61 @@ void closeIMGUI(){
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
- 
+
+// *****************
+// * Code Snippets *
+// *****************
+
+void ToggleFullscreen(GLFWwindow * window)
+{
+    WindowData * win = (WindowData *)glfwGetWindowUserPointer(window);
+
+    if (!win->fullscreen)
+    {
+        // Collect current xpos and ypos for later
+        glfwGetWindowPos(window, &win->xpos, &win->ypos);
+        glfwGetWindowSize(window, &win->windowed_width, &win->windowed_height);
+
+        // Get the monitor that the window is currently on (not in fullscreen)
+        int count;
+        GLFWmonitor** monitors = glfwGetMonitors(&count);
+        const GLFWvidmode* mode;
+
+        int windowX, windowY, monitorX, monitorY;
+        glfwGetWindowPos(window, &windowX, &windowY);
+
+        // Find the monitor that the window is on
+        for (int i = 0; i < count; i++) {
+            glfwGetMonitorPos(monitors[i], &monitorX, &monitorY);
+            mode = glfwGetVideoMode(monitors[i]);
+
+            if (windowX >= monitorX && windowX < monitorX + mode->width &&
+                windowY >= monitorY && windowY < monitorY + mode->height) {
+                win->monitor = monitors[i];
+                break;
+            }
+        }
+
+        // Get video mode from monitor
+        mode = glfwGetVideoMode(win->monitor);
+
+        // Set window to full screen based on monitor
+        glfwSetWindowMonitor(window, win->monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+    }
+    else {
+        glfwSetWindowMonitor(window, NULL, win->xpos, win->ypos, win->windowed_width, win->windowed_height, 0);
+    }
+    win->fullscreen = !win->fullscreen;
+}
+
+void OpenFileDialog()
+{
+    IGFD::FileDialogConfig config;
+    config.path = ".";
+    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*,.fid,.ft2,.ft3,.ft4", config);
+}
+
 // *************
 // * Callbacks *
 // *************
@@ -101,5 +155,26 @@ void window_iconify_callback(GLFWwindow* window, int iconified)
     else
     {
         glfwPollEvents();
+    }
+}
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    // *************
+    // * SHORTCUTS *
+    // *************
+
+    // Ensure right click isnt held during shortcuts
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) != GLFW_PRESS) {
+        // FULLSCREEN HOTKEY
+        // Check if both Alt and Enter are pressed
+        if (key == GLFW_KEY_ENTER && action == GLFW_PRESS && (mods & GLFW_MOD_ALT)) {
+            ToggleFullscreen(window);
+        }
+        // OPEN FILE HOTKEY
+        // Check if both O and CTRL are pressed
+        if (key == GLFW_KEY_O && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
+            OpenFileDialog();
+        }
     }
 }

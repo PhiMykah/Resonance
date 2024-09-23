@@ -1,16 +1,43 @@
 #include "Backend.h"
 #include "Shader.h"
 
-void drawFileDialog(std::string& file) { //
+void drawMainMenu(std::string& file, GLFWwindow * window) { //
+
     // open Dialog Simple
-    if (ImGui::Begin("File")) {
-        if (ImGui::Button("Load NMR File")) {
-            IGFD::FileDialogConfig config;
-            config.path = ".";
-            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*,.fid,.ft2,.ft3,.ft4", config);
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open..", "Ctrl+O")) { 
+                OpenFileDialog();
+            }
+            ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Toggle Fullscreen", "Alt+Enter")) {
+                ToggleFullscreen(window);
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
     }
-    ImGui::End();
+    // if (ImGui::Begin("Resonance", (bool *)0, ImGuiWindowFlags_MenuBar)) {
+    //     if (ImGui::BeginMenuBar())
+    //     {
+    //         if (ImGui::BeginMenu("File"))
+    //         {
+    //             if (ImGui::MenuItem("Open..", "Ctrl+O")) { 
+    //                 IGFD::FileDialogConfig config;
+    //                 config.path = ".";
+    //                 ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*,.fid,.ft2,.ft3,.ft4", config);
+    //             }
+    //             ImGui::EndMenu();
+    //         }
+    //         ImGui::EndMenuBar();
+    //     }
+    // }
+    // ImGui::End();
 
     // display
     if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog

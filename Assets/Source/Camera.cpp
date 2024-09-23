@@ -105,11 +105,13 @@ void Camera::Input(GLFWwindow * window, double deltaTime){
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
         position += deltaSpeed * glm::normalize(glm::cross(orientation, up));
     }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        position += deltaSpeed * up;
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
-        position += deltaSpeed * -up;
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+            position += deltaSpeed * up;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+            position += deltaSpeed * -up;
+        }
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
        speed = 4*DEFAULT_SPEED;
@@ -119,7 +121,7 @@ void Camera::Input(GLFWwindow * window, double deltaTime){
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS){
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Prevents camera from jumping on the first click
 		if (firstClick)

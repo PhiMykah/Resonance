@@ -43,11 +43,22 @@ int main()
     const char *title = "Resonance"; // Window name
     GLFWmonitor *fullscreen = NULL; // Use `glfwGetPrimaryMonitor()` for fullscreen
 
+    // Collect window data
+    // The variables are as follows:
+    // - window width and height
+    // - windowed mode's previous width and height
+    // - window x position and window y position
+    // - window's current title
+    // - window's fullscreen monitor
+    // - boolean for whether or not the window is fullscreen
+    WindowData win{width, height, width, height, 0, 0, title, fullscreen, (bool) fullscreen}; 
+
     glfwInit();
 
     // Initialize glfw window with the following parameters:
     //  width, height, name, fullscreen monitor, and context object sharing
-    GLFWwindow *main_window = initWindow(width, height, title, fullscreen);
+    GLFWwindow *main_window = initWindow(win.width, win.height, win.title, win.monitor);
+    glfwSetWindowUserPointer(main_window, &win);
 
     // Since window returns null if the window fails to initialize, check for failure
     if (main_window == NULL)
@@ -61,6 +72,7 @@ int main()
     // Set window Callbacks
     glfwSetWindowSizeCallback(main_window, window_size_callback);
     glfwSetWindowIconifyCallback(main_window, window_iconify_callback);
+    glfwSetKeyCallback(main_window, key_callback);
 
     // *****************
     // * Initialize GL *
@@ -68,7 +80,7 @@ int main()
     gladLoadGL();
 
     // Set openGL to render from top left corner (0,0) to bottom right corner (width, height)
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, win.width, win.height);
 
     // **********************
     // * Initialize Shaders *
@@ -333,7 +345,7 @@ int main()
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
 
     // Initialize camera view
-    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+    Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     Cubemap boundingBox((assets + "Textures/Skybox/SolidColor/").c_str(), PNG);
 
@@ -366,7 +378,7 @@ int main()
     while (!glfwWindowShouldClose(main_window))
     {
         // Update window size
-        glfwGetWindowSize(main_window, &width, &height);
+        glfwGetWindowSize(main_window, &win.width, &win.height);
 
         // Update Frame Counter 
 
@@ -389,6 +401,7 @@ int main()
             newTitle += " - ";
             std::string frameMsg = newTitle + FPS + "FPS / " + ms + "ms";
             glfwSetWindowTitle(main_window, frameMsg.c_str());
+            win.title = frameMsg.c_str();
 
             // Update previous time and reset frame counter
             prevTime = currTime;
@@ -415,7 +428,7 @@ int main()
         camera.Input(main_window);
 
         // Update camera matrix based on view plane and FOV
-        camera.UpdateMatrix(width, height, 45.0f, 0.1f, 100.0f);
+        camera.UpdateMatrix(win.width, win.height, 45.0f, 0.1f, 100.0f);
 
         // *************************
         // * Light Object Settings *
@@ -466,7 +479,7 @@ int main()
 
         glDisable(GL_STENCIL_TEST);
         // Draw skybox
-        skybox.DrawSkybox(skybox_shader, camera, width, height);
+        skybox.DrawSkybox(skybox_shader, camera, win.width, win.height);
         glEnable(GL_STENCIL_TEST);
 
         // if (drawShape){
@@ -475,7 +488,7 @@ int main()
 
         light.Draw(light_shader, camera, light_model, light_pos);
 
-        drawFileDialog(nmrFile);
+        drawMainMenu(nmrFile, main_window);
 
         if (!nmrFile.empty() && currFile != nmrFile) {
             if (nmrMesh != NULL) {
