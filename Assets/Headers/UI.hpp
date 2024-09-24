@@ -1,5 +1,5 @@
-#include "Backend.h"
-#include "Shader.h"
+#include "Backend.hpp"
+#include "Shader.hpp"
 
 void drawMainMenu(std::string& file, GLFWwindow * window) { //
 

@@ -239,45 +239,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\Headers\Backend.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Camera.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\EBO.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Mesh.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Model.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\NMRMesh.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Shader.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Shapes.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Texture.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\VAO.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\VBO.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Cubemap.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Headers\Line.h">
-      <Filter>Header Files\main</Filter>
-    </ClInclude>
     <ClInclude Include="rd\dimloc.h">
       <Filter>Header Files\nmr</Filter>
     </ClInclude>
@@ -373,6 +334,48 @@
     </ClInclude>
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialogConfig.h">
       <Filter>Include Files\ImGuiFileDialog\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Camera.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Cubemap.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\EBO.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Line.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Mesh.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Model.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\NMRMesh.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Shader.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Shapes.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Texture.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\UI.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\VAO.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\VBO.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Backend.hpp">
+      <Filter>Header Files\main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

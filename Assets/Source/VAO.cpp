@@ -1,4 +1,4 @@
-#include "VAO.h"
+#include "VAO.hpp"
 
 /*
 Default Constructor for vertex array class

@@ -1,4 +1,4 @@
-#include "EBO.h"
+#include "EBO.hpp"
 
 /*
 Main constructor for EBO

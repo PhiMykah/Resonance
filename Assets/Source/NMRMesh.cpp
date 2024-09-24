@@ -1,4 +1,4 @@
-#include "NMRMesh.h"
+#include "NMRMesh.hpp"
 
 NMRMesh::NMRMesh(){
 

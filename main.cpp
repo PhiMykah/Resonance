@@ -1,12 +1,12 @@
 // Backend Headers and Source Code
-#include "Assets/Headers/Backend.h"
+#include "Assets/Headers/Backend.hpp"
 
 // Object Headers
-#include "Line.h"
-#include "Mesh.h"
-#include "NMRMesh.h"
-#include "Model.h"
-#include "Cubemap.h"
+#include "Line.hpp"
+#include "Mesh.hpp"
+#include "NMRMesh.hpp"
+#include "Model.hpp"
+#include "Cubemap.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -20,8 +20,8 @@
 namespace fs = std::filesystem;
 
 // Other Headers
-#include "Shapes.h"
-#include "UI.h"
+#include "Shapes.hpp"
+#include "UI.hpp"
 
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
@@ -346,7 +346,7 @@ int main()
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
 
     // Initialize camera view
-    Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 2.0f));
+    Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 4.0f));
 
     Cubemap boundingBox((assets + "Textures/Skybox/SolidColor/").c_str(), PNG);
 

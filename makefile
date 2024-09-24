@@ -19,8 +19,8 @@ NMRFLAGS= -DNMR64 -DLINUX -I./rd
 CXXFLAGS= -g -Wall -std=c++17 -I./$(inc) $(HEADERS) -I./$(inc)/imgui -I./$(inc)/GLMathematics -I./$(inc)/json
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
-SHAPES= $(h)/Shapes.h
-UI= $(h)/UI.h
+SHAPES= $(h)/Shapes.hpp
+UI= $(h)/UI.hpp
 
 IGFD = ImGuiFileDialog
 BACKEND= $(a)/Backend.o

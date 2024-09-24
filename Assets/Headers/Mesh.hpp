@@ -3,10 +3,10 @@
 
 #include <string>
 #include <vector>
-#include "VAO.h"
-#include "EBO.h"
-#include "Camera.h"
-#include "Texture.h"
+#include "VAO.hpp"
+#include "EBO.hpp"
+#include "Camera.hpp"
+#include "Texture.hpp"
 
 #define Vertices std::vector<Vertex>
 #define Indices std::vector<GLuint>

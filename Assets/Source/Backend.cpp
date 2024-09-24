@@ -1,4 +1,4 @@
-#include "Backend.h"
+#include "Backend.hpp"
 
 /*
 Initializes GLFW window with given information

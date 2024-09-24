@@ -2,7 +2,7 @@
 #define MODEL_CLASS_H
 
 #include <single_include/nlohmann/json.hpp>
-#include "Mesh.h"
+#include "Mesh.hpp"
 
 using json = nlohmann::json;
 

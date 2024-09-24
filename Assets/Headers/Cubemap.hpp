@@ -10,8 +10,8 @@
 #include <stb/stb_image.h>
 
 // Object Headers
-#include "Shader.h"
-#include "Camera.h"
+#include "Shader.hpp"
+#include "Camera.hpp"
 
 // Matrix Operation Headers
 #include <glm/glm.hpp>

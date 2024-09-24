@@ -9,7 +9,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#include "Shader.h"
+#include "Shader.hpp"
 
 #define DEFAULT_SPEED 0.1f;
 

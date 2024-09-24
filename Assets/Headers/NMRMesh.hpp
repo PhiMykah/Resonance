@@ -3,11 +3,11 @@
 
 #include <string>
 #include <vector>
-#include "VAO.h"
-#include "EBO.h"
-#include "Camera.h"
-#include "Texture.h"
-#include "Mesh.h"
+#include "VAO.hpp"
+#include "EBO.hpp"
+#include "Camera.hpp"
+#include "Texture.hpp"
+#include "Mesh.hpp"
 
 extern "C" {
 #include "fdatap.h"

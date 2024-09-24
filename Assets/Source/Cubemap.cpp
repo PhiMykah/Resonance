@@ -1,4 +1,4 @@
-#include "Cubemap.h"
+#include "Cubemap.hpp"
 
 // ******************
 // * Define Cubemap *

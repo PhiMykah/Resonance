@@ -3,9 +3,9 @@
 
 #include <string>
 #include <vector>
-#include "VAO.h"
-#include "EBO.h"
-#include "Camera.h"
+#include "VAO.hpp"
+#include "EBO.hpp"
+#include "Camera.hpp"
 
 #define Vertices std::vector<LineVertex>
 #define Indices std::vector<GLuint>

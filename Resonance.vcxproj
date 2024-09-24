@@ -66,19 +66,20 @@
     <ClCompile Include="stb.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\Headers\Backend.h" />
-    <ClInclude Include="Assets\Headers\Camera.h" />
-    <ClInclude Include="Assets\Headers\Cubemap.h" />
-    <ClInclude Include="Assets\Headers\EBO.h" />
-    <ClInclude Include="Assets\Headers\Line.h" />
-    <ClInclude Include="Assets\Headers\Mesh.h" />
-    <ClInclude Include="Assets\Headers\Model.h" />
-    <ClInclude Include="Assets\Headers\NMRMesh.h" />
-    <ClInclude Include="Assets\Headers\Shader.h" />
-    <ClInclude Include="Assets\Headers\Shapes.h" />
-    <ClInclude Include="Assets\Headers\Texture.h" />
-    <ClInclude Include="Assets\Headers\VAO.h" />
-    <ClInclude Include="Assets\Headers\VBO.h" />
+    <ClInclude Include="Assets\Headers\Backend.hpp" />
+    <ClInclude Include="Assets\Headers\Camera.hpp" />
+    <ClInclude Include="Assets\Headers\Cubemap.hpp" />
+    <ClInclude Include="Assets\Headers\EBO.hpp" />
+    <ClInclude Include="Assets\Headers\Line.hpp" />
+    <ClInclude Include="Assets\Headers\Mesh.hpp" />
+    <ClInclude Include="Assets\Headers\Model.hpp" />
+    <ClInclude Include="Assets\Headers\NMRMesh.hpp" />
+    <ClInclude Include="Assets\Headers\Shader.hpp" />
+    <ClInclude Include="Assets\Headers\Shapes.hpp" />
+    <ClInclude Include="Assets\Headers\Texture.hpp" />
+    <ClInclude Include="Assets\Headers\UI.hpp" />
+    <ClInclude Include="Assets\Headers\VAO.hpp" />
+    <ClInclude Include="Assets\Headers\VBO.hpp" />
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Assets\Libraries\include\imgui\backends\imgui_impl_glfw.h" />
