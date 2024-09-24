@@ -2,9 +2,11 @@
 *.d
 
 # Include and Library files
-include/
+# include/
+glad/
+GLFW/
+KHR/
 lib/
-imgui/
 
 # User Settings files
 *.ini
@@ -39,6 +41,7 @@ imgui/
 *.out
 *.app
 main*
+example
 
 # VSCODE
 .vscode/

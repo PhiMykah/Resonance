@@ -16,7 +16,7 @@ inc= $(a)/Libraries/include
 CXX=g++
 HEADERS= -I./$(h) -DGLM_ENABLE_EXPERIMENTAL
 NMRFLAGS= -DNMR64 -DLINUX -I./rd
-CXXFLAGS= -g -Wall -std=c++17 -I./$(a)/Libraries/include $(HEADERS) -I./imgui
+CXXFLAGS= -g -Wall -std=c++17 -I./$(inc) $(HEADERS) -I./$(inc)/imgui -I./$(inc)/GLMathematics -I./$(inc)/json
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.h
@@ -47,11 +47,11 @@ rd/conrecnx.o rd/drawaxis.o rd/paper.o rd/nmrgraphics.o
 # Reference files
 glad = glad.c stb.cpp
 
-IMGUI = imgui/imgui.cpp \
-		imgui/imgui_demo.cpp imgui/imgui_draw.cpp \
-		imgui/imgui_impl_glfw.cpp \
-		imgui/imgui_impl_opengl3.cpp \
-		imgui/imgui_tables.cpp imgui/imgui_widgets.cpp
+IMGUI = $(inc)/imgui/imgui.cpp \
+		$(inc)/imgui/imgui_demo.cpp $(inc)/imgui/imgui_draw.cpp \
+		$(inc)/imgui/backends/imgui_impl_glfw.cpp \
+		$(inc)/imgui/backends/imgui_impl_opengl3.cpp \
+		$(inc)/imgui/imgui_tables.cpp $(inc)/imgui/imgui_widgets.cpp
 
 # ----------------
 # MAKEFILE SCRIPTS

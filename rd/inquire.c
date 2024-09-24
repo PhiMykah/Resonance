@@ -14,6 +14,9 @@
 #define S_ISSOCK(X) (_S_ISSOCK((X)))
 #endif
 
+#ifdef LINUX
+#define S_ISSOCK2 S_ISSOCK 
+#endif // LINUX
 #ifdef _WIN
 #define S_ISSOCK(S) ((S) & 0)
 #define S_ISSOCK2(S) ((S) & 0)

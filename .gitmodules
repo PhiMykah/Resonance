@@ -1,0 +1,15 @@
+[submodule "Assets/Libraries/include/ImGuiFileDialog"]
+	path = Assets/Libraries/include/ImGuiFileDialog
+	url = https://github.com/aiekick/ImGuiFileDialog
+[submodule "Assets/Libraries/include/imgui"]
+	path = Assets/Libraries/include/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "Assets/Libraries/include/json"]
+	path = Assets/Libraries/include/json
+	url = https://github.com/nlohmann/json
+[submodule "Assets/Libraries/include/stb"]
+	path = Assets/Libraries/include/stb
+	url = https://github.com/nothings/stb
+[submodule "Assets/Libraries/include/GLMathematics"]
+	path = Assets/Libraries/include/GLMathematics
+	url = https://github.com/icaven/glm
