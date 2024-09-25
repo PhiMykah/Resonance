@@ -13,3 +13,6 @@
 [submodule "Assets/Libraries/include/GLMathematics"]
 	path = Assets/Libraries/include/GLMathematics
 	url = https://github.com/icaven/glm
+[submodule "Assets/Libraries/include/ImGuizmo"]
+	path = Assets/Libraries/include/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo

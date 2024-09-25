@@ -100,6 +100,15 @@
     <Filter Include="Include Files\ImGuiFileDialog\Source">
       <UniqueIdentifier>{bdfac2c8-8a40-45c4-8b44-48c9d13fd0fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include Files\ImGuizmo">
+      <UniqueIdentifier>{f56af334-e04a-4c80-be04-50147366274d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files\ImGuizmo\Header">
+      <UniqueIdentifier>{8c59589f-8361-4d58-9841-9063f3ef8a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files\ImGuizmo\Source">
+      <UniqueIdentifier>{6ead3292-8fe6-41fe-8187-6c141e97b60e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -236,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Include Files\ImGuiFileDialog\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.cpp">
+      <Filter>Include Files\ImGuizmo\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +388,9 @@
     </ClInclude>
     <ClInclude Include="Assets\Headers\Backend.hpp">
       <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.h">
+      <Filter>Include Files\ImGuizmo\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

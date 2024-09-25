@@ -23,6 +23,7 @@ SHAPES= $(h)/Shapes.hpp
 UI= $(h)/UI.hpp
 
 IGFD = ImGuiFileDialog
+IGZM = ImGuizmo
 BACKEND= $(a)/Backend.o
 BUFFERS= $(a)/VBO.o $(a)/EBO.o $(a)/VAO.o
 SHADERS= $(a)/Shader.o
@@ -34,9 +35,9 @@ NMR= $(a)/NMRMesh.o
 MODEL= $(a)/Model.o
 CUBEMAP = $(a)/Cubemap.o
 
-DEPS= $(IGFD).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
+DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(SHAPES) $(UI)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -73,6 +74,10 @@ clean:
 
 $(IGFD).o:
 	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGFD)/$(IGFD).cpp -o $(a)/$(IGFD).o $(LDFLAGS)
+
+$(IGZM).o:
+	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGZM)/$(IGZM).cpp -o $(a)/$(IGFD).o $(LDFLAGS)
+
 Backend.o:
 	$(CXX) $(CXXFLAGS) -c $(src)/Backend.cpp -o $(BACKEND) $(LDFLAGS)
 

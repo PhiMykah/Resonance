@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="Assets\Libraries\include\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="Assets\Libraries\include\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Assets\Libraries\include\imgui\imgui.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="Assets\Headers\VBO.hpp" />
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="Assets\Libraries\include\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="Assets\Libraries\include\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Assets\Libraries\include\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="Assets\Libraries\include\imgui\backends\imgui_impl_opengl3_loader.h" />

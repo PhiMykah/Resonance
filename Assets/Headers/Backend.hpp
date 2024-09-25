@@ -6,6 +6,8 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
+#include <ImGuizmo/ImGuizmo.h>
+
 // File Dialog 
 #include "ImGuiFileDialog/ImGuiFileDialog.h"
 #include "ImGuiFileDialog/ImGuiFileDialogConfig.h"
