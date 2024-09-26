@@ -1,4 +1,5 @@
 #include "Mesh.hpp"
+#include "Constants.hpp"
 
 Mesh::Mesh(){
 
@@ -84,15 +85,15 @@ void Mesh::Draw(
 
     // Create transformation matrices for mesh
 
-    glm::mat4 trans = glm::mat4(1.0f);
-    glm::mat4 rot = glm::mat4(1.0f);
-    glm::mat4 sca = glm::mat4(1.0f);
+    glm::mat4 trans = MAT_IDENTITY;
+    glm::mat4 rot = MAT_IDENTITY;
+    glm::mat4 sca = MAT_IDENTITY;
 
     // Global transformation matrices
 
-    glm::mat4 gtrans = glm::mat4(1.0f);
-    glm::mat4 grot = glm::mat4(1.0f);
-    glm::mat4 gsca = glm::mat4(1.0f);
+    glm::mat4 gtrans = MAT_IDENTITY;
+    glm::mat4 grot = MAT_IDENTITY;
+    glm::mat4 gsca = MAT_IDENTITY;
 
     // Apply translation, rotation, and scale to transformation matrices
     trans = glm::translate(trans, translation);

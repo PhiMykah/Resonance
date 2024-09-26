@@ -12,6 +12,7 @@
 // Object Headers
 #include "Shader.hpp"
 #include "Camera.hpp"
+#include "Constants.hpp"
 
 // Matrix Operation Headers
 #include <glm/glm.hpp>
@@ -38,10 +39,10 @@ class Cubemap
         void BindTextures();
         
         void Draw(Shader & shader, Camera & camera, 
-            glm::mat4 matrix = glm::mat4(1.0f),
-            glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-            glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
+            glm::mat4 matrix = MAT_IDENTITY,
+            glm::vec3 translation = ZEROS,
+            glm::quat rotation = QUAT_IDENTITY,
+            glm::vec3 scale = ONES);
 
         void DrawSkybox(Shader & shader, Camera & camera, int width, int height);
     private:

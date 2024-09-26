@@ -6,6 +6,7 @@
 #include "VAO.hpp"
 #include "EBO.hpp"
 #include "Camera.hpp"
+#include "Constants.hpp"
 
 #define LVertices std::vector<LineVertex>
 #define Indices std::vector<GLuint>
@@ -33,10 +34,10 @@ class Line
         (
             Shader& shader,
             Camera& camera,
-            glm::mat4 matrix = glm::mat4(1.0f),
-            glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-            glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
+            glm::mat4 matrix = MAT_IDENTITY,
+            glm::vec3 translation = ZEROS,
+            glm::quat rotation = QUAT_IDENTITY,
+            glm::vec3 scale = ONES
         );
         
     protected:

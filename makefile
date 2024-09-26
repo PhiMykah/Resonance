@@ -21,6 +21,7 @@ LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.hpp
 UI= $(h)/UI.hpp
+CONST= $(h)/Constants.hpp
 
 IGFD = ImGuiFileDialog
 IGZM = ImGuizmo
@@ -37,7 +38,7 @@ CUBEMAP = $(a)/Cubemap.o
 
 DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI)
+OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI) $(CONST)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \

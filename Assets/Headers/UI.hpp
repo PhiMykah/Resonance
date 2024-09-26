@@ -1,6 +1,7 @@
 #include "Backend.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"
+#include "Constants.hpp"
 
 static const float identityMatrix[16] =
 { 1.f, 0.f, 0.f, 0.f,
@@ -59,12 +60,13 @@ void drawMainMenu(std::string& file, GLFWwindow * window) { //
 
 void EditTransform(
     const Camera& camera, glm::vec3& pos, 
-    glm::quat& rot, glm::vec3& scale, 
+    glm::quat& rot, glm::vec3& eulerAngles, glm::vec3& scale, 
     WindowData win, float FOVdeg, float nearPlane, float farPlane
     )
 {
-    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), pos) * glm::mat4_cast(rot) * glm::scale(glm::mat4(1.0f), scale);
-    // glm::mat4 gridMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, 0.0f));
+    eulerAngles = glm::eulerAngles(rot);
+    glm::mat4 modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    // glm::mat4 gridMatrix = glm::translate(MAT_IDENTITY, glm::vec3(0.0f, -2.0f, 0.0f));
 
     float matrix[16];
 
@@ -72,12 +74,18 @@ void EditTransform(
 
     static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-    if (ImGui::IsKeyPressed(ImGuiKey_T))
-        mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-    if (ImGui::IsKeyPressed(ImGuiKey_R))
-        mCurrentGizmoOperation = ImGuizmo::ROTATE;
-    if (ImGui::IsKeyPressed(ImGuiKey_G))
-        mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_T)) mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+    if (ImGui::IsKeyPressed(ImGuiKey_R)) mCurrentGizmoOperation = ImGuizmo::ROTATE;
+    if (ImGui::IsKeyPressed(ImGuiKey_G)) mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+    if (ImGui::Button("Reset")){
+        pos = ZEROS;
+        scale = ONES;
+        rot = QUAT_IDENTITY;
+        eulerAngles = glm::eulerAngles(rot);
+    }
+    
     if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
         mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
     ImGui::SameLine();
@@ -87,14 +95,17 @@ void EditTransform(
     if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
         mCurrentGizmoOperation = ImGuizmo::SCALE;
 
-    ImGui::InputFloat3("Tr", glm::value_ptr(pos), "%.3f");
-    ImGui::InputFloat3("Rt", glm::value_ptr(rot), "%.3f"); // Display and edit rotation as Euler angles
-    ImGui::InputFloat3("Sc", glm::value_ptr(scale), "%.3f");
+    ImGui::InputFloat3("Translation", glm::value_ptr(pos), "%.3f");
+    
+    // ImGui::PushItemFlag(ImGui::ImGuiItemFlags_Disabled, true);  // Disable the input field
+    ImGui::InputFloat3("Rotation", glm::value_ptr(eulerAngles), "%.3f", ImGuiInputTextFlags_ReadOnly);
+    // ImGui::PopItemFlag();  // Re-enable for the rest of the UI
 
-    ImGuizmo::RecomposeMatrixFromComponents(
-        glm::value_ptr(pos), glm::value_ptr(rot), 
-        glm::value_ptr(scale), matrix
-        );
+    ImGui::InputFloat3("Scale", glm::value_ptr(scale), "%.3f");
+
+    rot = glm::quat(eulerAngles);
+    modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
 
     if (mCurrentGizmoOperation != ImGuizmo::SCALE)
     {
@@ -107,8 +118,8 @@ void EditTransform(
 
     ImGuiIO& io = ImGui::GetIO();
     
-    glm::mat4 view = glm::mat4(1.0);
-    glm::mat4 projection = glm::mat4(1.0f);
+    glm::mat4 view = MAT_IDENTITY;
+    glm::mat4 projection = MAT_IDENTITY;
 
     view = glm::lookAt(camera.position, camera.position + camera.orientation, camera.up);
     projection = glm::perspective(glm::radians(FOVdeg), (float)(float(win.width)/(float)(win.height)), nearPlane, farPlane);
@@ -119,7 +130,7 @@ void EditTransform(
         (float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), 
         mCurrentGizmoOperation, mCurrentGizmoMode, matrix
     );
-
+    
     // Decompose the matrix to pos, rot, scale
     glm::mat4 newMatrix = glm::make_mat4(matrix);
     glm::vec3 skew;

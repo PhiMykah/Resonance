@@ -69,6 +69,7 @@
   <ItemGroup>
     <ClInclude Include="Assets\Headers\Backend.hpp" />
     <ClInclude Include="Assets\Headers\Camera.hpp" />
+    <ClInclude Include="Assets\Headers\Constants.hpp" />
     <ClInclude Include="Assets\Headers\Cubemap.hpp" />
     <ClInclude Include="Assets\Headers\EBO.hpp" />
     <ClInclude Include="Assets\Headers\Line.hpp" />

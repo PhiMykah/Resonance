@@ -154,7 +154,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 		scale = glm::make_vec3(scaleValues);
 	}
 	// Get matrix if it exists
-	glm::mat4 matNode = glm::mat4(1.0f);
+	glm::mat4 matNode = MAT_IDENTITY;
 	if (node.find("matrix") != node.end())
 	{
 		float matValues[16];
@@ -164,9 +164,9 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	}
 
 	// Initialize matrices
-	glm::mat4 trans = glm::mat4(1.0f);
-	glm::mat4 rot = glm::mat4(1.0f);
-	glm::mat4 sca = glm::mat4(1.0f);
+	glm::mat4 trans = MAT_IDENTITY;
+	glm::mat4 rot = MAT_IDENTITY;
+	glm::mat4 sca = MAT_IDENTITY;
 
 	// Use translation, rotation, and scale to change the initialized matrices
 	trans = glm::translate(trans, translation);

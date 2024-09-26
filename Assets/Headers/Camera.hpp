@@ -10,6 +10,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Shader.hpp"
+#include "Constants.hpp"
 
 #define DEFAULT_SPEED 0.1f;
 
@@ -25,7 +26,7 @@ class Camera
         // Camera up direction (which way is up for the camera)
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-        glm::mat4 cameraMatrix = glm::mat4(1.0f);
+        glm::mat4 cameraMatrix = MAT_IDENTITY;
 
         // Prevents the camera from jumping around when first clicking left click
         bool firstClick = true;

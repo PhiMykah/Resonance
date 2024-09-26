@@ -24,8 +24,7 @@
 
 #include <iostream>
 
-#define WHITE glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
-#define BLACK glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+#include "Constants.hpp"
 
 struct WindowData
 {

@@ -3,6 +3,7 @@
 
 #include <single_include/nlohmann/json.hpp>
 #include "Mesh.hpp"
+#include "Constants.hpp"
 
 using json = nlohmann::json;
 
@@ -42,7 +43,7 @@ private:
     void loadMesh(unsigned int indMesh);
 
     // Traverse Node and obtain information of object position as traversal occurs
-    void traverseNode(unsigned int nextNode, glm::mat4 matrix = glm::mat4(1.0f));
+    void traverseNode(unsigned int nextNode, glm::mat4 matrix = MAT_IDENTITY);
 
     // Use the json file to identify location of data
     // Then obtain the data and represent it as bytes

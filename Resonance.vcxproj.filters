@@ -392,6 +392,9 @@
     <ClInclude Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.h">
       <Filter>Include Files\ImGuizmo\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Assets\Headers\Constants.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Models\ground\scene.bin">

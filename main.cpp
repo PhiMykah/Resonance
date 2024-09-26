@@ -162,8 +162,8 @@ int main()
 
     // Initialize NMR Object
     glm::vec4 point_color = glm::vec4(0.85f, 0.85f, 0.90f, 1.0f);
-    glm::vec3 nmr_pos = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::mat4 nmr_model = glm::mat4(1.0f);
+    glm::vec3 nmr_pos = ZEROS;
+    glm::mat4 nmr_model = MAT_IDENTITY;
     nmr_model = glm::translate(nmr_model, nmr_pos);
 
     // *************************
@@ -187,7 +187,7 @@ int main()
     // Form color of object based on the light
     glm::vec4 light_color = WHITE;
     // Initialize light object
-    glm::mat4 light_model = glm::mat4(1.0f);
+    glm::mat4 light_model = MAT_IDENTITY;
     glm::vec3 light_pos;
 
     // **************************
@@ -237,21 +237,22 @@ int main()
     glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
     
     // General attributes
-    glm::quat rot = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    glm::quat rot = QUAT_IDENTITY;
+    glm::vec3 eulerRotation = glm::eulerAngles(rot);
 
     // Object attributes
     bool drawShape = true; // Object visibility
     bool drawBoundingBox = true;
     // float objSize = 0.250;     // Object size
     // glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
-    // glm::vec3 objScale = glm::vec3(1.0);
+    // glm::vec3 objScale = ONES;
 
     // NMR attributes
     bool showNMR = false;
     float nmrSize = 1.0;
-    glm::mat4 nmrMat = glm::mat4(1.0);
-    glm::vec3 nmrPos = glm::vec3(0.0f);
-    glm::vec3 nmrScale = glm::vec3(1.0);
+    glm::mat4 nmrMat = MAT_IDENTITY;
+    glm::vec3 nmrPos = ZEROS;
+    glm::vec3 nmrScale = ONES;
 
     // Gizmo attributes
     bool showGizmo = true;
@@ -498,20 +499,20 @@ int main()
             nmrMesh = new NMRMesh(nmrFile);
             currFile = nmrFile;
             showNMR = true;
+            // Reset attributes
+            nmrPos = ZEROS;
+            nmrScale = ONES;
+            rot = QUAT_IDENTITY;
+            eulerRotation = glm::eulerAngles(rot);
         }
 
         // Draw NMRMesh
         if ((showNMR && drawShape) && nmrMesh != NULL){
 
-            ImGuizmo::RecomposeMatrixFromComponents(
-                glm::value_ptr(nmrPos), glm::value_ptr(rot), 
-                glm::value_ptr(nmrScale), glm::value_ptr(nmrMat)
-            );
-
             ImGui::Begin("Gizmo");
             ImGui::Checkbox("Show Gizmo", &showGizmo);
             if (showGizmo){
-                EditTransform(camera, nmrPos, rot, nmrScale, win, 45.0f, 0.1f, 100.0f);
+                EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
             };
             ImGui::End();
 
@@ -527,7 +528,7 @@ int main()
         glCullFace(GL_FRONT);
         glFrontFace(GL_CCW);
         if (drawBoundingBox) {
-            boundingBox.Draw(projection_shader, camera, glm::mat4(1.0), bbPos, rot, nmrSize * bbScale);
+            boundingBox.Draw(projection_shader, camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
         }
         glDisable(GL_CULL_FACE);
 

@@ -51,8 +51,8 @@ void Camera::UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, 
     Camera::width = width;
     Camera::height = height;
 
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
+    glm::mat4 view = MAT_IDENTITY;
+    glm::mat4 projection = MAT_IDENTITY;
 
     view = glm::lookAt(position, position + orientation, up);
     projection = glm::perspective(glm::radians(FOVdeg), (float)(float(width)/(float)(height)), nearPlane, farPlane);
