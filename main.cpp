@@ -241,6 +241,7 @@ int main()
 
     // Object attributes
     bool drawShape = true; // Object visibility
+    bool drawBoundingBox = true;
     // float objSize = 0.250;     // Object size
     // glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
     // glm::vec3 objScale = glm::vec3(1.0);
@@ -252,13 +253,16 @@ int main()
     glm::vec3 nmrPos = glm::vec3(0.0f);
     glm::vec3 nmrScale = glm::vec3(1.0);
 
+    // Gizmo attributes
+    bool showGizmo = true;
+
     // Normals display attributes
     bool showNormals = false;
     float normalLength = 0.01f;
 
     // Bounding box attributes
-    glm::vec3 bbPos = glm::vec3(0.0f);
-    glm::vec3 bbScale = glm::vec3(1.0);
+    glm::vec3 bbPos = glm::vec3(0.0, 0.0, 0.0);
+    glm::vec3 bbScale = glm::vec3(2.0);
 
     // Stencil attributes
     float outline = 0.50f; // Stencil buffer outline
@@ -333,12 +337,12 @@ int main()
     std::vector<LineVertex> axis_points;
 
     axis_points.push_back({
-        glm::vec3(-1.5f,  0.0f,  0.0f),
-        glm::vec3( 1.0f,  0.0f,  0.0f),
+        glm::vec3(-0.5f,  -0.5f,  0.5f),
+        glm::vec3((182.0f/255.0f),  (102.0f/255.0f),  (210.0f/255.0f)),
     });
     axis_points.push_back({
-        glm::vec3( 1.5f, 0.0f, 0.0f),
-        glm::vec3( 1.0f, 0.0f,  0.0f)
+        glm::vec3( 0.5f, -0.5f, 0.5f),
+        glm::vec3((182.0f/255.0f),  (102.0f/255.0f),  (210.0f/255.0f))
     });
 
     Indices line_points = {0, 1};
@@ -465,7 +469,7 @@ int main()
         {
             // Create UI Window
             spectraUI(
-                &drawShape, &nmrSize, &showNormals, 
+                &drawShape, &drawBoundingBox, &nmrSize, &showNormals, 
                 &normalLength, &light_distance, &light_rotation);
         }
 
@@ -505,7 +509,10 @@ int main()
             );
 
             ImGui::Begin("Gizmo");
-            EditTransform(camera, nmrMat, nmrPos, rot, nmrScale, win, 45.0f, 0.1f, 100.0f);
+            ImGui::Checkbox("Show Gizmo", &showGizmo);
+            if (showGizmo){
+                EditTransform(camera, nmrPos, rot, nmrScale, win, 45.0f, 0.1f, 100.0f);
+            };
             ImGui::End();
 
             nmrMesh->Draw(shader_program, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
@@ -519,7 +526,9 @@ int main()
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         glFrontFace(GL_CCW);
-        boundingBox.Draw(projection_shader, camera, glm::mat4(1.0), bbPos, rot, nmrSize * bbScale);
+        if (drawBoundingBox) {
+            boundingBox.Draw(projection_shader, camera, glm::mat4(1.0), bbPos, rot, nmrSize * bbScale);
+        }
         glDisable(GL_CULL_FACE);
 
         // *******************************

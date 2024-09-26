@@ -2,6 +2,12 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 
+static const float identityMatrix[16] =
+{ 1.f, 0.f, 0.f, 0.f,
+    0.f, 1.f, 0.f, 0.f,
+    0.f, 0.f, 1.f, 0.f,
+    0.f, 0.f, 0.f, 1.f };
+
 void drawMainMenu(std::string& file, GLFWwindow * window) { //
 
     // open Dialog Simple
@@ -52,11 +58,18 @@ void drawMainMenu(std::string& file, GLFWwindow * window) { //
 }
 
 void EditTransform(
-    const Camera& camera, glm::mat4& matrix, 
-    glm::vec3& pos, glm::quat& rot, glm::vec3& scale, 
+    const Camera& camera, glm::vec3& pos, 
+    glm::quat& rot, glm::vec3& scale, 
     WindowData win, float FOVdeg, float nearPlane, float farPlane
     )
 {
+    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), pos) * glm::mat4_cast(rot) * glm::scale(glm::mat4(1.0f), scale);
+    // glm::mat4 gridMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, 0.0f));
+
+    float matrix[16];
+
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
+
     static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
     if (ImGui::IsKeyPressed(ImGuiKey_T))
@@ -74,18 +87,13 @@ void EditTransform(
     if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
         mCurrentGizmoOperation = ImGuizmo::SCALE;
 
-    ImGuizmo::DecomposeMatrixToComponents(
-        glm::value_ptr(matrix), glm::value_ptr(pos), 
-        glm::value_ptr(rot), glm::value_ptr(scale)
-        );
-
     ImGui::InputFloat3("Tr", glm::value_ptr(pos), "%.3f");
-    ImGui::InputFloat3("Rt", glm::value_ptr(rot), "%.3f");
+    ImGui::InputFloat3("Rt", glm::value_ptr(rot), "%.3f"); // Display and edit rotation as Euler angles
     ImGui::InputFloat3("Sc", glm::value_ptr(scale), "%.3f");
 
     ImGuizmo::RecomposeMatrixFromComponents(
         glm::value_ptr(pos), glm::value_ptr(rot), 
-        glm::value_ptr(scale), glm::value_ptr(matrix)
+        glm::value_ptr(scale), matrix
         );
 
     if (mCurrentGizmoOperation != ImGuizmo::SCALE)
@@ -96,27 +104,7 @@ void EditTransform(
         if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
             mCurrentGizmoMode = ImGuizmo::WORLD;
     }
-    static bool useSnap(false);
-    if (ImGui::IsKeyPressed(ImGuiKey_LeftShift))
-        useSnap = !useSnap;
-    ImGui::Checkbox("##", &useSnap);
-    ImGui::SameLine();
-    // vec_t snap;
-    // switch (mCurrentGizmoOperation)
-    // {
-    // case ImGuizmo::TRANSLATE:
-    //     snap = config.mSnapTranslation;
-    //     ImGui::InputFloat3("Snap", &snap.x);
-    //     break;
-    // case ImGuizmo::ROTATE:
-    //     snap = config.mSnapRotation;
-    //     ImGui::InputFloat("Angle Snap", &snap.x);
-    //     break;
-    // case ImGuizmo::SCALE:
-    //     snap = config.mSnapScale;
-    //     ImGui::InputFloat("Scale Snap", &snap.x);
-    //     break;
-    // }
+
     ImGuiIO& io = ImGui::GetIO();
     
     glm::mat4 view = glm::mat4(1.0);
@@ -125,32 +113,35 @@ void EditTransform(
     view = glm::lookAt(camera.position, camera.position + camera.orientation, camera.up);
     projection = glm::perspective(glm::radians(FOVdeg), (float)(float(win.width)/(float)(win.height)), nearPlane, farPlane);
 
+    // ImGuizmo::DrawGrid((float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), (float *)glm::value_ptr(gridMatrix), 10.f);
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
     ImGuizmo::Manipulate(
         (float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), 
-        mCurrentGizmoOperation, mCurrentGizmoMode, (float *)glm::value_ptr(matrix)
+        mCurrentGizmoOperation, mCurrentGizmoMode, matrix
     );
 
-    ImGuizmo::DecomposeMatrixToComponents(
-        glm::value_ptr(matrix), glm::value_ptr(pos), 
-        glm::value_ptr(rot), glm::value_ptr(scale)
-        );
+    // Decompose the matrix to pos, rot, scale
+    glm::mat4 newMatrix = glm::make_mat4(matrix);
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(newMatrix, scale, rot, pos, skew, perspective);
 }
 
 void spectraUI(
-    bool * drawShape, float * nmrSize, 
+    bool * drawShape, bool * drawBB, float * nmrSize, 
     bool * showNormals, float * normalLength, float * light_distance,
     float * light_rotation){
     // Create UI Window
-    ImGui::Begin("Spectra");                // ImGUI window creation
-    ImGui::Text("Do you like this shape?");        // Text that appears in the window
-    ImGui::Checkbox("Draw Shape", drawShape);     // Select whether to draw the shape
-    ImGui::SliderFloat("Scale", nmrSize, 0.5, 5); // Scale Object
-    ImGui::Checkbox("Show Normals", showNormals); // Display normal vectors
-    ImGui::SliderFloat("Normals Magnitude", normalLength, 0.0f, 0.1f); // Length of normal vectors
-    // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f); // Size slider that appears in the window
-    ImGui::SliderFloat("Light Distance", light_distance, 0.5f, 5.0f); // Slider sets distance of light from center
-    ImGui::SliderAngle("Light Rotation", light_rotation, 0.0f); // Angle on circle that light object is positioned at
+    ImGui::Begin("Spectra");                                            // ImGUI window creation
+    ImGui::Text("Do you like this shape?");                             // Text that appears in the window
+    ImGui::Checkbox("Draw Shape", drawShape);                           // Select whether to draw the shape
+    ImGui::Checkbox("Draw Bounding Box", drawBB);                       // Select whether to draw the bounding box
+    ImGui::SliderFloat("Scale", nmrSize, 0.5, 5);                       // Scale Object
+    ImGui::Checkbox("Show Normals", showNormals);                       // Display normal vectors
+    ImGui::SliderFloat("Normals Magnitude", normalLength, 0.0f, 0.1f);  // Length of normal vectors
+    // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);                   // Size slider that appears in the window
+    ImGui::SliderFloat("Light Distance", light_distance, 0.5f, 5.0f);   // Slider sets distance of light from center
+    ImGui::SliderAngle("Light Rotation", light_rotation, 0.0f);         // Angle on circle that light object is positioned at
     // Complete UI Window definition
     ImGui::End();
 }

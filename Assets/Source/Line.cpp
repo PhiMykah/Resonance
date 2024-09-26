@@ -4,11 +4,11 @@ Line::Line(){
 
 }
 
-Line::Line(Vertices& vertices, Indices& indices){
+Line::Line(LVertices& vertices, Indices& indices){
     Line::initLines(vertices, indices);
 }
 
-void Line::initLines(Vertices& vertices, Indices& indices){
+void Line::initLines(LVertices& vertices, Indices& indices){
     Line::vertices = vertices;
     Line::indices = indices;
 
@@ -27,7 +27,7 @@ void Line::initLines(Vertices& vertices, Indices& indices){
     // Position Coordinate layout (layout 0)
     vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void *)0);
     // Color layout (layout 1)
-    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void *)(6 * sizeof(float)));
+    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void *)(3 * sizeof(float)));
     
     // Unbind vao, vbo, and ebo to avoid further modifications
     vao.Unbind();

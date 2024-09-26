@@ -69,9 +69,7 @@ void NMRMesh::NMR2DToVertex(){
                 normXYZ[indexList[i] + 2]);
 
         newVert.color = 
-            glm::vec3(normXYZ[indexList[i]],
-                normXYZ[indexList[i] + 1],
-                normXYZ[indexList[i] + 2]);
+            glm::vec3(1.0f, 1.0f, 1.0f);
 
         newVert.texUV = glm::vec2(0.0, 0.0);
 
