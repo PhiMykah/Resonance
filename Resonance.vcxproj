@@ -257,7 +257,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)imgui;$(ProjectDir)ImGuiFileDialog;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -290,7 +290,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;_DEBUG;_CONSOLE;NMR64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
