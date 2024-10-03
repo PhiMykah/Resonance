@@ -138,6 +138,23 @@ void EditTransform(
     glm::decompose(newMatrix, scale, rot, pos, skew, perspective);
 }
 
+void drawCubeView(Camera & camera, WindowData win, float FOVdeg, float nearPlane, float farPlane){
+    ImGuizmo::ViewManipulate(glm::value_ptr(camera.view), 10, ImVec2(camera.width - 128, camera.height - 128), ImVec2(128, 128), 0x10101010);
+    glm::mat4 viewInverse = glm::inverse(camera.view);
+
+    // Extract position
+    camera.position = glm::vec3(viewInverse[3]);
+
+    // Extract orientation (camera's forward direction)
+    // This is typically the negative Z-axis direction
+    camera.orientation = -glm::normalize(glm::vec3(viewInverse[2]));
+
+    // Extract the up vector
+    camera.up = glm::normalize(glm::vec3(viewInverse[1]));
+
+    camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
+}
+
 void spectraUI(
     bool * drawShape, bool * drawBB, float * nmrSize, 
     bool * showNormals, float * normalLength, float * light_distance,

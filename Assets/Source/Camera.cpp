@@ -32,12 +32,20 @@ Camera::Camera(int width, int height, glm::vec3 position){
     Camera::originalHeight = height;
 
     Camera::position = position;
+
+    Camera::view = glm::lookAt(position, position + orientation, up);
 }
 
 /*
 
 Parameters
 ----------
+width : int
+    width of window
+
+height : int
+    height of window
+
 FOVdeg : float
     FOV of camera
 
@@ -46,20 +54,20 @@ nearPlane : float
 
 farPlane : float
     Far cut-off plane for which no objects are rendered
+
+useUniqueView : bool
+    Whether or not to use uniqueView variable for view
 */
 void Camera::UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, float farPlane){
     Camera::width = width;
     Camera::height = height;
 
-    glm::mat4 view = MAT_IDENTITY;
     glm::mat4 projection = MAT_IDENTITY;
-
-    view = glm::lookAt(position, position + orientation, up);
+    
     projection = glm::perspective(glm::radians(FOVdeg), (float)(float(width)/(float)(height)), nearPlane, farPlane);
 
-    cameraMatrix = projection * view;
+    cameraMatrix = projection * Camera::view;
 }
-
 
 /* Export camera matrix to shader 
 
@@ -174,4 +182,6 @@ void Camera::Input(GLFWwindow * window, double deltaTime){
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
     }
+
+    Camera::view = glm::lookAt(position, position + orientation, up);
 }

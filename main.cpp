@@ -353,6 +353,10 @@ int main()
 
     // Initialize camera view
     Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 4.0f));
+    // Initialize camera variables 
+    float FOVdeg = 45.0f;
+    float nearPlane = 0.1f;
+    float farPlane = 100.0f;
 
     Cubemap boundingBox((assets + "Textures/Skybox/SolidColor/").c_str(), PNG);
 
@@ -435,7 +439,7 @@ int main()
         camera.Input(main_window);
 
         // Update camera matrix based on view plane and FOV
-        camera.UpdateMatrix(win.width, win.height, 45.0f, 0.1f, 100.0f);
+        camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
 
         // *************************
         // * Light Object Settings *
@@ -511,6 +515,7 @@ int main()
 
             ImGui::Begin("Gizmo");
             ImGui::Checkbox("Show Gizmo", &showGizmo);
+            drawCubeView(camera, win, FOVdeg, nearPlane, farPlane);
             if (showGizmo){
                 EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
             };

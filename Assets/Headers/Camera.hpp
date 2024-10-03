@@ -28,6 +28,8 @@ class Camera
 
         glm::mat4 cameraMatrix = MAT_IDENTITY;
 
+        glm::mat4 view = MAT_IDENTITY;
+
         // Prevents the camera from jumping around when first clicking left click
         bool firstClick = true;
 
