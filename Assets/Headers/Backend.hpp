@@ -51,6 +51,8 @@ void ToggleFullscreen(GLFWwindow * window);
 
 void OpenFileDialog();
 
+void glRenderSettings();
+
 // Callbacks
 void window_size_callback(GLFWwindow* window, int width, int height);
 void window_iconify_callback(GLFWwindow* window, int iconified);

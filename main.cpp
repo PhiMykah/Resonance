@@ -225,66 +225,8 @@ int main()
     float light_distance = 0.8;
     float light_rotation = glm::radians(0.0f); // Initial rotation value
 
-    // **********************
-    // * Initialize Buffers *
-    // **********************
-
-    // Enable depth testing in OpenGL rendering
-    glEnable(GL_DEPTH_TEST);
-    // Enable OpenGL depth buffer function
-    // Determines whether to pass or fail an incoming depth value
-    // in comparison to a stored depth value
-    // Options: GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL
-    // GL_GEQUAL, GL_ALWAYS
-    glDepthFunc(GL_LESS);
-
-    // Enable stencil buffer
-    glEnable(GL_STENCIL_TEST);
-    // Define stencil operations based on whether 
-    // The stencil test fails, the stencil test passes but the depth test fails,
-    // and when both tests pass.
-    // Possible arguments: GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, 
-    // GL_INCR_WRAP, GL_DECR, GL_DECR_WRAP, and GL_INVERT
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-    // Enable Face Culling
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
-    // glFrontFace(GL_CCW);
-    
-    // Enable/Disable VSYNC (1 or 0)
-    glfwSwapInterval(1);
-
-    /* 
-       Choose Color + Alpha blending settings
-       --------------------------------------
-       Parameters are sfactor and dfactor,
-       Where sfactor determines the formula for the source 
-       color (fragment shader) and the dfactor determines
-       the formula for the destination color (color buffer)
-       Possible Constants: (The initial value is GL_ZERO)
-       GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR,
-       GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, 
-       GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
-       GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA,
-       GL_ONE_MINUS_CONSTANT_ALPHA. 
-    */
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    /* 
-       glBlendEquation is also an option to customize the function.
-       Arguments include GL_FUNC_ADD, GL_FUNC_SUBTRACT,
-       GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX
-
-       glBlendFuncSeparate() Also allows function modification
-       But with RGB and Alpha separate
-    */
-
-    // *******************
-    // * Render Settings *
-    // *******************
-
-    // Anti-aliasing setting
-    glEnable(GL_LINE_SMOOTH);
+    // Set everything with render settings
+    glRenderSettings();
 
     // ***************
     // * Load Assets *
@@ -358,7 +300,9 @@ int main()
         // Update window size
         glfwGetWindowSize(main_window, &win.width, &win.height);
 
-        // Update Frame Counter 
+        // ************************
+        // * Update Frame Counter *
+        // ************************
 
         // Get current time for frame rate
         currTime = glfwGetTime();

@@ -70,4 +70,5 @@ class NMRMesh : public Mesh
         
 };
 
+
 #endif // !NMRMESH_CLASS_H
