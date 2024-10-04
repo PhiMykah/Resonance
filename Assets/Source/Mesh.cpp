@@ -41,6 +41,10 @@ void Mesh::initMesh(Vertices& vertices, Indices& indices, Textures& textures){
     ebo.Unbind();
 }
 
+void Mesh::SetPrimative(GLenum primative){
+    Mesh::primative = primative;
+}
+
 void Mesh::Draw(
     Shader& shader, Camera& camera,
     glm::mat4 matrix,

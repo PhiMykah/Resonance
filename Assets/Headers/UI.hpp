@@ -156,17 +156,38 @@ void drawCubeView(Camera & camera, WindowData win, float FOVdeg, float nearPlane
 }
 
 void spectraUI(
-    bool * drawShape, bool * drawBB, float * nmrSize, 
-    bool * showNormals, float * normalLength, float * light_distance,
-    float * light_rotation){
+    bool * drawShape, bool * drawBB, bool &drawPoints, float * pointSize,
+    float * nmrSize, bool * showNormals, float * normalLength, 
+    float * light_distance, float * light_rotation
+    ){
     // Create UI Window
     ImGui::Begin("Spectra");                                            // ImGUI window creation
     ImGui::Text("Do you like this shape?");                             // Text that appears in the window
     ImGui::Checkbox("Draw Shape", drawShape);                           // Select whether to draw the shape
     ImGui::Checkbox("Draw Bounding Box", drawBB);                       // Select whether to draw the bounding box
+
     ImGui::SliderFloat("Scale", nmrSize, 0.5, 5);                       // Scale Object
-    ImGui::Checkbox("Show Normals", showNormals);                       // Display normal vectors
-    ImGui::SliderFloat("Normals Magnitude", normalLength, 0.0f, 0.1f);  // Length of normal vectors
+
+    ImGui::Separator();
+
+    // Draw type
+    ImGui::Text("Display Type");
+    if (ImGui::RadioButton("Mesh", drawPoints == false))
+        drawPoints = false;
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Point Cloud", drawPoints == true))
+        drawPoints = true;
+
+    if (drawPoints) {
+        ImGui::SliderFloat("Point Size", pointSize, 0, 10);
+    }
+    else {
+        ImGui::Text("Mesh Normals");
+        ImGui::Checkbox("Show Normals", showNormals);                       // Display normal vectors
+        ImGui::SliderFloat("Normals Magnitude", normalLength, 0.0f, 0.1f);  // Length of normal vectors
+    }
+
+    ImGui::Separator();
     // ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);                   // Size slider that appears in the window
     ImGui::SliderFloat("Light Distance", light_distance, 0.5f, 5.0f);   // Slider sets distance of light from center
     ImGui::SliderAngle("Light Rotation", light_rotation, 0.0f);         // Angle on circle that light object is positioned at

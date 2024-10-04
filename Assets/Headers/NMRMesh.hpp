@@ -27,7 +27,7 @@ extern "C" {
 /*
 Mesh Object for NMR Data
 */
-class NMRMesh : Mesh
+class NMRMesh : public Mesh
 {
     public:
         // Empty NMRMesh Object

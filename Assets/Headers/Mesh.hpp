@@ -31,6 +31,9 @@ class Mesh
         // Initialize mesh given vertices, indices, and textures
         Mesh(Vertices& vertices, Indices& indices, Textures& textures);
 
+        // Set new primative type
+        void SetPrimative(GLenum primative);
+        
         // Draw mesh to given camera viewport with given shader
         // Additionally, modify mesh with given translation, rotation, and scale
         void Draw

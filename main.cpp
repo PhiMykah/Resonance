@@ -82,6 +82,10 @@ int main()
     // Set openGL to render from top left corner (0,0) to bottom right corner (width, height)
     glViewport(0, 0, win.width, win.height);
 
+    // Enable point size modification
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
     // **********************
     // * Initialize Shaders *
     // **********************
@@ -97,6 +101,14 @@ int main()
         shaderFile(shader_path, shader_name, GEOM).c_str()
     );
     
+    // Point shader
+        shader_name = "default_points";
+    Shader points_shader(
+        shaderFile(shader_path, shader_name, VERT).c_str(),
+        shaderFile(shader_path, shader_name, FRAG).c_str(),
+        shaderFile(shader_path, shader_name, GEOM).c_str()
+    );
+
     // Light shader initialization
     shader_name = "light";
     Shader light_shader(
@@ -249,6 +261,8 @@ int main()
 
     // NMR attributes
     bool showNMR = false;
+    bool drawPoints = false;
+    float pointSize = 1.0;
     float nmrSize = 1.0;
     glm::mat4 nmrMat = MAT_IDENTITY;
     glm::vec3 nmrPos = ZEROS;
@@ -301,7 +315,7 @@ int main()
     // glFrontFace(GL_CCW);
     
     // Enable/Disable VSYNC (1 or 0)
-     glfwSwapInterval(1);
+    glfwSwapInterval(1);
 
     /* 
        Choose Color + Alpha blending settings
@@ -467,6 +481,13 @@ int main()
         normals_shader.Activate();
         glUniform1f(glGetUniformLocation(normals_shader.ID, "hairLength"), normalLength);
 
+        // ******************
+        // * Point Settings *
+        // ******************
+
+        points_shader.Activate();
+        glUniform1f(glGetUniformLocation(points_shader.ID, "pointSize"), pointSize);
+
         // *******************
         // * Buffer Settings *
         // *******************
@@ -484,7 +505,7 @@ int main()
         {
             // Create UI Window
             spectraUI(
-                &drawShape, &drawBoundingBox, &nmrSize, &showNormals, 
+                &drawShape, &drawBoundingBox, drawPoints, &pointSize, &nmrSize, &showNormals, 
                 &normalLength, &light_distance, &light_rotation);
         }
 
@@ -530,8 +551,14 @@ int main()
                 EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
             };
             ImGui::End();
-
-            nmrMesh->Draw(shader_program, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+            
+            if (drawPoints){
+                nmrMesh->SetPrimative(GL_POINTS);
+                nmrMesh->Draw(points_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+            } else {
+                nmrMesh->SetPrimative(GL_TRIANGLES);
+                nmrMesh->Draw(shader_program, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+            }
             if (showNormals) {
                 nmrMesh->Draw(normals_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             }

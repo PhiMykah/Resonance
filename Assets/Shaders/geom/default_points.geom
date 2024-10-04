@@ -2,10 +2,10 @@
 
 // Define primative to receive
 // Choose from: points, lines, lines_adjacency, triangles, triangles_adjacency
-layout (triangles) in;
+layout (points) in;
 // Define primative to output 
 // Choose from: points, line_strip, triangle_strip
-layout (triangle_strip, max_vertices = 3) out;
+layout (points, max_vertices = 1) out;
 
 // Pass on vertex shader variables to fragment shader
 // since geometry shader is inbetween vertex shader
@@ -26,6 +26,8 @@ in DATA
     mat4 projection;
 } data_in[];
 
+uniform float pointSize; // Float defining size of points
+
 void defaultGeometry()
 {
     for (int i = 0; i < 3; i++) {
@@ -35,40 +37,13 @@ void defaultGeometry()
         color = data_in[i].color;
         texCoord = data_in[i].texCoord;
         currPos = data_in[i].currPos;
+        // Set point size
+        gl_PointSize = pointSize;
         // Call EmitVertex() when done with operating on vertex
         EmitVertex();
     }
 
     // Call EndPrimitive when done with all vertices
-    EndPrimitive();
-}
-
-void explosionGeometry(){
-    vec3 vector0 = vec3(gl_in[0].gl_Position - gl_in[1].gl_Position);
-    vec3 vector1 = vec3(gl_in[2].gl_Position - gl_in[1].gl_Position);
-    vec4 surfaceNormal = vec4(normalize(cross(vector0, vector1)), 0.0f);
-
-    gl_Position = data_in[0].projection * (gl_in[0].gl_Position + surfaceNormal);
-    Normal = data_in[0].Normal;
-    color = data_in[0].color;
-    texCoord = data_in[0].texCoord;
-    currPos = data_in[0].currPos;
-    EmitVertex();
-
-    gl_Position = data_in[1].projection * (gl_in[1].gl_Position + surfaceNormal);
-    Normal = data_in[1].Normal;
-    color = data_in[1].color;
-    texCoord = data_in[1].texCoord;
-    currPos = data_in[1].currPos;
-    EmitVertex();
-
-    gl_Position = data_in[2].projection * (gl_in[2].gl_Position + surfaceNormal);
-    Normal = data_in[2].Normal;
-    color = data_in[2].color;
-    texCoord = data_in[2].texCoord;
-    currPos = data_in[2].currPos;
-    EmitVertex();
-
     EndPrimitive();
 }
 
