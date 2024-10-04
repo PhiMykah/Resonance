@@ -26,9 +26,9 @@ void Line::initLines(LVertices& vertices, Indices& indices){
 
     // Link vbo layouts to corresponding vao
     // Position Coordinate layout (layout 0)
-    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void *)0);
+    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(LineVertex), (void *)0);
     // Color layout (layout 1)
-    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void *)(3 * sizeof(float)));
+    vao.LinkAttrib(vbo, 1, 3, GL_FLOAT, sizeof(LineVertex), (void *)(3 * sizeof(float)));
     
     // Unbind vao, vbo, and ebo to avoid further modifications
     vao.Unbind();
@@ -57,12 +57,6 @@ void Line::Draw(
     glm::mat4 trans = MAT_IDENTITY;
     glm::mat4 rot = MAT_IDENTITY;
     glm::mat4 sca = MAT_IDENTITY;
-
-    // Global transformation matrices
-
-    glm::mat4 gtrans = MAT_IDENTITY;
-    glm::mat4 grot = MAT_IDENTITY;
-    glm::mat4 gsca = MAT_IDENTITY;
 
     // Apply translation, rotation, and scale to transformation matrices
     trans = glm::translate(trans, translation);

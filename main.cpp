@@ -338,15 +338,25 @@ int main()
     std::vector<LineVertex> axis_points;
 
     axis_points.push_back({
-        glm::vec3(-0.5f,  -0.5f,  0.5f),
-        glm::vec3((182.0f/255.0f),  (102.0f/255.0f),  (210.0f/255.0f)),
+        glm::vec3(-1.0f, -1.0f, -1.0f),
+        glm::vec3( 0.0f,  0.0f,  0.0f),
     });
     axis_points.push_back({
-        glm::vec3( 0.5f, -0.5f, 0.5f),
-        glm::vec3((182.0f/255.0f),  (102.0f/255.0f),  (210.0f/255.0f))
+        glm::vec3( 1.0f, -1.0f, -1.0f),
+        glm::vec3( 0.0f,  0.0f,  0.0f)
+    });
+    axis_points.push_back({
+        glm::vec3(-1.0f, 1.0f, -1.0f),
+        glm::vec3(0.0f,  0.0f,  0.0f),
+    });
+    axis_points.push_back({
+        glm::vec3(-1.0f, -1.0f, 1.0f),
+        glm::vec3(0.0f,  0.0f,  0.0f),
     });
 
-    Indices line_points = {0, 1};
+    glLineWidth(4.0f);
+
+    Indices line_points = {0, 1, 0, 2, 0, 3};
     Line axis_lines(axis_points, line_points);
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
