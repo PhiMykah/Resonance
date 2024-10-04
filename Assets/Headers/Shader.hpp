@@ -9,6 +9,11 @@
 #include <iostream>
 #include <cerrno>
 
+// Other headers
+#include <map>
+#include <vector>
+#include <string>
+
 std::string get_file_contents(const char * filename);
 
 // Define shader operations
@@ -31,6 +36,9 @@ class Shader
         // Reference ID of the shader program
         GLuint ID;
 
+        // Default constructor
+        Shader();
+        
         // Constructor that builds shader program from vertex and fragment shaders
         Shader(const char* vertexFile, const char* fragmentFile, const char* geometryFile);
 
@@ -43,5 +51,7 @@ class Shader
         // Check if shader compilation results in any errors
         void compileErrors(unsigned int shader, const char * type);
 };
+
+void initializeShaders(std::map<std::string, Shader> & shaders, std::string shader_path, std::vector<std::string> shader_list);
 
 #endif // !SHADER_CLASS_H

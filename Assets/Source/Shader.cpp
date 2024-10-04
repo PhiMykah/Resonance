@@ -57,6 +57,13 @@ std::string shaderFile(std::string shader_path, std::string name, ShaderType sha
 }
 
 /*
+Default constructor for shader class object
+*/
+Shader::Shader()
+{
+}
+
+/*
 Main Constructor for Shader class object
 
 Parameters
@@ -70,7 +77,8 @@ Returns
 -------
 Shader object
 */
-Shader::Shader(const char * vertexFile, const char * fragmentFile, const char * geometryFile){
+Shader::Shader(const char *vertexFile, const char *fragmentFile, const char *geometryFile)
+{
     std::string vertexCode = get_file_contents(vertexFile);
     std::string fragmentCode = get_file_contents(fragmentFile);
     std::string geometryCode = get_file_contents(geometryFile);
@@ -202,4 +210,16 @@ void Shader::compileErrors(unsigned int shader, const char * type){
 			std::cout << "SHADER_LINKING_ERROR for: " << type << "\n" << infoLog << std::endl;
 		}
 	}
+}
+
+void initializeShaders(std::map<std::string, Shader> & shaders, std::string shader_path, std::vector<std::string> shader_list){
+    for (auto name : shader_list) {
+        shaders.insert({name, 
+            Shader(
+            shaderFile(shader_path, name, VERT).c_str(),
+            shaderFile(shader_path, name, FRAG).c_str(),
+            shaderFile(shader_path, name, GEOM).c_str()
+            )}
+        );
+    }
 }

@@ -22,7 +22,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
+// C++ headers
 #include <iostream>
+#include <map>
 
 #include "Constants.hpp"
 

@@ -7,6 +7,7 @@
 #include "NMRMesh.hpp"
 #include "Model.hpp"
 #include "Cubemap.hpp"
+#include "Shader.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -91,78 +92,16 @@ int main()
     // **********************
 
     std::string shader_path = assets + "Shaders/";
+
+    std::vector<std::string> shader_list = {
+        "default", "points", "light", "nmr", "stencil",
+        "skybox", "projection", "normals", "lines"
+    };
+
+    std::map<std::string, Shader> shaders;
     
-    // Initialize main shader program
-    std::string shader_name = "default";
-    Shader shader_program(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-    
-    // Point shader initialization
-    shader_name = "points";
-    Shader points_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Light shader initialization
-    shader_name = "light";
-    Shader light_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // NMR shader initialization
-    shader_name = "nmr";
-    Shader nmr_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Stencil outline shader initialization
-    shader_name = "stencil";
-    Shader stencil_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Skybox shader initialization
-    shader_name = "skybox";
-    Shader skybox_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Projection shader initialization
-    shader_name = "projection";
-    Shader projection_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Normals shader initialization
-    shader_name = "normals";
-    Shader normals_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
-
-    // Line shader initialization
-    shader_name = "lines";
-    Shader line_shader(
-        shaderFile(shader_path, shader_name, VERT).c_str(),
-        shaderFile(shader_path, shader_name, FRAG).c_str(),
-        shaderFile(shader_path, shader_name, GEOM).c_str()
-    );
+    // Initialize all shader programs
+    initializeShaders(shaders, shader_path, shader_list);
 
     // ***********************
     // * Creating NMR Object *
@@ -206,29 +145,29 @@ int main()
     // **************************
 
     // Export light object to light shader
-    light_shader.Activate();
-    GLuint light_model_ID = glGetUniformLocation(light_shader.ID, "model");
+    shaders["light"].Activate();
+    GLuint light_model_ID = glGetUniformLocation(shaders["light"].ID, "model");
     glUniformMatrix4fv(light_model_ID, 1, GL_FALSE, glm::value_ptr(light_model));
     // Export light color to light shader
-    glUniform4f(glGetUniformLocation(light_shader.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+    glUniform4f(glGetUniformLocation(shaders["light"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
 
 
     // Export shape object to shader program
-    shader_program.Activate();
+    shaders["default"].Activate();
     // Export light color and position to shader program
-    glUniform4f(glGetUniformLocation(shader_program.ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+    glUniform4f(glGetUniformLocation(shaders["default"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
 
 
     // Export NMR object to NMR shader
-    nmr_shader.Activate();
-    GLuint nmr_model_ID = glGetUniformLocation(nmr_shader.ID, "model");
+    shaders["nmr"].Activate();
+    GLuint nmr_model_ID = glGetUniformLocation(shaders["nmr"].ID, "model");
     glUniformMatrix4fv(nmr_model_ID, 1, GL_FALSE, glm::value_ptr(nmr_model));
     // Export point color to nmr shader
-    glUniform4f(glGetUniformLocation(nmr_shader.ID, "pointColor"), point_color.x, point_color.y, point_color.z, point_color.w);
+    glUniform4f(glGetUniformLocation(shaders["nmr"].ID, "pointColor"), point_color.x, point_color.y, point_color.z, point_color.w);
 
     // Export skybox texture to skybox shader
-    skybox_shader.Activate();
-    glUniform1i(glGetUniformLocation(skybox_shader.ID, "skybox"), 0);
+    shaders["skybox"].Activate();
+    glUniform1i(glGetUniformLocation(shaders["skybox"].ID, "skybox"), 0);
 
     // ********************
     // * Initialize IMGUI *
@@ -340,6 +279,13 @@ int main()
        But with RGB and Alpha separate
     */
 
+    // *******************
+    // * Render Settings *
+    // *******************
+
+    // Anti-aliasing setting
+    glEnable(GL_LINE_SMOOTH);
+
     // ***************
     // * Load Assets *
     // ***************
@@ -366,8 +312,6 @@ int main()
         glm::vec3(-1.0f, -1.0f, 1.0f),
         glm::vec3(0.0f,  0.0f,  0.0f),
     });
-
-    glLineWidth(4.0f);
 
     Indices line_points = {0, 1, 0, 2, 0, 3};
     Line axis_lines(axis_points, line_points);
@@ -452,7 +396,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGuizmo::BeginFrame();
-        shader_program.Activate(); // Activate program
+        shaders["default"].Activate(); // Activate program
 
         // *******************
         // * Camera Settings *
@@ -462,7 +406,8 @@ int main()
         camera.Input(main_window);
 
         // Update camera matrix based on view plane and FOV
-        camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
+        if (win.width > 0 && win.height > 0)
+            camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
 
         // *************************
         // * Light Object Settings *
@@ -471,21 +416,21 @@ int main()
         // Calculate light position by parametric representation of a circle
         light_pos = glm::vec3(light_distance * cos(light_rotation), 0.5f, light_distance * sin(light_rotation));
         // Send updated light position to shader program
-        glUniform3f(glGetUniformLocation(shader_program.ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
+        glUniform3f(glGetUniformLocation(shaders["default"].ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
 
         // **************************
         // * Normal Vector Settings *
         // **************************
 
-        normals_shader.Activate();
-        glUniform1f(glGetUniformLocation(normals_shader.ID, "hairLength"), normalLength);
+        shaders["normals"].Activate();
+        glUniform1f(glGetUniformLocation(shaders["normals"].ID, "hairLength"), normalLength);
 
         // ******************
         // * Point Settings *
         // ******************
 
-        points_shader.Activate();
-        glUniform1f(glGetUniformLocation(points_shader.ID, "pointSize"), pointSize);
+        shaders["points"].Activate();
+        glUniform1f(glGetUniformLocation(shaders["points"].ID, "pointSize"), pointSize);
 
         // *******************
         // * Buffer Settings *
@@ -514,14 +459,15 @@ int main()
 
         glDisable(GL_STENCIL_TEST);
         // Draw skybox
-        skybox.DrawSkybox(skybox_shader, camera, win.width, win.height);
+        if (win.width > 0 && win.height > 0)
+            skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);
         glEnable(GL_STENCIL_TEST);
 
         // if (drawShape){
-        //     model.Draw(shader_program, camera, objPos, rot, objSize * objScale);
+        //     model.Draw(shaders["default"], camera, objPos, rot, objSize * objScale);
         // }
 
-        light.Draw(light_shader, camera, light_model, nmrPos + light_pos);
+        light.Draw(shaders["light"], camera, light_model, nmrPos + light_pos);
 
         drawMainMenu(nmrFile, main_window);
 
@@ -545,23 +491,27 @@ int main()
 
             ImGui::Begin("Gizmo");
             ImGui::Checkbox("Show Gizmo", &showGizmo);
-            drawCubeView(camera, win, FOVdeg, nearPlane, farPlane);
-            if (showGizmo){
-                EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
-            };
+            if (win.width > 0 && win.height > 0) {
+                drawCubeView(camera, win, FOVdeg, nearPlane, farPlane);
+                if (showGizmo){
+                    EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
+                };
+            }
             ImGui::End();
             
             if (drawPoints){
                 nmrMesh->SetPrimative(GL_POINTS);
-                nmrMesh->Draw(points_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+                nmrMesh->Draw(shaders["points"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             } else {
                 nmrMesh->SetPrimative(GL_TRIANGLES);
-                nmrMesh->Draw(shader_program, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+                nmrMesh->Draw(shaders["default"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             }
             if (showNormals) {
-                nmrMesh->Draw(normals_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+                nmrMesh->Draw(shaders["normals"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             }
-            axis_lines.Draw(line_shader, camera);
+            glLineWidth(4.0f);
+            axis_lines.Draw(shaders["lines"], camera);
+            glLineWidth(1.0f);
         }
 
         // Draw bounding box with inverted culling
@@ -569,7 +519,7 @@ int main()
         glCullFace(GL_FRONT);
         glFrontFace(GL_CCW);
         if (drawBoundingBox) {
-            boundingBox.Draw(projection_shader, camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
+            boundingBox.Draw(shaders["projection"], camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
         }
         glDisable(GL_CULL_FACE);
 
@@ -587,15 +537,15 @@ int main()
         glEnable(GL_BLEND);
 
         if (showNMR) {
-            stencilUI(stencil_shader, outline, stencil_color);
+            stencilUI(shaders["stencil"], outline, stencil_color);
         }
         
         // Redraw objects with post-processing
 
         if (drawShape){
-            // model.Draw(stencil_shader, camera, objPos, rot, objSize * objScale);
+            // model.Draw(shaders["stencil"], camera, objPos, rot, objSize * objScale);
             if (nmrMesh != NULL) {
-                nmrMesh->Draw(stencil_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+                nmrMesh->Draw(shaders["stencil"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             }
         }
         
@@ -625,14 +575,10 @@ int main()
         delete nmrMesh;
     }
     closeIMGUI(); // Close ImGui and remove GL link
-    shader_program.Delete();        // Delete main shader program
-    light_shader.Delete();          // Delete light shader program
-    nmr_shader.Delete();            // Delete nmr shader program
-    stencil_shader.Delete();       // Delete stencil shader program
-    skybox_shader.Delete();         // Delete skybox shader program
-    projection_shader.Delete();     // Delete projection shader program
-    normals_shader.Delete();        // Delete normal shader program
-    line_shader.Delete();           // Delete line shader program
+    // Delete all shader programs
+    for (auto & [name, shader] : shaders) {
+        shader.Delete();
+    }
     glfwDestroyWindow(main_window); // Close window when complete
     glfwTerminate();                // Terminate glfw process
 
