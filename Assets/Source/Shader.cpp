@@ -35,21 +35,17 @@ std::string get_file_contents(const char * filename)
 }
 
 std::string shaderFile(std::string shader_path, std::string name, ShaderType shader_type){
-    std::string type_dir;
     std::string suffix;
 
     switch (shader_type)
     {
     case VERT:
-        type_dir = "vert/";
         suffix = ".vert";
         break;
     case FRAG:
-        type_dir = "frag/";
         suffix = ".frag";
         break;
     case GEOM:
-        type_dir = "geom/";
         suffix = ".geom";
         break;
     default:
@@ -57,7 +53,7 @@ std::string shaderFile(std::string shader_path, std::string name, ShaderType sha
         return file;
     }
 
-    return shader_path + type_dir + name + suffix;
+    return shader_path + name + '/' + name + suffix;
 }
 
 /*

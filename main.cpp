@@ -91,18 +91,17 @@ int main()
     // **********************
 
     std::string shader_path = assets + "Shaders/";
-    std::string shader_name = "default";
     
-    std::string sf = shaderFile(shader_path, shader_name, VERT);
     // Initialize main shader program
+    std::string shader_name = "default";
     Shader shader_program(
         shaderFile(shader_path, shader_name, VERT).c_str(),
         shaderFile(shader_path, shader_name, FRAG).c_str(),
         shaderFile(shader_path, shader_name, GEOM).c_str()
     );
     
-    // Point shader
-        shader_name = "default_points";
+    // Point shader initialization
+    shader_name = "points";
     Shader points_shader(
         shaderFile(shader_path, shader_name, VERT).c_str(),
         shaderFile(shader_path, shader_name, FRAG).c_str(),
@@ -126,8 +125,8 @@ int main()
     );
 
     // Stencil outline shader initialization
-    shader_name = "stencil_outline";
-    Shader stencil_outline(
+    shader_name = "stencil";
+    Shader stencil_shader(
         shaderFile(shader_path, shader_name, VERT).c_str(),
         shaderFile(shader_path, shader_name, FRAG).c_str(),
         shaderFile(shader_path, shader_name, GEOM).c_str()
@@ -588,15 +587,15 @@ int main()
         glEnable(GL_BLEND);
 
         if (showNMR) {
-            stencilUI(stencil_outline, outline, stencil_color);
+            stencilUI(stencil_shader, outline, stencil_color);
         }
         
         // Redraw objects with post-processing
 
         if (drawShape){
-            // model.Draw(stencil_outline, camera, objPos, rot, objSize * objScale);
+            // model.Draw(stencil_shader, camera, objPos, rot, objSize * objScale);
             if (nmrMesh != NULL) {
-                nmrMesh->Draw(stencil_outline, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
+                nmrMesh->Draw(stencil_shader, camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
             }
         }
         
@@ -629,7 +628,7 @@ int main()
     shader_program.Delete();        // Delete main shader program
     light_shader.Delete();          // Delete light shader program
     nmr_shader.Delete();            // Delete nmr shader program
-    stencil_outline.Delete();       // Delete stencil shader program
+    stencil_shader.Delete();       // Delete stencil shader program
     skybox_shader.Delete();         // Delete skybox shader program
     projection_shader.Delete();     // Delete projection shader program
     normals_shader.Delete();        // Delete normal shader program
