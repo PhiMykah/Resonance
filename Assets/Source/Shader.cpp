@@ -212,7 +212,7 @@ void Shader::compileErrors(unsigned int shader, const char * type){
 	}
 }
 
-void initializeShaders(std::map<std::string, Shader> & shaders, std::string shader_path, std::vector<std::string> shader_list){
+void initializeShaders(Shaders & shaders, std::string shader_path, std::vector<std::string> shader_list){
     for (auto name : shader_list) {
         shaders.insert({name, 
             Shader(

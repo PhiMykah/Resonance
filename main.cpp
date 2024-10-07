@@ -27,8 +27,6 @@ namespace fs = std::filesystem;
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
 #define indices Shapes::plane_indices
-#define light_vertices Shapes::cube_vertices
-#define light_indices Shapes::cube_indices
 #define rect Shapes::rectangle_vertices
 #define skybox_vertices Shapes::skybox_vertices
 #define skybox_indices Shapes::skybox_indices
@@ -116,47 +114,9 @@ int main()
     glm::mat4 nmr_model = MAT_IDENTITY;
     nmr_model = glm::translate(nmr_model, nmr_pos);
 
-    // *************************
-    // * Creating Light Object *
-    // *************************
-
-    Texture textures[]
-    {
-        Texture((assets + "Textures/Alb/planks.png").c_str(), "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
-        Texture((assets + "Textures/Spec/planksSpec.png").c_str(), "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
-    };
-
-    // Create vectors for vertices, indices, and textures
-    // Textures will be the same since light does not utilize textures
-    Vertices light_verts(light_vertices, light_vertices + sizeof(light_vertices) / sizeof(Vertex));
-    Indices light_ind(light_indices, light_indices + sizeof(light_indices) / sizeof(GLuint));
-    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    Mesh light(light_verts, light_ind, tex);
-
-    // Form color of object based on the light
-    glm::vec4 light_color = WHITE;
-    // Initialize light object
-    glm::mat4 light_model = MAT_IDENTITY;
-    glm::vec3 light_pos;
-
     // **************************
     // * Export Data to Shaders *
     // **************************
-
-    // Export light object to light shader
-    shaders["light"].Activate();
-    GLuint light_model_ID = glGetUniformLocation(shaders["light"].ID, "model");
-    glUniformMatrix4fv(light_model_ID, 1, GL_FALSE, glm::value_ptr(light_model));
-    // Export light color to light shader
-    glUniform4f(glGetUniformLocation(shaders["light"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
-
-
-    // Export shape object to shader program
-    shaders["default"].Activate();
-    // Export light color and position to shader program
-    glUniform4f(glGetUniformLocation(shaders["default"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
-
 
     // Export NMR object to NMR shader
     shaders["nmr"].Activate();
@@ -262,14 +222,6 @@ int main()
 
     // Initialize camera view
     Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 4.0f));
-    // Initialize camera variables 
-    float FOVdeg = 45.0f;
-    float nearPlane = 0.1f;
-    float farPlane = 100.0f;
-
-    Cubemap boundingBox((assets + "Textures/Skybox/SolidColor/").c_str(), PNG);
-
-    boundingBox.BindTextures();
 
     // *****************
     // * Frame Counter *
@@ -351,30 +303,7 @@ int main()
 
         // Update camera matrix based on view plane and FOV
         if (win.width > 0 && win.height > 0)
-            camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
-
-        // *************************
-        // * Light Object Settings *
-        // *************************
-
-        // Calculate light position by parametric representation of a circle
-        light_pos = glm::vec3(light_distance * cos(light_rotation), 0.5f, light_distance * sin(light_rotation));
-        // Send updated light position to shader program
-        glUniform3f(glGetUniformLocation(shaders["default"].ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
-
-        // **************************
-        // * Normal Vector Settings *
-        // **************************
-
-        shaders["normals"].Activate();
-        glUniform1f(glGetUniformLocation(shaders["normals"].ID, "hairLength"), normalLength);
-
-        // ******************
-        // * Point Settings *
-        // ******************
-
-        shaders["points"].Activate();
-        glUniform1f(glGetUniformLocation(shaders["points"].ID, "pointSize"), pointSize);
+            camera.UpdateMatrix(win.width, win.height);
 
         // *******************
         // * Buffer Settings *
@@ -384,18 +313,6 @@ int main()
         //            function | ref | bitwise AND mask
         glStencilFunc(GL_ALWAYS,  1,    0xFF);
         glStencilMask(0xFF);
-
-        // *******************
-        // * Main UI Drawing *
-        // *******************
-
-        if (showNMR)
-        {
-            // Create UI Window
-            spectraUI(
-                &drawShape, &drawBoundingBox, drawPoints, &pointSize, &nmrSize, &showNormals, 
-                &normalLength, &light_distance, &light_rotation);
-        }
 
         // ******************
         // * OpenGL Drawing *
@@ -407,12 +324,6 @@ int main()
             skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);
         glEnable(GL_STENCIL_TEST);
 
-        // if (drawShape){
-        //     model.Draw(shaders["default"], camera, objPos, rot, objSize * objScale);
-        // }
-
-        light.Draw(shaders["light"], camera, light_model, nmrPos + light_pos);
-
         drawMainMenu(nmrFile, main_window);
 
         // Create new NMRMesh if necessary
@@ -423,83 +334,19 @@ int main()
             nmrMesh = new NMRMesh(nmrFile);
             currFile = nmrFile;
             showNMR = true;
-            // Reset attributes
-            nmrPos = ZEROS;
-            nmrScale = ONES;
-            rot = QUAT_IDENTITY;
-            eulerRotation = glm::eulerAngles(rot);
+            nmrMesh->resetAttributes();
         }
-
-        // Draw NMRMesh
-        if ((showNMR && drawShape) && nmrMesh != NULL){
-
-            ImGui::Begin("Gizmo");
-            ImGui::Checkbox("Show Gizmo", &showGizmo);
-            if (win.width > 0 && win.height > 0) {
-                drawCubeView(camera, win, FOVdeg, nearPlane, farPlane);
-                if (showGizmo){
-                    EditTransform(camera, nmrPos, rot, eulerRotation, nmrScale, win, 45.0f, 0.1f, 100.0f);
-                };
-            }
-            ImGui::End();
+        
+        if (nmrMesh != NULL) {
+            nmrMesh->updateUniforms(shaders);
+            nmrMesh->Display(win, camera, shaders);
             
-            if (drawPoints){
-                nmrMesh->SetPrimative(GL_POINTS);
-                nmrMesh->Draw(shaders["points"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
-            } else {
-                nmrMesh->SetPrimative(GL_TRIANGLES);
-                nmrMesh->Draw(shaders["default"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
-            }
-            if (showNormals) {
-                nmrMesh->Draw(shaders["normals"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
-            }
             glLineWidth(4.0f);
             axis_lines.Draw(shaders["lines"], camera);
             glLineWidth(1.0f);
+
+            nmrMesh->DisplaySecondPass(camera, shaders);
         }
-
-        // Draw bounding box with inverted culling
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-        glFrontFace(GL_CCW);
-        if (drawBoundingBox) {
-            boundingBox.Draw(shaders["projection"], camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
-        }
-        glDisable(GL_CULL_FACE);
-
-        // *******************************
-        // * Post Processing & Rendering *
-        // *******************************
-
-        // Pass stencil test only when not equal to one
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        // Disable writing to stencil mask to avoid modifying afterwards
-        glStencilMask(0x00);
-        // Disable depth buffer to avoid modifying
-        glDisable(GL_DEPTH_TEST);
-        // Enable rgb + alpha blending
-        glEnable(GL_BLEND);
-
-        if (showNMR) {
-            stencilUI(shaders["stencil"], outline, stencil_color);
-        }
-        
-        // Redraw objects with post-processing
-
-        if (drawShape){
-            // model.Draw(shaders["stencil"], camera, objPos, rot, objSize * objScale);
-            if (nmrMesh != NULL) {
-                nmrMesh->Draw(shaders["stencil"], camera, nmrMat, nmrPos, rot, nmrSize * nmrScale);
-            }
-        }
-        
-        // Disable RGB + Alpha blending
-        glDisable(GL_BLEND);
-        // Clear stencil mask and stencil test
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
-        // Re-enable depth buffer
-        glEnable(GL_DEPTH_TEST);
 
         // Render UI Window
         ImGui::Render();

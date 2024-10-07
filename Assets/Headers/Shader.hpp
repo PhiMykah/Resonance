@@ -52,6 +52,8 @@ class Shader
         void compileErrors(unsigned int shader, const char * type);
 };
 
-void initializeShaders(std::map<std::string, Shader> & shaders, std::string shader_path, std::vector<std::string> shader_list);
+typedef std::map<std::string, Shader> Shaders;
+
+void initializeShaders(Shaders & shaders, std::string shader_path, std::vector<std::string> shader_list);
 
 #endif // !SHADER_CLASS_H

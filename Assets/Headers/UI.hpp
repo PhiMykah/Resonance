@@ -1,3 +1,6 @@
+#ifndef UI_HEADER_H
+#define UI_HEADER_H
+
 #include "Backend.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"
@@ -61,7 +64,7 @@ void drawMainMenu(std::string& file, GLFWwindow * window) { //
 void EditTransform(
     const Camera& camera, glm::vec3& pos, 
     glm::quat& rot, glm::vec3& eulerAngles, glm::vec3& scale, 
-    WindowData win, float FOVdeg, float nearPlane, float farPlane
+    WindowData win
     )
 {
     eulerAngles = glm::eulerAngles(rot);
@@ -122,7 +125,7 @@ void EditTransform(
     glm::mat4 projection = MAT_IDENTITY;
 
     view = glm::lookAt(camera.position, camera.position + camera.orientation, camera.up);
-    projection = glm::perspective(glm::radians(FOVdeg), (float)(float(win.width)/(float)(win.height)), nearPlane, farPlane);
+    projection = glm::perspective(glm::radians(camera.FOVdeg), (float)(float(win.width)/(float)(win.height)), camera.nearPlane, camera.farPlane);
 
     // ImGuizmo::DrawGrid((float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), (float *)glm::value_ptr(gridMatrix), 10.f);
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -138,7 +141,7 @@ void EditTransform(
     glm::decompose(newMatrix, scale, rot, pos, skew, perspective);
 }
 
-void drawCubeView(Camera & camera, WindowData win, float FOVdeg, float nearPlane, float farPlane){
+void drawCubeView(Camera & camera, WindowData win){
     ImGuizmo::ViewManipulate(glm::value_ptr(camera.view), 10, ImVec2(camera.width - 128, camera.height - 128), ImVec2(128, 128), 0x10101010);
     glm::mat4 viewInverse = glm::inverse(camera.view);
 
@@ -152,7 +155,7 @@ void drawCubeView(Camera & camera, WindowData win, float FOVdeg, float nearPlane
     // Extract the up vector
     camera.up = glm::normalize(glm::vec3(viewInverse[1]));
 
-    camera.UpdateMatrix(win.width, win.height, FOVdeg, nearPlane, farPlane);
+    camera.UpdateMatrix(win.width, win.height);
 }
 
 void spectraUI(
@@ -211,3 +214,5 @@ void stencilUI(Shader & shader, float & outline, float color[4]) {
     glUniform1f(glGetUniformLocation(shader.ID, "outlining"), outline); // Collect outline thickness parameter
     glUniform4f(glGetUniformLocation(shader.ID, "color"), color[0], color[1], color[2], color[3]);
 }
+
+#endif // !UI_HEADER_H

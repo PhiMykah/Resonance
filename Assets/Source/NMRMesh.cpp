@@ -1,7 +1,41 @@
 #include "NMRMesh.hpp"
+#include "Cubemap.hpp"
+#include "Shapes.hpp"
 
 NMRMesh::NMRMesh(){
 
+    // ***********************
+    // * Create Bounding Box *
+    // ***********************
+
+    boundingBox = new Cubemap("Assets/Textures/Skybox/SolidColor/", PNG);
+
+    boundingBox->BindTextures();
+
+    // *************************
+    // * Creating Light Object *
+    // *************************
+
+    Texture textures[]
+    {
+        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
+        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
+    };
+
+    // Create vectors for vertices, indices, and textures
+    // Textures will be the same since light does not utilize textures
+    Vertices light_verts(Shapes::cube_vertices, 
+                         Shapes::cube_vertices + sizeof(Shapes::cube_vertices) / sizeof(Vertex));
+    Indices light_ind(Shapes::cube_indices,
+                      Shapes::cube_indices + sizeof(Shapes::cube_indices) / sizeof(GLuint));
+    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+    light = new Mesh(light_verts, light_ind, tex);
+}
+
+NMRMesh::~NMRMesh()
+{
+    delete boundingBox;
 }
 
 NMRMesh::NMRMesh(std::string file, GLenum primative){
@@ -42,6 +76,8 @@ NMRMesh::NMRMesh(std::string file, GLenum primative){
 
     // Consider emptying mat here since data is now in vertices
     initMesh(NMRMesh::vertices, NMRMesh::indices, NMRMesh::textures);
+
+    NMRMesh();
 }
 
 void NMRMesh::NMRToVertex(){
@@ -156,4 +192,137 @@ void NMRMesh::Draw(
 
         glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, 0);
     */
+}
+
+void NMRMesh::updateUniforms(Shaders & shaders)
+{
+    // **************************
+    // * Normal Vector Settings *
+    // **************************
+
+    shaders["normals"].Activate();
+    glUniform1f(glGetUniformLocation(shaders["normals"].ID, "hairLength"), normalLength);
+
+    // *************************
+    // * Light Object Settings *
+    // *************************
+
+    // Calculate light position by parametric representation of a circle
+    light_pos = glm::vec3(light_distance * cos(light_rotation), 0.5f, light_distance * sin(light_rotation));
+    // Send updated light position to shader program
+    glUniform3f(glGetUniformLocation(shaders["default"].ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
+
+    // Export shape object to shader program
+    shaders["default"].Activate();
+    // Export light color and position to shader program
+    glUniform4f(glGetUniformLocation(shaders["default"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+
+
+    // ******************
+    // * Point Settings *
+    // ******************
+
+    shaders["points"].Activate();
+    glUniform1f(glGetUniformLocation(shaders["points"].ID, "pointSize"), pointSize);
+
+    // Export light object to light shader
+    shaders["light"].Activate();
+    GLuint light_model_ID = glGetUniformLocation(shaders["light"].ID, "model");
+    glUniformMatrix4fv(light_model_ID, 1, GL_FALSE, glm::value_ptr(light_model));
+    // Export light color to light shader
+    glUniform4f(glGetUniformLocation(shaders["light"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+
+}
+
+void NMRMesh::resetAttributes()
+{
+    pos = ZEROS;
+    scale = ONES;
+    rot = QUAT_IDENTITY;
+    eulerRotation = glm::eulerAngles(rot);
+}
+
+void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
+{
+    // *******************
+    // * Main UI Drawing *
+    // *******************
+
+    // Create UI Window
+    spectraUI(
+        &drawShape, &drawBoundingBox, drawPoints, &pointSize, &nmrSize, &showNormals, 
+        &normalLength, &light_distance, &light_rotation
+        );
+
+    // **************
+    // * Draw Light *
+    // **************
+
+    light->Draw(shaders["light"], camera, light_model, pos + light_pos);
+
+    // Draw NMRMesh
+    if (drawShape){
+
+        ImGui::Begin("Gizmo");
+        ImGui::Checkbox("Show Gizmo", &showGizmo);
+        if (win.width > 0 && win.height > 0) {
+            drawCubeView(camera, win);
+            if (showGizmo){
+                EditTransform(camera, pos, rot, eulerRotation, scale, win);
+            };
+        }
+        ImGui::End();
+        
+        if (drawPoints){
+            SetPrimative(GL_POINTS);
+            Draw(shaders["points"], camera, drawMat, pos, rot, nmrSize * scale);
+        } else {
+            SetPrimative(GL_TRIANGLES);
+            Draw(shaders["default"], camera, drawMat, pos, rot, nmrSize * scale);
+        }
+        if (showNormals) {
+            Draw(shaders["normals"], camera, drawMat, pos, rot, nmrSize * scale);
+        }
+    }
+}
+
+void NMRMesh::DisplaySecondPass(Camera & camera, Shaders &shaders)
+{
+    // Draw bounding box with inverted culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
+    if (drawBoundingBox) {
+        boundingBox->Draw(shaders["projection"], camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
+    }
+    glDisable(GL_CULL_FACE);
+
+    // *******************************
+    // * Post Processing & Rendering *
+    // *******************************
+
+    // Pass stencil test only when not equal to one
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    // Disable writing to stencil mask to avoid modifying afterwards
+    glStencilMask(0x00);
+    // Disable depth buffer to avoid modifying
+    glDisable(GL_DEPTH_TEST);
+    // Enable rgb + alpha blending
+    glEnable(GL_BLEND);
+
+    stencilUI(shaders["stencil"], outline, stencil_color);
+    
+    // Redraw objects with post-processing
+    if (drawShape){
+        Draw(shaders["stencil"], camera, drawMat, pos, rot, nmrSize * scale);
+    }
+
+    // Disable RGB + Alpha blending
+    glDisable(GL_BLEND);
+    // Clear stencil mask and stencil test
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    // Re-enable depth buffer
+    glEnable(GL_DEPTH_TEST);
+
 }

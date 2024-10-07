@@ -30,6 +30,11 @@ class Camera
 
         glm::mat4 view = MAT_IDENTITY;
 
+        // Camera Attributes
+        float FOVdeg = 45.0f;
+        float nearPlane = 0.1f;
+        float farPlane = 100.0f;
+
         // Prevents the camera from jumping around when first clicking left click
         bool firstClick = true;
 
@@ -48,7 +53,7 @@ class Camera
         Camera(int width, int height, glm::vec3 position);
 
         // Update the view and projection matrices of the camera
-        void UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, float farPlane);
+        void UpdateMatrix(int width, int height);
 
         // Export the camera matrix to the vertex Shader
         void Matrix(Shader& shader, const char* uniform);

@@ -58,7 +58,7 @@ farPlane : float
 useUniqueView : bool
     Whether or not to use uniqueView variable for view
 */
-void Camera::UpdateMatrix(int width, int height, float FOVdeg, float nearPlane, float farPlane){
+void Camera::UpdateMatrix(int width, int height){
     Camera::width = width;
     Camera::height = height;
 
