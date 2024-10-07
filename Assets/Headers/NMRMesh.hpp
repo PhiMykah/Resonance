@@ -37,7 +37,7 @@ class NMRMesh : public Mesh
         NMRMesh();
 
         // Destructor
-        ~NMRMesh();
+        // ~NMRMesh();
 
         // Initialize and create a NMRMesh based on given NMR file and primative
         NMRMesh(std::string file, GLenum primative = GL_TRIANGLES); //Vertices& vertices, Indices& indices, Textures& textures
@@ -60,6 +60,15 @@ class NMRMesh : public Mesh
         void Display(WindowData &win, Camera & camera, Shaders &shaders);
 
         void DisplaySecondPass(Camera & camera, Shaders &shaders);
+
+        // Public variables
+        
+        // Mesh attributes
+        glm::mat4 drawMat = glm::mat4(1.0);
+        glm::vec3 pos = ZEROS;
+        glm::quat rot = QUAT_IDENTITY;
+        glm::vec3 eulerRotation = glm::eulerAngles(rot);
+        glm::vec3 scale = ONES;
 
     private:
         // Private functions
@@ -92,13 +101,6 @@ class NMRMesh : public Mesh
         float pointSize = 1.0f;
         float nmrSize = 1.0f;
         float normalLength = 1.0f;
-
-        // Mesh attributes
-        glm::mat4 drawMat = glm::mat4(1.0);
-        glm::vec3 pos = ZEROS;
-        glm::quat rot = QUAT_IDENTITY;
-        glm::vec3 eulerRotation = glm::eulerAngles(rot);
-        glm::vec3 scale = ONES;
 
         // Light attributes
         glm::vec4 light_color = WHITE;

@@ -8,6 +8,7 @@
 #include "Model.hpp"
 #include "Cubemap.hpp"
 #include "Shader.hpp"
+#include "FBO.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -35,6 +36,9 @@ int main()
     // GLFW parameters
     int width = 800; // Window width
     int height = 800; // Window height
+    int prevWidth = width;
+    int prevHeight = height;
+
     const char *title = "Resonance"; // Window name
     GLFWmonitor *fullscreen = NULL; // Use `glfwGetPrimaryMonitor()` for fullscreen
 
@@ -89,7 +93,8 @@ int main()
 
     std::vector<std::string> shader_list = {
         "default", "points", "light", "nmr", "stencil",
-        "skybox", "projection", "normals", "lines"
+        "skybox", "projection", "normals", "lines",
+        "selection"
     };
 
     std::map<std::string, Shader> shaders;
@@ -141,45 +146,6 @@ int main()
 
     // Set Background color
     glm::vec4 bg_color = glm::vec4((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0), 1.0f);
-    
-    // General attributes
-    glm::quat rot = QUAT_IDENTITY;
-    glm::vec3 eulerRotation = glm::eulerAngles(rot);
-
-    // Object attributes
-    bool drawShape = true; // Object visibility
-    bool drawBoundingBox = true;
-    // float objSize = 0.250;     // Object size
-    // glm::vec3 objPos = glm::vec3(0.5f, 0.0f, 1.0f);
-    // glm::vec3 objScale = ONES;
-
-    // NMR attributes
-    bool showNMR = false;
-    bool drawPoints = false;
-    float pointSize = 1.0;
-    float nmrSize = 1.0;
-    glm::mat4 nmrMat = MAT_IDENTITY;
-    glm::vec3 nmrPos = ZEROS;
-    glm::vec3 nmrScale = ONES;
-
-    // Gizmo attributes
-    bool showGizmo = true;
-
-    // Normals display attributes
-    bool showNormals = false;
-    float normalLength = 0.01f;
-
-    // Bounding box attributes
-    glm::vec3 bbPos = glm::vec3(0.0, 0.0, 0.0);
-    glm::vec3 bbScale = glm::vec3(2.0);
-
-    // Stencil attributes
-    float outline = 0.50f; // Stencil buffer outline
-    float stencil_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Stencil buffer color
-
-    // Light Attributes 
-    float light_distance = 0.8f;
-    float light_rotation = glm::radians(0.0f); // Initial rotation value
 
     // Set everything with render settings
     glRenderSettings();
@@ -215,7 +181,7 @@ int main()
     Line axis_lines(axis_points, line_points);
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
-
+    std::vector<NMRMesh> nmrMeshes(1);
     // Initialize camera view
     Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 4.0f));
 
@@ -240,13 +206,27 @@ int main()
 
     skybox.BindTextures();
 
+    // **************************
+    // * Selection Frame Buffer *
+    // **************************
+
+    SelectionFBO selection;
+    selection.Init(width, height);
+
     // ****************** WHILE LOOP *************************
 
     // While loop repeats until window is told to close or user closes window
     while (!glfwWindowShouldClose(main_window))
-    {
+    {   
         // Update window size
         glfwGetWindowSize(main_window, &win.width, &win.height);
+
+        if (win.width != prevWidth || win.height != prevHeight) {
+            selection.Resize(win.width, win.height);
+        }
+
+        prevWidth = win.width;
+        prevHeight = win.height;
 
         // ************************
         // * Update Frame Counter *
@@ -328,15 +308,22 @@ int main()
                 delete nmrMesh;
             }
             nmrMesh = new NMRMesh(nmrFile);
+            nmrMeshes[0] = NMRMesh(nmrFile);
             currFile = nmrFile;
-            showNMR = true;
             nmrMesh->resetAttributes();
         }
         
         if (nmrMesh != NULL) {
             nmrMesh->updateUniforms(shaders);
             nmrMesh->Display(win, camera, shaders);
+            selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
             
+            double x, y;
+            glfwGetCursorPos(main_window, &x, &y);
+            FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x), static_cast<GLuint>(y));
+            printf("Pixel (%d, %d): ", static_cast<GLuint>(x), static_cast<GLuint>(y));
+            selected_pixel.Print();
+
             glLineWidth(4.0f);
             axis_lines.Draw(shaders["lines"], camera);
             glLineWidth(1.0f);
@@ -366,6 +353,7 @@ int main()
     for (auto & [name, shader] : shaders) {
         shader.Delete();
     }
+    selection.Delete();
     glfwDestroyWindow(main_window); // Close window when complete
     glfwTerminate();                // Terminate glfw process
 

@@ -4,10 +4,10 @@ NMRMesh::NMRMesh(){
     NMRMesh::Constructor();
 }
 
-NMRMesh::~NMRMesh()
-{
-    delete boundingBox;
-}
+// NMRMesh::~NMRMesh()
+// {
+//     delete boundingBox;
+// }
 
 NMRMesh::NMRMesh(std::string file, GLenum primative){
     NMRMesh::primative = primative;
