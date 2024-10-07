@@ -20,10 +20,6 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-// Other Headers
-#include "Shapes.hpp"
-#include "UI.hpp"
-
 // Define Shape Verts & indices
 #define vertices Shapes::plane_vertices
 #define indices Shapes::plane_indices
@@ -182,7 +178,7 @@ int main()
     float stencil_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Stencil buffer color
 
     // Light Attributes 
-    float light_distance = 0.8;
+    float light_distance = 0.8f;
     float light_rotation = glm::radians(0.0f); // Initial rotation value
 
     // Set everything with render settings

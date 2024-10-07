@@ -12,10 +12,10 @@ namespace Shapes {
 // * Define Triangle *
 // *******************
 
-float root3_3 = float(sqrt(3)) / 3.0f; // sqrt(3) / 3
+float inline root3_3 = float(sqrt(3)) / 3.0f; // sqrt(3) / 3
 
 // Initialize triangle vertex array
-Vertex triangle_vertices[] =
+Vertex inline triangle_vertices[] =
 { //               COORDINATES           /            NORMALS         /           COLORS         /       TEXTURE COORDINATES    //
     Vertex{glm::vec3(-0.50f, -0.5f * 	 root3_3,  0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3( 0.80f,  0.30f,  0.02f), glm::vec2( 0.00f, 0.00f)}, // Bottom left corner
     Vertex{glm::vec3( 0.50f, -0.5f *     root3_3,  0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3( 0.80f,  0.30f,  0.02f), glm::vec2( 1.00f, 0.00f)}, // Bottom right corner
@@ -26,7 +26,7 @@ Vertex triangle_vertices[] =
 };
 
 // Initialize Index buffer to tell vertex shader the order to form primitives
-GLuint triangle_indices[] =
+GLuint inline triangle_indices[] =
 {
     0, 3, 5, // Lower left triangle uses vertices 0, 3, and 5
     3, 2, 4, // Lower right triangle uses vertices 3, 2, and 4
@@ -38,7 +38,7 @@ GLuint triangle_indices[] =
 // * Define Square *
 // *****************
 
-Vertex square_vertices[] =
+Vertex inline square_vertices[] =
 { //               COORDINATES           /            NORMALS         /           COLORS         /       TEXTURE COORDINATES    //
     Vertex{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3( 0.0f, 0.0f, 1.0f), glm::vec3( 1.00f, 0.00f, 0.00f), glm::vec2( 0.00f, 0.00f)},          // Bottom left corner
     Vertex{glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3( 0.0f, 0.0f, 1.0f), glm::vec3( 0.00f, 1.00f, 0.00f), glm::vec2( 0.00f, 1.00f)},          // Top left corner
@@ -46,7 +46,7 @@ Vertex square_vertices[] =
     Vertex{glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec3( 0.0f, 0.0f, 1.0f), glm::vec3( 1.00f, 1.00f, 1.00f), glm::vec2( 1.00f, 0.00f)}           // Bottom right corner
 };
 
-GLuint square_indices[] =
+GLuint inline square_indices[] =
 {
     0, 2, 1, // Upper triangle
     0, 3, 2  // Lower triangle
@@ -58,7 +58,7 @@ GLuint square_indices[] =
 // ******************
 
 // Vertices are duplicated since the normals will be different on each side of the pyramid.
-Vertex pyramid_vertices[] =
+Vertex inline pyramid_vertices[] =
   
 { //               COORDINATES           /            NORMALS         /           COLORS         /       TEXTURE COORDINATES    //
 	Vertex{glm::vec3(-0.5f, 0.0f,  0.5f), glm::vec3( 0.0f, -1.0f, 0.0f), glm::vec3(0.83f, 0.70f, 0.44f), glm::vec2(0.0f, 0.0f)}, // Bottom side
@@ -83,7 +83,7 @@ Vertex pyramid_vertices[] =
 	Vertex{glm::vec3( 0.0f, 0.8f,  0.0f), glm::vec3( 0.0f, 0.5f,  0.8f), glm::vec3(0.92f, 0.86f, 0.76f), glm::vec2(2.5f, 5.0f)}  // Facing side
 };
 
-GLuint pyramid_indices[] =
+GLuint inline pyramid_indices[] =
 {
 	0, 1, 2, // Bottom side
 	0, 2, 3, // Bottom side
@@ -97,7 +97,7 @@ GLuint pyramid_indices[] =
 // ****************
 // * Define Plane *
 // ****************
-Vertex plane_vertices[] = 
+Vertex inline plane_vertices[] = 
 { //               COORDINATES           /            NORMALS         /           COLORS         /       TEXTURE COORDINATES    //
 	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
 	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
@@ -105,7 +105,7 @@ Vertex plane_vertices[] =
 	Vertex{glm::vec3( 1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
-GLuint plane_indices[] = 
+GLuint inline plane_indices[] = 
 {
     0, 1, 2,
     0, 2, 3
@@ -115,7 +115,7 @@ GLuint plane_indices[] =
 // ***************
 // * Define Cube *
 // ***************
-Vertex cube_vertices[] =
+Vertex inline cube_vertices[] =
 { //     COORDINATES     //
 	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
 	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
@@ -127,7 +127,7 @@ Vertex cube_vertices[] =
 	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
 
-GLuint cube_indices[] =
+GLuint inline cube_indices[] =
 {
     0, 1, 2, // 		Clockwise triangle (Bottom 1)
     0, 2, 3, // 		Clockwise triangle (Bottom 2)
@@ -147,7 +147,7 @@ GLuint cube_indices[] =
 // ********************
 // * Define Rectangle *
 // ********************
-float rectangle_vertices[] =
+float inline rectangle_vertices[] =
 {
 	// Coords    // texCoords
 	 1.0f, -1.0f,  1.0f, 0.0f,
@@ -163,7 +163,7 @@ float rectangle_vertices[] =
 // * Define Cubemap *
 // ******************
 
-float cubemap_vertices[] =
+float inline cubemap_vertices[] =
 {
 	//   Coordinates
 	-1.0f, -1.0f,  1.0f,//        7--------6
@@ -176,7 +176,7 @@ float cubemap_vertices[] =
 	-1.0f,  1.0f, -1.0f
 };
 
-unsigned int cubemap_indices[] =
+unsigned int inline cubemap_indices[] =
 {
 	// Right
 	1, 2, 6,

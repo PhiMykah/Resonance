@@ -1,36 +1,7 @@
 #include "NMRMesh.hpp"
-#include "Cubemap.hpp"
-#include "Shapes.hpp"
 
 NMRMesh::NMRMesh(){
-
-    // ***********************
-    // * Create Bounding Box *
-    // ***********************
-
-    boundingBox = new Cubemap("Assets/Textures/Skybox/SolidColor/", PNG);
-
-    boundingBox->BindTextures();
-
-    // *************************
-    // * Creating Light Object *
-    // *************************
-
-    Texture textures[]
-    {
-        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
-        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
-    };
-
-    // Create vectors for vertices, indices, and textures
-    // Textures will be the same since light does not utilize textures
-    Vertices light_verts(Shapes::cube_vertices, 
-                         Shapes::cube_vertices + sizeof(Shapes::cube_vertices) / sizeof(Vertex));
-    Indices light_ind(Shapes::cube_indices,
-                      Shapes::cube_indices + sizeof(Shapes::cube_indices) / sizeof(GLuint));
-    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    light = new Mesh(light_verts, light_ind, tex);
+    NMRMesh::Constructor();
 }
 
 NMRMesh::~NMRMesh()
@@ -77,10 +48,42 @@ NMRMesh::NMRMesh(std::string file, GLenum primative){
     // Consider emptying mat here since data is now in vertices
     initMesh(NMRMesh::vertices, NMRMesh::indices, NMRMesh::textures);
 
-    NMRMesh();
+    NMRMesh::Constructor();
 }
 
-void NMRMesh::NMRToVertex(){
+void NMRMesh::Constructor()
+{
+    // ***********************
+    // * Create Bounding Box *
+    // ***********************
+
+    boundingBox = new Cubemap("Assets/Textures/Skybox/SolidColor/", PNG);
+
+    boundingBox->BindTextures();
+
+    // *************************
+    // * Creating Light Object *
+    // *************************
+
+    Texture textures[]
+    {
+        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
+        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
+    };
+
+    // Create vectors for vertices, indices, and textures
+    // Textures will be the same since light does not utilize textures
+    Vertices light_verts(Shapes::cube_vertices, 
+                         Shapes::cube_vertices + sizeof(Shapes::cube_vertices) / sizeof(Vertex));
+    Indices light_ind(Shapes::cube_indices,
+                      Shapes::cube_indices + sizeof(Shapes::cube_indices) / sizeof(GLuint));
+    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+    light = new Mesh(light_verts, light_ind, tex);
+}
+
+void NMRMesh::NMRToVertex()
+{
     switch (NMRMesh::dimCount)
     {
     case 2:
@@ -266,7 +269,7 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
         ImGui::Begin("Gizmo");
         ImGui::Checkbox("Show Gizmo", &showGizmo);
         if (win.width > 0 && win.height > 0) {
-            drawCubeView(camera, win);
+            // drawCubeView(camera, win);
             if (showGizmo){
                 EditTransform(camera, pos, rot, eulerRotation, scale, win);
             };

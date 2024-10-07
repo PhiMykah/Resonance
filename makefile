@@ -20,7 +20,6 @@ CXXFLAGS= -g -Wall -std=c++17 -I./$(inc) $(HEADERS) -I./$(inc)/imgui -I./$(inc)/
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.hpp
-UI= $(h)/UI.hpp
 CONST= $(h)/Constants.hpp
 
 IGFD = ImGuiFileDialog
@@ -35,6 +34,7 @@ LINE= $(a)/Line.o
 NMR= $(a)/NMRMesh.o
 MODEL= $(a)/Model.o
 CUBEMAP = $(a)/Cubemap.o
+UI= $(a)/UI.o
 
 DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
 
@@ -96,6 +96,9 @@ Texture.o: Shader.o
 Camera.o: Shader.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Camera.cpp -o $(CAMERA) $(LDFLAGS)
 
+UI.o : Backend.o Shader.o Camera.o
+	$(CXX) $(CXXFLAGS) -c $(src)/UI.cpp -o $(UI) $(LDFLAGS)
+	
 Mesh.o : Shader.o Buffers.o Camera.o Texture.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Mesh.cpp -o $(MESH) $(LDFLAGS)
 

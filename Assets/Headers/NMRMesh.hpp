@@ -11,6 +11,7 @@
 #include "Constants.hpp"
 #include "UI.hpp"
 #include "Cubemap.hpp"
+#include "Shapes.hpp"
 
 extern "C" {
 #include "fdatap.h"
@@ -63,11 +64,15 @@ class NMRMesh : public Mesh
     private:
         // Private functions
 
+        void Constructor();
+
         // Convert NMR data to vertex coordinates
         void NMRToVertex();
 
         // Convert 2D NMR data to vertex coordinates
         void NMR2DToVertex();
+
+        // Private Variables
 
         // Cubelight 
         Mesh * light = NULL;
@@ -79,7 +84,7 @@ class NMRMesh : public Mesh
 
         bool drawShape = true; 
         bool drawBoundingBox = true;
-        bool drawPoints = true;
+        bool drawPoints = false;
         
         bool showNormals = false;
         bool showGizmo = true;
@@ -99,8 +104,8 @@ class NMRMesh : public Mesh
         glm::vec4 light_color = WHITE;
         glm::mat4 light_model = MAT_IDENTITY;
         glm::vec3 light_pos;
-        float light_distance;
-        float light_rotation;
+        float light_distance = 0.8f;
+        float light_rotation = 0.0f;
 
         // BoundingBox attributes
         glm::vec3 bbPos = ZEROS;
@@ -110,8 +115,7 @@ class NMRMesh : public Mesh
         float outline = 0.50f; // Stencil buffer outline
         float stencil_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Stencil buffer color
 
-        // Private Variables
-
+        // NMR variables
         int sizeList[MAXDIM], qSizeList[MAXDIM], dimCount;
         float fdata[FDATASIZE];
         NMR_INT totalSize;

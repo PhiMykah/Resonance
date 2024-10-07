@@ -70,15 +70,6 @@
     <Filter Include="Resource Files\Textures\Skybox\Paris">
       <UniqueIdentifier>{d657ce5d-de55-4c71-8f41-82840a3c9d35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\frag">
-      <UniqueIdentifier>{46e1614f-d6cc-4eae-b435-29452c632cb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\geom">
-      <UniqueIdentifier>{dc6e74d9-82f1-41e2-8275-95a86546b8f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\vert">
-      <UniqueIdentifier>{92553c84-e4da-4ba0-b732-7054917caa59}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include Files">
       <UniqueIdentifier>{23b3589e-1c6b-4cd6-8707-1460a93e57bb}</UniqueIdentifier>
     </Filter>
@@ -108,6 +99,33 @@
     </Filter>
     <Filter Include="Include Files\ImGuizmo\Source">
       <UniqueIdentifier>{6ead3292-8fe6-41fe-8187-6c141e97b60e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\default">
+      <UniqueIdentifier>{70e278fd-a6d4-47c7-bef5-d653b5b1f52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\light">
+      <UniqueIdentifier>{7a30e1a1-fa4e-4c1f-9b64-be8e9a9eadd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\lines">
+      <UniqueIdentifier>{3c37ae74-c388-4b55-9882-eed98cb0f1c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\nmr">
+      <UniqueIdentifier>{e09e78bf-b2bb-4f8c-a8ec-902467a0bd0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\normals">
+      <UniqueIdentifier>{bb611b63-6143-4cd6-8401-f8d6648f8d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\points">
+      <UniqueIdentifier>{6b9d3685-6cc4-4caf-bc81-08af7415b8f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\projection">
+      <UniqueIdentifier>{3859a057-50cb-413c-878d-0de178f0defa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\skybox">
+      <UniqueIdentifier>{54525110-6073-4d4b-becb-b6d4c3f6f05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\stencil">
+      <UniqueIdentifier>{9eeb7e6b-9ea7-460e-a47c-e9d7d8dfb6df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -248,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="Assets\Libraries\include\ImGuizmo\ImGuizmo.cpp">
       <Filter>Include Files\ImGuizmo\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Source\UI.cpp">
+      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,78 +448,6 @@
     <None Include="makefile">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Assets\Shaders\frag\lines.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\nmr.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\normals.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\projection.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\skybox.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\stencil_outline.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\default.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\frag\light.frag">
-      <Filter>Resource Files\Shaders\frag</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\lines.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\nmr.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\normals.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\projection.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\skybox.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\stencil_outline.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\default.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\geom\light.geom">
-      <Filter>Resource Files\Shaders\geom</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\nmr.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\normals.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\projection.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\skybox.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\stencil_outline.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\default.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\light.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
-    <None Include="Assets\Shaders\vert\lines.vert">
-      <Filter>Resource Files\Shaders\vert</Filter>
-    </None>
     <None Include="spectra\ramp.ft2">
       <Filter>Resource Files\NMRFiles</Filter>
     </None>
@@ -510,6 +459,87 @@
     </None>
     <None Include="spectra\sp.ft2">
       <Filter>Resource Files\NMRFiles</Filter>
+    </None>
+    <None Include="Assets\Shaders\default\default.geom">
+      <Filter>Resource Files\Shaders\default</Filter>
+    </None>
+    <None Include="Assets\Shaders\default\default.vert">
+      <Filter>Resource Files\Shaders\default</Filter>
+    </None>
+    <None Include="Assets\Shaders\default\default.frag">
+      <Filter>Resource Files\Shaders\default</Filter>
+    </None>
+    <None Include="Assets\Shaders\light\light.geom">
+      <Filter>Resource Files\Shaders\light</Filter>
+    </None>
+    <None Include="Assets\Shaders\light\light.vert">
+      <Filter>Resource Files\Shaders\light</Filter>
+    </None>
+    <None Include="Assets\Shaders\light\light.frag">
+      <Filter>Resource Files\Shaders\light</Filter>
+    </None>
+    <None Include="Assets\Shaders\lines\lines.geom">
+      <Filter>Resource Files\Shaders\lines</Filter>
+    </None>
+    <None Include="Assets\Shaders\lines\lines.vert">
+      <Filter>Resource Files\Shaders\lines</Filter>
+    </None>
+    <None Include="Assets\Shaders\lines\lines.frag">
+      <Filter>Resource Files\Shaders\lines</Filter>
+    </None>
+    <None Include="Assets\Shaders\nmr\nmr.frag">
+      <Filter>Resource Files\Shaders\nmr</Filter>
+    </None>
+    <None Include="Assets\Shaders\nmr\nmr.geom">
+      <Filter>Resource Files\Shaders\nmr</Filter>
+    </None>
+    <None Include="Assets\Shaders\nmr\nmr.vert">
+      <Filter>Resource Files\Shaders\nmr</Filter>
+    </None>
+    <None Include="Assets\Shaders\normals\normals.geom">
+      <Filter>Resource Files\Shaders\normals</Filter>
+    </None>
+    <None Include="Assets\Shaders\normals\normals.vert">
+      <Filter>Resource Files\Shaders\normals</Filter>
+    </None>
+    <None Include="Assets\Shaders\normals\normals.frag">
+      <Filter>Resource Files\Shaders\normals</Filter>
+    </None>
+    <None Include="Assets\Shaders\points\points.geom">
+      <Filter>Resource Files\Shaders\points</Filter>
+    </None>
+    <None Include="Assets\Shaders\points\points.vert">
+      <Filter>Resource Files\Shaders\points</Filter>
+    </None>
+    <None Include="Assets\Shaders\points\points.frag">
+      <Filter>Resource Files\Shaders\points</Filter>
+    </None>
+    <None Include="Assets\Shaders\projection\projection.frag">
+      <Filter>Resource Files\Shaders\projection</Filter>
+    </None>
+    <None Include="Assets\Shaders\projection\projection.geom">
+      <Filter>Resource Files\Shaders\projection</Filter>
+    </None>
+    <None Include="Assets\Shaders\projection\projection.vert">
+      <Filter>Resource Files\Shaders\projection</Filter>
+    </None>
+    <None Include="Assets\Shaders\skybox\skybox.frag">
+      <Filter>Resource Files\Shaders\skybox</Filter>
+    </None>
+    <None Include="Assets\Shaders\skybox\skybox.geom">
+      <Filter>Resource Files\Shaders\skybox</Filter>
+    </None>
+    <None Include="Assets\Shaders\skybox\skybox.vert">
+      <Filter>Resource Files\Shaders\skybox</Filter>
+    </None>
+    <None Include="Assets\Shaders\stencil\stencil.frag">
+      <Filter>Resource Files\Shaders\stencil</Filter>
+    </None>
+    <None Include="Assets\Shaders\stencil\stencil.geom">
+      <Filter>Resource Files\Shaders\stencil</Filter>
+    </None>
+    <None Include="Assets\Shaders\stencil\stencil.vert">
+      <Filter>Resource Files\Shaders\stencil</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
