@@ -59,7 +59,23 @@ class NMRMesh : public Mesh
         // Display object instance
         void Display(WindowData &win, Camera & camera, Shaders &shaders);
 
-        void DisplaySecondPass(Camera & camera, Shaders &shaders);
+        // Display all UI elements
+        void DisplayUI(WindowData &win, Camera & camera, Shaders &shaders);
+
+        // Bounding Box Display
+        void DisplayBoundingBox(Camera & camera, Shaders &shaders);
+
+        // Stencil Display
+        void DisplayStencil(Camera & camera, Shaders &shaders);
+        
+        // Spectral settings UI
+        void SpectraUI();
+
+        // Stencil Settins UI
+        void StencilUI(Shader & shader, float & outline, float color[4]);
+
+        // Edit transform gizmo
+        void EditTransform(const Camera& camera, WindowData win);
 
         // Public variables
         
@@ -73,7 +89,7 @@ class NMRMesh : public Mesh
     private:
         // Private functions
 
-        void Constructor();
+        void Constructor(unsigned int ID);
 
         // Convert NMR data to vertex coordinates
         void NMRToVertex();
@@ -81,7 +97,14 @@ class NMRMesh : public Mesh
         // Convert 2D NMR data to vertex coordinates
         void NMR2DToVertex();
 
+        // Creates ImGuiUI text with ID tag
+        const char * UITxt(char * text);
+
         // Private Variables
+
+        static unsigned int nextID; // next ID of NMRMesh object
+        unsigned int ID; // Unique NMRMesh object ID
+        char IDTag [15]; // Tag for ID
 
         // Cubelight 
         Mesh * light = NULL;
@@ -100,7 +123,7 @@ class NMRMesh : public Mesh
 
         float pointSize = 1.0f;
         float nmrSize = 1.0f;
-        float normalLength = 1.0f;
+        float normalLength = 0.05f;
 
         // Light attributes
         glm::vec4 light_color = WHITE;

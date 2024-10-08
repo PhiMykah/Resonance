@@ -135,6 +135,13 @@ void OpenFileDialog()
     ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*,.fid,.ft2,.ft3,.ft4", config);
 }
 
+void AddFileDialog()
+{
+    IGFD::FileDialogConfig config;
+    config.path = ".";
+    ImGuiFileDialog::Instance()->OpenDialog("AddFileDlgKey", "Add File", ".*,.fid,.ft2,.ft3,.ft4", config);
+}
+
 void glRenderSettings()
 {
     // **********************

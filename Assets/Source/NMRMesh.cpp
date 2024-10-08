@@ -1,7 +1,9 @@
 #include "NMRMesh.hpp"
 
+unsigned int NMRMesh::nextID = 1;
+
 NMRMesh::NMRMesh(){
-    NMRMesh::Constructor();
+    NMRMesh::Constructor(nextID++);
 }
 
 // NMRMesh::~NMRMesh()
@@ -48,11 +50,16 @@ NMRMesh::NMRMesh(std::string file, GLenum primative){
     // Consider emptying mat here since data is now in vertices
     initMesh(NMRMesh::vertices, NMRMesh::indices, NMRMesh::textures);
 
-    NMRMesh::Constructor();
+    NMRMesh::Constructor(nextID++);
 }
 
-void NMRMesh::Constructor()
+void NMRMesh::Constructor(unsigned int ID)
 {
+    // Set Mesh ID
+    NMRMesh::ID = ID;
+
+    sprintf(IDTag, "##%d", NMRMesh::ID);
+
     // ***********************
     // * Create Bounding Box *
     // ***********************
@@ -123,6 +130,13 @@ void NMRMesh::NMR2DToVertex(){
     
 }
 
+const char *NMRMesh::UITxt(char *text)
+{
+    thread_local std::string tag;
+    tag = std::string(text) + "##" + std::to_string(ID);
+    return(tag.c_str());
+}
+
 /*
     {
     glm::vec3 multi_index = glm::vec3(0.0);
@@ -161,40 +175,6 @@ void NMRMesh::Draw(
     glm::quat rotation, glm::vec3 scale
     ){
     Mesh::Draw(shader, camera, matrix, translation, rotation, scale);
-    /*
-        // Activate shader and bind vao to shader
-        shader.Activate();
-        vao.Bind();
-
-        // Initialize diffuse texture and specular texture count
-        unsigned int numDiffuse = 0;
-        unsigned int numSpecular = 0;
-
-        // For loop iterates over all textures, and categorizes each texture
-        // as diffuse or specular
-        for (unsigned int i = 0; i < textures.size(); i++) {
-            std::string num;
-            std::string type = textures[i].type;
-            // Increment diffuse texture count if texture is diffuse
-            if (type == "diffuse") {
-                num = std::to_string(numDiffuse++); // Increment happens after line is run
-            }
-            // Increment specular texture count if texture is specular
-            else if (type == "specular") {
-                num = std::to_string(numSpecular++); // Increment happens after line is run
-            }
-
-            // Add texture to texUnit based on number given
-            textures[i].texUnit(shader, (type + num).c_str(), i);
-            // Bind the texture to shader
-            textures[i].Bind();
-        }
-        // Send camera position to shader and perform camera matrix calculations
-        glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-        camera.Matrix(shader, "camMatrix");
-
-        glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, 0);
-    */
 }
 
 void NMRMesh::updateUniforms(Shaders & shaders)
@@ -237,7 +217,7 @@ void NMRMesh::updateUniforms(Shaders & shaders)
 
 }
 
-void NMRMesh::resetAttributes()
+void NMRMesh::resetAttributes() 
 {
     pos = ZEROS;
     scale = ONES;
@@ -247,15 +227,17 @@ void NMRMesh::resetAttributes()
 
 void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
 {
-    // *******************
-    // * Main UI Drawing *
-    // *******************
 
-    // Create UI Window
-    spectraUI(
-        &drawShape, &drawBoundingBox, drawPoints, &pointSize, &nmrSize, &showNormals, 
-        &normalLength, &light_distance, &light_rotation
-        );
+    // ***********************
+    // * Set Render Settings *
+    // ***********************
+
+    glRenderSettings();
+
+    // Enable writing to entire stencil buffer
+    //            function | ref | bitwise AND mask
+    glStencilFunc(GL_ALWAYS,  1,    0xFF);
+    glStencilMask(0xFF);
 
     // **************
     // * Draw Light *
@@ -263,19 +245,18 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
 
     light->Draw(shaders["light"], camera, light_model, pos + light_pos);
 
-    // Draw NMRMesh
-    if (drawShape){
+    // **************
+    // * UI Drawing *
+    // **************
 
-        ImGui::Begin("Gizmo");
-        ImGui::Checkbox("Show Gizmo", &showGizmo);
-        if (win.width > 0 && win.height > 0) {
-            // drawCubeView(camera, win);
-            if (showGizmo){
-                EditTransform(camera, pos, rot, eulerRotation, scale, win);
-            };
-        }
-        ImGui::End();
-        
+    DisplayUI(win, camera, shaders);
+    
+    // ****************
+    // * Mesh Drawing *
+    // ****************
+
+    // First Draw Pass
+    if (drawShape){
         if (drawPoints){
             SetPrimative(GL_POINTS);
             Draw(shaders["points"], camera, drawMat, pos, rot, nmrSize * scale);
@@ -287,23 +268,77 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
             Draw(shaders["normals"], camera, drawMat, pos, rot, nmrSize * scale);
         }
     }
+
+    // ******************************************
+    // * Post Processing & Additional Rendering *
+    // ******************************************
+
+    if (drawBoundingBox) {
+        DisplayBoundingBox(camera, shaders);
+    }
+
+    if (drawShape) {
+        DisplayStencil(camera, shaders);
+    }
 }
 
-void NMRMesh::DisplaySecondPass(Camera & camera, Shaders &shaders)
+void NMRMesh::DisplayUI(WindowData &win, Camera & camera, Shaders &shaders)
+{
+    std::string spec = "Spectra #";
+    spec += std::to_string(ID);
+
+    if (ImGui::Begin(spec.c_str())) 
+    {
+        if (ImGui::BeginTabBar(UITxt("SpectraSettings")))
+        {
+            // Spectral Settings Tab
+            if (ImGui::BeginTabItem(UITxt("Spectra")))
+            {
+                SpectraUI();
+                ImGui::EndTabItem();
+            }
+
+            // Gizmo tab
+            if (ImGui::BeginTabItem(UITxt("Gizmo")))
+            {
+                if (drawShape) {
+                    ImGui::Checkbox(UITxt("Show Gizmo"), &showGizmo);
+                    if (win.width > 0 && win.height > 0) {
+                        // drawCubeView(camera, win);
+                        if (showGizmo){
+                            EditTransform(camera, win);
+                        };
+                    }  
+                }
+                ImGui::EndTabItem();
+            }
+
+            // Stencil Tab
+            if (ImGui::BeginTabItem(UITxt("Stencil")))
+            {
+                StencilUI(shaders["stencil"], outline, stencil_color);
+                ImGui::EndTabItem();
+            }
+
+            ImGui::EndTabBar();
+        }
+    }
+    ImGui::End();
+
+}
+
+void NMRMesh::DisplayBoundingBox(Camera & camera, Shaders &shaders)
 {
     // Draw bounding box with inverted culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
-    if (drawBoundingBox) {
-        boundingBox->Draw(shaders["projection"], camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
-    }
+    boundingBox->Draw(shaders["projection"], camera, MAT_IDENTITY, bbPos, rot, nmrSize * bbScale);
     glDisable(GL_CULL_FACE);
+}
 
-    // *******************************
-    // * Post Processing & Rendering *
-    // *******************************
-
+void NMRMesh::DisplayStencil(Camera &camera, Shaders &shaders)
+{
     // Pass stencil test only when not equal to one
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     // Disable writing to stencil mask to avoid modifying afterwards
@@ -312,8 +347,6 @@ void NMRMesh::DisplaySecondPass(Camera & camera, Shaders &shaders)
     glDisable(GL_DEPTH_TEST);
     // Enable rgb + alpha blending
     glEnable(GL_BLEND);
-
-    stencilUI(shaders["stencil"], outline, stencil_color);
     
     // Redraw objects with post-processing
     if (drawShape){
@@ -327,5 +360,129 @@ void NMRMesh::DisplaySecondPass(Camera & camera, Shaders &shaders)
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
     // Re-enable depth buffer
     glEnable(GL_DEPTH_TEST);
+}
 
+void NMRMesh::SpectraUI(){
+
+    ImGui::Text("Do you like this shape?");                                             // Text that appears in the window
+    ImGui::Checkbox(UITxt("Draw Shape"), &drawShape);                                   // Select whether to draw the shape
+    ImGui::SliderFloat(UITxt("Scale"), &nmrSize, 0.5, 5);                               // Scale Object
+
+    ImGui::Separator();                                                                 // ------------------
+
+    ImGui::Text("Bounding Box Settings");                                               // Text for bounding box
+    ImGui::Checkbox(UITxt("Draw Bounding Box"), &drawBoundingBox);                      // Select whether to draw the bounding box
+
+    ImGui::Separator();                                                                 // ------------------
+
+    ImGui::Text("Display Type");                                                        // Text for drawing type
+    if (ImGui::RadioButton(UITxt("Mesh"), drawPoints == false))                         // Mesh draw type
+        drawPoints = false;
+    ImGui::SameLine();
+    if (ImGui::RadioButton(UITxt("Point Cloud"), drawPoints == true))                   // Point cloud draw type
+        drawPoints = true;
+    // Drawing type display settings
+    if (drawPoints) {                                                                   // Display point settings
+        ImGui::SliderFloat(UITxt("Point Size"), &pointSize, 0, 10);                     // Slider for point size
+    }
+    else {                                                                              // Display mesh settings
+        ImGui::Text("Mesh Normals");
+        ImGui::Checkbox(UITxt("Show Normals"), &showNormals);                           // Display normal vectors
+        ImGui::SliderFloat(UITxt("Normals Magnitude"), &normalLength, 0.0f, 0.1f);      // Length of normal vectors
+    }
+
+    ImGui::Separator();                                                                 // ------------------
+
+    ImGui::Text("Light Settings");                                                      // Text for light settings
+    ImGui::SliderFloat(UITxt("Light Distance"), &light_distance, 0.5f, 5.0f);           // Slider sets distance of light from center
+    ImGui::SliderAngle(UITxt("Light Rotation"), &light_rotation, 0.0f);                 // Angle on circle that light object is positioned at
+}
+
+void NMRMesh::StencilUI(Shader & shader, float & outline, float color[4]) {
+    ImGui::Text("Change the Outline Thickness?");        // Text that appears in the window
+    ImGui::SliderFloat(UITxt("Thickness"), &outline, 0.00f, 2.0f); // Size slider that appears in the window
+ 
+    ImGui::Text("Change the Outline Color?");
+    ImGui::ColorPicker4(UITxt("Color"), color);
+
+    shader.Activate(); // Activate stencil outline program
+    glUniform1f(glGetUniformLocation(shader.ID, "outlining"), outline); // Collect outline thickness parameter
+    glUniform4f(glGetUniformLocation(shader.ID, "color"), color[0], color[1], color[2], color[3]);
+}
+
+void NMRMesh::EditTransform(const Camera &camera, WindowData win)
+{
+    eulerRotation = glm::eulerAngles(rot);
+    glm::mat4 modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    // glm::mat4 gridMatrix = glm::translate(MAT_IDENTITY, glm::vec3(0.0f, -2.0f, 0.0f));
+
+    float matrix[16];
+
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
+
+    static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+    static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+
+    if (ImGui::IsKeyPressed(ImGuiKey_T)) mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+    if (ImGui::IsKeyPressed(ImGuiKey_R)) mCurrentGizmoOperation = ImGuizmo::ROTATE;
+    if (ImGui::IsKeyPressed(ImGuiKey_G)) mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+    if (ImGui::Button(UITxt("Reset"))){
+        pos = ZEROS;
+        scale = ONES;
+        rot = QUAT_IDENTITY;
+        eulerRotation = glm::eulerAngles(rot);
+    }
+    
+    if (ImGui::RadioButton(UITxt("Translate"), mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+        mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+    ImGui::SameLine();
+    if (ImGui::RadioButton(UITxt("Rotate"), mCurrentGizmoOperation == ImGuizmo::ROTATE))
+        mCurrentGizmoOperation = ImGuizmo::ROTATE;
+    ImGui::SameLine();
+    if (ImGui::RadioButton(UITxt("Scale"), mCurrentGizmoOperation == ImGuizmo::SCALE))
+        mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+    ImGui::InputFloat3(UITxt("Translation"), glm::value_ptr(pos), "%.3f");
+    
+    // ImGui::PushItemFlag(ImGui::ImGuiItemFlags_Disabled, true);  // Disable the input field
+    ImGui::InputFloat3(UITxt("Rotation"), glm::value_ptr(eulerRotation), "%.3f", ImGuiInputTextFlags_ReadOnly);
+    // ImGui::PopItemFlag();  // Re-enable for the rest of the UI
+
+    ImGui::InputFloat3(UITxt("Scale"), glm::value_ptr(scale), "%.3f");
+
+    rot = glm::quat(eulerRotation);
+    modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
+
+    if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+    {
+        if (ImGui::RadioButton(UITxt("Local"), mCurrentGizmoMode == ImGuizmo::LOCAL))
+            mCurrentGizmoMode = ImGuizmo::LOCAL;
+        ImGui::SameLine();
+        if (ImGui::RadioButton(UITxt("World"), mCurrentGizmoMode == ImGuizmo::WORLD))
+            mCurrentGizmoMode = ImGuizmo::WORLD;
+    }
+
+    ImGuiIO& io = ImGui::GetIO();
+    
+    glm::mat4 view = MAT_IDENTITY;
+    glm::mat4 projection = MAT_IDENTITY;
+
+    view = glm::lookAt(camera.position, camera.position + camera.orientation, camera.up);
+    projection = glm::perspective(glm::radians(camera.FOVdeg), (float)(float(win.width)/(float)(win.height)), camera.nearPlane, camera.farPlane);
+
+    // ImGuizmo::DrawGrid((float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), (float *)glm::value_ptr(gridMatrix), 10.f);
+    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    ImGuizmo::Manipulate(
+        (float *)glm::value_ptr(view), (float *)glm::value_ptr(projection), 
+        mCurrentGizmoOperation, mCurrentGizmoMode, matrix
+    );
+    
+    // Decompose the matrix to pos, rot, scale
+    glm::mat4 newMatrix = glm::make_mat4(matrix);
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(newMatrix, scale, rot, pos, skew, perspective);
+    
 }

@@ -51,7 +51,19 @@ void ToggleFullscreen(GLFWwindow * window);
 
 void OpenFileDialog();
 
+void AddFileDialog();
+
 void glRenderSettings();
+
+struct ScopedID {
+    ScopedID(unsigned int id) {
+        ImGui::PushID(id);  // Push the ID when the object is created
+    }
+
+    ~ScopedID() {
+        ImGui::PopID();  // Pop the ID when the object is destroyed
+    }
+};
 
 // Callbacks
 void window_size_callback(GLFWwindow* window, int width, int height);

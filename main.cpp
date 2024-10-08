@@ -106,7 +106,8 @@ int main()
     // * Creating NMR Object *
     // ***********************
 
-    std::string nmrFile;
+    std::map<std::string, void *> nmrMeshes;
+    // std::string nmrFile;
     std::string currFile;
 
     // Initialize NMR Object
@@ -181,7 +182,8 @@ int main()
     Line axis_lines(axis_points, line_points);
 
     NMRMesh * nmrMesh = (NMRMesh *) NULL;
-    std::vector<NMRMesh> nmrMeshes(1);
+    NMRMesh * currMesh = (NMRMesh *) NULL;
+
     // Initialize camera view
     Camera camera(win.width, win.height, glm::vec3(0.0f, 0.0f, 4.0f));
 
@@ -300,35 +302,36 @@ int main()
             skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);
         glEnable(GL_STENCIL_TEST);
 
-        drawMainMenu(nmrFile, main_window);
+        drawMainMenu(nmrMeshes, currFile, main_window);
 
         // Create new NMRMesh if necessary
-        if (!nmrFile.empty() && currFile != nmrFile) {
-            if (nmrMesh != NULL) {
-                delete nmrMesh;
-            }
-            nmrMesh = new NMRMesh(nmrFile);
-            nmrMeshes[0] = NMRMesh(nmrFile);
-            currFile = nmrFile;
+        if (nmrMeshes[currFile] == NULL && !currFile.empty()) {
+
+            nmrMesh = new NMRMesh(currFile);
+
+            nmrMeshes[currFile] = static_cast<void*>(nmrMesh);
+
             nmrMesh->resetAttributes();
         }
         
-        if (nmrMesh != NULL) {
-            nmrMesh->updateUniforms(shaders);
-            nmrMesh->Display(win, camera, shaders);
-            selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
-            
-            double x, y;
-            glfwGetCursorPos(main_window, &x, &y);
-            FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x), static_cast<GLuint>(y));
-            printf("Pixel (%d, %d): ", static_cast<GLuint>(x), static_cast<GLuint>(y));
-            selected_pixel.Print();
+        // selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
+                
+        // double x, y;
+        // glfwGetCursorPos(main_window, &x, &y);
+        // FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x), static_cast<GLuint>(y));
+        // printf("Pixel (%d, %d): ", static_cast<GLuint>(x), static_cast<GLuint>(y));
+        // selected_pixel.Print();
+        
+        for (auto const& [key, val] : nmrMeshes) {
+            currMesh = static_cast<NMRMesh *>(val);
+            if (currMesh != NULL) {
+                currMesh->updateUniforms(shaders);
+                currMesh->Display(win, camera, shaders);
 
-            glLineWidth(4.0f);
-            axis_lines.Draw(shaders["lines"], camera);
-            glLineWidth(1.0f);
-
-            nmrMesh->DisplaySecondPass(camera, shaders);
+                glLineWidth(4.0f);
+                axis_lines.Draw(shaders["lines"], camera);
+                glLineWidth(1.0f);
+            }
         }
 
         // Render UI Window
