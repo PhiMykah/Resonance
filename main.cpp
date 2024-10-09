@@ -314,14 +314,16 @@ int main()
             nmrMesh->resetAttributes();
         }
         
-        // selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
+        selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
                 
-        // double x, y;
-        // glfwGetCursorPos(main_window, &x, &y);
-        // FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x), static_cast<GLuint>(y));
-        // printf("Pixel (%d, %d): ", static_cast<GLuint>(x), static_cast<GLuint>(y));
-        // selected_pixel.Print();
-        
+        if (glfwGetMouseButton(main_window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+            double x, y;
+            glfwGetCursorPos(main_window, &x, &y);
+            FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x),  static_cast<GLuint>(abs(win.height - y)));
+            selection.currSel = selected_pixel.objID; 
+            NMRMesh::selID = selected_pixel.objID;
+        }
+
         for (auto const& [key, val] : nmrMeshes) {
             currMesh = static_cast<NMRMesh *>(val);
             if (currMesh != NULL) {

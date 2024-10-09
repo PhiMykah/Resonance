@@ -1,9 +1,13 @@
 #include "VAO.hpp"
 
+template class VAO<PosVertex>;
+template class VAO<Vertex>;
+template class VAO<LineVertex>;
+
 /*
 Default Constructor for vertex array class
 */
-VAO::VAO()
+template <typename Vert> VAO<Vert>::VAO()
 {
     glGenVertexArrays(1, &ID);
 }
@@ -31,7 +35,7 @@ Returns
 -------
 VAO Object
 */
-void VAO::LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents,
+template <typename Vert> void VAO<Vert>::LinkAttrib(VBO<Vert>& vbo, GLuint layout, GLuint numComponents,
                     GLenum type, GLsizeiptr stride, void* offset){
 
     vbo.Bind(); // Bind vbo to binding point for use
@@ -62,7 +66,7 @@ Returns
 -------
 None
 */
-void VAO::Bind()
+template <typename Vert> void VAO<Vert>::Bind()
 {
     glBindVertexArray(ID);
 }
@@ -78,7 +82,7 @@ Returns
 -------
 None
 */
-void VAO::Unbind(){
+template <typename Vert> void VAO<Vert>::Unbind(){
     glBindVertexArray(0);
 }
 
@@ -93,6 +97,6 @@ Returns
 -------
 None
 */
-void VAO::Delete(){
+template <typename Vert> void VAO<Vert>::Delete(){
     glDeleteVertexArrays(1, &ID);
 }

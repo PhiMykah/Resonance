@@ -10,6 +10,7 @@
 #include "Constants.hpp"
 
 #define Vertices std::vector<Vertex>
+#define PosVertices std::vector<PosVertex>
 #define Indices std::vector<GLuint>
 #define Textures std::vector<Texture>
 
@@ -22,8 +23,10 @@ class Mesh
         Vertices vertices;
         Indices indices;
         Textures textures;
+        PosVertices posVertices;
+
         GLenum primative = GL_TRIANGLES;
-        VAO vao;
+        VAO<Vertex> vao;
 
         // Empty constructor for Mesh object
         Mesh();

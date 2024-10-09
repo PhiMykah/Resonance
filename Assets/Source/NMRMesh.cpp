@@ -1,6 +1,9 @@
 #include "NMRMesh.hpp"
 
 unsigned int NMRMesh::nextID = 1;
+GLuint NMRMesh::selID = 0;
+ImGuizmo::OPERATION NMRMesh::mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+ImGuizmo::MODE NMRMesh::mCurrentGizmoMode = ImGuizmo::WORLD;
 
 NMRMesh::NMRMesh(){
     NMRMesh::Constructor(nextID++);
@@ -133,7 +136,7 @@ void NMRMesh::NMR2DToVertex(){
 const char *NMRMesh::UITxt(char *text)
 {
     thread_local std::string tag;
-    tag = std::string(text) + "##" + std::to_string(ID);
+    tag = std::string(text); // + "##" + std::to_string(selID);
     return(tag.c_str());
 }
 
@@ -215,6 +218,13 @@ void NMRMesh::updateUniforms(Shaders & shaders)
     // Export light color to light shader
     glUniform4f(glGetUniformLocation(shaders["light"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
 
+    // ********************
+    // * Stencil Settings *
+    // ********************
+    shaders["stencil"].Activate(); // Activate stencil outline program
+    glUniform1f(glGetUniformLocation(shaders["stencil"].ID, "outlining"), outline); // Collect outline thickness parameter
+    glUniform4f(glGetUniformLocation(shaders["stencil"].ID, "color"), 
+                stencil_color[0], stencil_color[1], stencil_color[2], stencil_color[3]);
 }
 
 void NMRMesh::resetAttributes() 
@@ -249,7 +259,9 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
     // * UI Drawing *
     // **************
 
-    DisplayUI(win, camera, shaders);
+    if (selID == ID) {
+        DisplayUI(win, camera, shaders);
+    }
     
     // ****************
     // * Mesh Drawing *
@@ -277,15 +289,19 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
         DisplayBoundingBox(camera, shaders);
     }
 
-    if (drawShape) {
-        DisplayStencil(camera, shaders);
+    if (selID == ID) {
+        if (drawShape) {
+            DisplayStencil(camera, shaders);
+        }
     }
+
 }
 
 void NMRMesh::DisplayUI(WindowData &win, Camera & camera, Shaders &shaders)
 {
-    std::string spec = "Spectra #";
-    spec += std::to_string(ID);
+    // std::string spec = "Spectra #";
+    // spec += std::to_string(selID);
+    std::string spec = "Spectra";
 
     if (ImGui::Begin(spec.c_str())) 
     {
@@ -305,18 +321,20 @@ void NMRMesh::DisplayUI(WindowData &win, Camera & camera, Shaders &shaders)
                     ImGui::Checkbox(UITxt("Show Gizmo"), &showGizmo);
                     if (win.width > 0 && win.height > 0) {
                         // drawCubeView(camera, win);
-                        if (showGizmo){
-                            EditTransform(camera, win);
-                        };
+                        if (showGizmo) {
+                            GizmoUI();
+                        }
                     }  
                 }
                 ImGui::EndTabItem();
             }
-
+            if (showGizmo){
+                EditTransform(camera, win);
+            };
             // Stencil Tab
             if (ImGui::BeginTabItem(UITxt("Stencil")))
             {
-                StencilUI(shaders["stencil"], outline, stencil_color);
+                StencilUI();
                 ImGui::EndTabItem();
             }
 
@@ -398,30 +416,16 @@ void NMRMesh::SpectraUI(){
     ImGui::SliderAngle(UITxt("Light Rotation"), &light_rotation, 0.0f);                 // Angle on circle that light object is positioned at
 }
 
-void NMRMesh::StencilUI(Shader & shader, float & outline, float color[4]) {
+void NMRMesh::StencilUI() {
     ImGui::Text("Change the Outline Thickness?");        // Text that appears in the window
-    ImGui::SliderFloat(UITxt("Thickness"), &outline, 0.00f, 2.0f); // Size slider that appears in the window
+    ImGui::SliderFloat(UITxt("Thickness"), &outline, 0.1f, 2.0f); // Size slider that appears in the window
  
     ImGui::Text("Change the Outline Color?");
-    ImGui::ColorPicker4(UITxt("Color"), color);
-
-    shader.Activate(); // Activate stencil outline program
-    glUniform1f(glGetUniformLocation(shader.ID, "outlining"), outline); // Collect outline thickness parameter
-    glUniform4f(glGetUniformLocation(shader.ID, "color"), color[0], color[1], color[2], color[3]);
+    ImGui::ColorPicker4(UITxt("Color"), stencil_color);
 }
 
-void NMRMesh::EditTransform(const Camera &camera, WindowData win)
+void NMRMesh::GizmoUI()
 {
-    eulerRotation = glm::eulerAngles(rot);
-    glm::mat4 modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
-    // glm::mat4 gridMatrix = glm::translate(MAT_IDENTITY, glm::vec3(0.0f, -2.0f, 0.0f));
-
-    float matrix[16];
-
-    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
-
-    static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-    static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
 
     if (ImGui::IsKeyPressed(ImGuiKey_T)) mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
     if (ImGui::IsKeyPressed(ImGuiKey_R)) mCurrentGizmoOperation = ImGuizmo::ROTATE;
@@ -451,10 +455,6 @@ void NMRMesh::EditTransform(const Camera &camera, WindowData win)
 
     ImGui::InputFloat3(UITxt("Scale"), glm::value_ptr(scale), "%.3f");
 
-    rot = glm::quat(eulerRotation);
-    modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
-    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
-
     if (mCurrentGizmoOperation != ImGuizmo::SCALE)
     {
         if (ImGui::RadioButton(UITxt("Local"), mCurrentGizmoMode == ImGuizmo::LOCAL))
@@ -463,6 +463,22 @@ void NMRMesh::EditTransform(const Camera &camera, WindowData win)
         if (ImGui::RadioButton(UITxt("World"), mCurrentGizmoMode == ImGuizmo::WORLD))
             mCurrentGizmoMode = ImGuizmo::WORLD;
     }
+
+}
+
+void NMRMesh::EditTransform(const Camera &camera, WindowData win)
+{
+    eulerRotation = glm::eulerAngles(rot);
+    glm::mat4 modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    // glm::mat4 gridMatrix = glm::translate(MAT_IDENTITY, glm::vec3(0.0f, -2.0f, 0.0f));
+
+    float matrix[16];
+
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
+
+    rot = glm::quat(eulerRotation);
+    modelMatrix = glm::translate(MAT_IDENTITY, pos) * glm::mat4_cast(rot) * glm::scale(MAT_IDENTITY, scale);
+    memcpy(matrix, glm::value_ptr(modelMatrix), sizeof(float) * 16);
 
     ImGuiIO& io = ImGui::GetIO();
     

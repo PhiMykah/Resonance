@@ -14,6 +14,10 @@ void Mesh::initMesh(Vertices& vertices, Indices& indices, Textures& textures){
     Mesh::indices = indices;
     Mesh::textures = textures;
 
+    for (auto vert : vertices){
+        Mesh::posVertices.push_back(PosVertex{vert.position});
+    }
+    
     // Vertex array object MUST be created before vertex buffer object
     // Vertex buffer is a different kind of buffer than the front and back buffer
     
@@ -21,7 +25,7 @@ void Mesh::initMesh(Vertices& vertices, Indices& indices, Textures& textures){
     vao.Bind();
 
     // Vertex Buffer Object (VBO)
-    VBO vbo(vertices);
+    VBO<Vertex> vbo(vertices);
     // Index Buffer Object (EBO)
     EBO ebo(indices);
 

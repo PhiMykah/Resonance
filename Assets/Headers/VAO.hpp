@@ -8,7 +8,7 @@
 ### Vertex Array Object (VAO)
 Class for containing and handling OpenGL vertex array
 */
-class VAO
+template <typename Vert> class VAO
 {
 public:
     // Reference ID for VAO
@@ -18,7 +18,7 @@ public:
     VAO();
 
     // Link vertex layout attribute to VAO
-    void LinkAttrib(VBO& vbo, GLuint layout, GLuint numComponents = 3, 
+    void LinkAttrib (VBO<Vert>& vbo, GLuint layout, GLuint numComponents = 3, 
                     GLenum type = GL_FLOAT, GLsizeiptr stride = 0, void* offset = (void*)0);
 
     // Bind VAO to binding point

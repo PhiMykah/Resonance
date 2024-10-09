@@ -71,14 +71,20 @@ class NMRMesh : public Mesh
         // Spectral settings UI
         void SpectraUI();
 
-        // Stencil Settins UI
-        void StencilUI(Shader & shader, float & outline, float color[4]);
+        // Stencil Settings UI
+        void StencilUI();
 
+        // Gizmo Settings UI
+        void GizmoUI();
+        
         // Edit transform gizmo
         void EditTransform(const Camera& camera, WindowData win);
 
         // Public variables
         
+        unsigned int ID; // Unique NMRMesh object ID
+        static GLuint selID; // ID of selected object
+
         // Mesh attributes
         glm::mat4 drawMat = glm::mat4(1.0);
         glm::vec3 pos = ZEROS;
@@ -103,8 +109,9 @@ class NMRMesh : public Mesh
         // Private Variables
 
         static unsigned int nextID; // next ID of NMRMesh object
-        unsigned int ID; // Unique NMRMesh object ID
         char IDTag [15]; // Tag for ID
+        static ImGuizmo::OPERATION mCurrentGizmoOperation;
+        static ImGuizmo::MODE mCurrentGizmoMode;
 
         // Cubelight 
         Mesh * light = NULL;
@@ -115,7 +122,7 @@ class NMRMesh : public Mesh
         // Display Attributes
 
         bool drawShape = true; 
-        bool drawBoundingBox = true;
+        bool drawBoundingBox = false;
         bool drawPoints = false;
         
         bool showNormals = false;

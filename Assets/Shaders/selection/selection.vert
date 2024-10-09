@@ -13,15 +13,10 @@ uniform mat4 translation; // Translation matrix
 uniform mat4 rotation; // Rotation matrix
 uniform mat4 scale; // Scale matrix
 
-uniform mat4 gTranslation; // Global Translation matrix
-uniform mat4 gRotation; // Global Rotation matrix
-uniform mat4 gScale; // Global Scale matrix
-
 void main()
 {
     // Calculate current position   
-                    // Global transform                 //                      Local Transform
-    gl_Position = gTranslation * gRotation * gScale * (model * translation * rotation * scale * vec4(aPos, 1.0));
+    gl_Position = model * translation * rotation * scale * vec4(aPos, 1.0);
 
     data_out.projection = camMatrix;
 }

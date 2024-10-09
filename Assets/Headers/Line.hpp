@@ -20,7 +20,7 @@ class Line
         LVertices vertices;
         Indices indices;
         GLenum primative = GL_LINES;
-        VAO vao;
+        VAO<LineVertex> vao;
 
         // Empty constructor for Line object
         Line();

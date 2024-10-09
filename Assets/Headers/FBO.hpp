@@ -8,6 +8,7 @@
 #include "Camera.hpp"
 #include "NMRMesh.hpp"
 #include "VAO.hpp"
+#include "VBO.hpp"
 
 /*
 ### Frame Buffer Object (FBO)
@@ -53,15 +54,15 @@ class FBO
         // Reference ID for Frame Buffer depth
         GLuint depthID;
 
-    protected:
-        VAO vao;
-
 };
 
 class SelectionFBO : public FBO
 {
     public:
-        void SelectMesh(Shader & selection_shader, Camera & camera, std::vector<NMRMesh> nmrMeshes);
+        static GLuint currSel;
+        void InitVAO(void * meshPtr, VAO<PosVertex> &vao);
+        void SelectMesh(Shader & selection_shader, Camera & camera, std::map<std::string, void *> nmrMeshes);
+        void DrawSelection(Shader & selection_shader, Camera & camera, VAO<PosVertex> & vao, NMRMesh * mesh);
     private:
 };
 

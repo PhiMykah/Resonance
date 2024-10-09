@@ -14,14 +14,11 @@ in DATA
     mat4 projection;
 } data_in[];    
 
-out uint primID;
-
 void main()
 {
     for (int i = 0; i < 3; i++) {
         // Vertex #1 (index 0)
         gl_Position = data_in[i].projection * gl_in[i].gl_Position;
-        primID = gl_PrimitiveID;  // Set primitive ID for each triangle
         // Call EmitVertex() when done with operating on vertex
         EmitVertex();
     }

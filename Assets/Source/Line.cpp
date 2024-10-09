@@ -20,7 +20,7 @@ void Line::initLines(LVertices& vertices, Indices& indices){
     vao.Bind();
 
     // Vertex Buffer Object (VBO)
-    VBO vbo(vertices);
+    VBO<LineVertex> vbo(vertices);
     // Index Buffer Object (EBO)
     EBO ebo(indices);
 
