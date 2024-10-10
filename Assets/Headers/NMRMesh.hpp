@@ -85,6 +85,19 @@ class NMRMesh : public Mesh
         unsigned int ID; // Unique NMRMesh object ID
         static GLuint selID; // ID of selected object
 
+        // Display Attributes
+
+        bool drawShape = true; 
+        bool drawBoundingBox = false;
+        bool drawPoints = false;
+        
+        bool showNormals = false;
+        bool showGizmo = true;
+
+        float pointSize = 1.0f;
+        float nmrSize = 1.0f;
+        float normalLength = 0.05f;
+
         // Mesh attributes
         glm::mat4 drawMat = glm::mat4(1.0);
         glm::vec3 pos = ZEROS;
@@ -119,19 +132,6 @@ class NMRMesh : public Mesh
         // Bounding Box
         Cubemap * boundingBox = NULL; 
 
-        // Display Attributes
-
-        bool drawShape = true; 
-        bool drawBoundingBox = false;
-        bool drawPoints = false;
-        
-        bool showNormals = false;
-        bool showGizmo = true;
-
-        float pointSize = 1.0f;
-        float nmrSize = 1.0f;
-        float normalLength = 0.05f;
-
         // Light attributes
         glm::vec4 light_color = WHITE;
         glm::mat4 light_model = MAT_IDENTITY;
@@ -161,5 +161,6 @@ class NMRMesh : public Mesh
         
 };
 
+void MeshList(std::map<std::string, void *> nmrMeshes);
 
 #endif // !NMRMESH_CLASS_H

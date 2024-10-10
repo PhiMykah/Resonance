@@ -5,6 +5,9 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "Constants.hpp"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 static const float identityMatrix[16] =
 { 1.f, 0.f, 0.f, 0.f,

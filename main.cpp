@@ -306,13 +306,14 @@ int main()
         drawMainMenu(nmrMeshes, currFile, main_window);
 
         // Create new NMRMesh if necessary
-        if (nmrMeshes[currFile] == NULL && !currFile.empty()) {
+        if ((nmrMeshes.find(currFile) != nmrMeshes.end()) && (!currFile.empty())) {
+            if (nmrMeshes.at(currFile) == NULL) {
+                nmrMesh = new NMRMesh(currFile);
 
-            nmrMesh = new NMRMesh(currFile);
+                nmrMeshes[currFile] = static_cast<void*>(nmrMesh);
 
-            nmrMeshes[currFile] = static_cast<void*>(nmrMesh);
-
-            nmrMesh->resetAttributes();
+                nmrMesh->resetAttributes();
+            }
         }
         
         selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
@@ -328,7 +329,9 @@ int main()
                 glLineWidth(1.0f);
             }
         }
-
+        
+        MeshList(nmrMeshes);
+        
         io = ImGui::GetIO();
         // Mouse selection 
         // Ensure mouse is not over an ImGui window

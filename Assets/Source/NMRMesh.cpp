@@ -502,3 +502,19 @@ void NMRMesh::EditTransform(const Camera &camera, WindowData win)
     glm::decompose(newMatrix, scale, rot, pos, skew, perspective);
     
 }
+
+void MeshList(std::map<std::string, void *> nmrMeshes)
+{
+    if (nmrMeshes.empty()) {
+        return;
+    }
+
+    ImGui::Begin("Mesh List");
+    for (auto [file, meshPtr] : nmrMeshes) {
+        if (!file.empty()) {
+            NMRMesh * mesh = static_cast<NMRMesh *>(meshPtr);
+            ImGui::Checkbox(fs::path(file).stem().string().c_str(), &mesh->drawShape);
+        }
+    }
+    ImGui::End();
+}
