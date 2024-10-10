@@ -33,12 +33,13 @@ MESH= $(a)/Mesh.o
 LINE= $(a)/Line.o
 NMR= $(a)/NMRMesh.o
 MODEL= $(a)/Model.o
+FBO = $(a)/FBO.o
 CUBEMAP = $(a)/Cubemap.o
 UI= $(a)/UI.o
 
-DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o Cubemap.o
+DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o FBO.o Cubemap.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI) $(CONST)
+OBJ= $(BACKEND) $(BUFFERS) $(FBO) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI) $(CONST)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -77,9 +78,9 @@ $(IGFD).o:
 	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGFD)/$(IGFD).cpp -o $(a)/$(IGFD).o $(LDFLAGS)
 
 $(IGZM).o:
-	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGZM)/$(IGZM).cpp -o $(a)/$(IGFD).o $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -c $(inc)/$(IGZM)/$(IGZM).cpp -o $(a)/$(IGZM).o $(LDFLAGS)
 
-Backend.o:
+Backend.o: $(IGZM).o $(IGFD).o
 	$(CXX) $(CXXFLAGS) -c $(src)/Backend.cpp -o $(BACKEND) $(LDFLAGS)
 
 Buffers.o:
@@ -105,11 +106,14 @@ Mesh.o : Shader.o Buffers.o Camera.o Texture.o
 Line.o : Buffers.o Camera.o Texture.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Line.cpp -o $(LINE) $(LDFLAGS)
 
-NMRMesh.o : Mesh.o
+NMRMesh.o : Mesh.o UI.o
 	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/NMRMesh.cpp -o $(NMR) $(LDFLAGS)
 
 Model.o : Mesh.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Model.cpp -o $(MODEL) $(LDFLAGS)
 
+FBO.o: Buffers.o Shader.o Camera.o NMRMesh.o
+	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/FBO.cpp -o $(FBO) $(LDFLAGS)
+
 Cubemap.o : Shader.o Camera.o
-	$(CXX) $(CXXFLAGS) -c $(src)/Cubemap.cpp -o $(CUBEMAP) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -c $(src)/Cubemap.cpp -o $(CUBEMAP) $(LDFLAGS)	

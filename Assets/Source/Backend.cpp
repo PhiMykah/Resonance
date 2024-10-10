@@ -40,28 +40,19 @@ GLFWwindow * initWindow(int width, int height,
 
 /*
 Initializes IMGUI, attaches IMGUI to window, 
-and creates input/output handler
 
 Parameters
 ----------
 window : GLFWwindow*
     Target window for IMGUI
-
-Returns
-io : ImGuiIO
-    Input/Output handler for IMGUI
 */
-ImGuiIO initIMGUI(GLFWwindow * window){
+void initIMGUI(GLFWwindow * window){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    // Create input/output handler
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
     // Choose imgui style
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 460"); // Specify initialization based on version of OpenGL
-    return io;
 }
 
 /*

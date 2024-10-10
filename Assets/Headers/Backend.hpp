@@ -43,7 +43,7 @@ struct WindowData
 
 GLFWwindow * initWindow(int width, int height, const char * title, GLFWmonitor *fullscreen, GLFWwindow *share = NULL);
 
-ImGuiIO initIMGUI(GLFWwindow * window);
+void initIMGUI(GLFWwindow * window);
 
 void closeIMGUI();
 

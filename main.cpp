@@ -134,7 +134,8 @@ int main()
     // ********************
     // * Initialize IMGUI *
     // ********************
-    ImGuiIO io = initIMGUI(main_window);
+    initIMGUI(main_window);
+    ImGuiIO io = ImGui::GetIO();
 
     // Ignore mouse inputs with imGUI enabled
     // if (!io.WantCaptureMouse) {
@@ -315,14 +316,6 @@ int main()
         }
         
         selection.SelectMesh(shaders["selection"], camera, nmrMeshes);
-                
-        if (glfwGetMouseButton(main_window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
-            double x, y;
-            glfwGetCursorPos(main_window, &x, &y);
-            FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x),  static_cast<GLuint>(abs(win.height - y)));
-            selection.currSel = selected_pixel.objID; 
-            NMRMesh::selID = selected_pixel.objID;
-        }
 
         for (auto const& [key, val] : nmrMeshes) {
             currMesh = static_cast<NMRMesh *>(val);
@@ -333,6 +326,19 @@ int main()
                 glLineWidth(4.0f);
                 axis_lines.Draw(shaders["lines"], camera);
                 glLineWidth(1.0f);
+            }
+        }
+
+        io = ImGui::GetIO();
+        // Mouse selection 
+        // Ensure mouse is not over an ImGui window
+        if (!io.WantCaptureMouse) {
+            if (glfwGetMouseButton(main_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                double x, y;
+                glfwGetCursorPos(main_window, &x, &y);
+                FBO::Pixel selected_pixel = selection.ReadPixel(static_cast<GLuint>(x),  static_cast<GLuint>(abs(win.height - y)));
+                selection.currSel = selected_pixel.objID; 
+                NMRMesh::selID = selected_pixel.objID;
             }
         }
 
