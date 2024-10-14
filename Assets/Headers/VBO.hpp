@@ -24,6 +24,12 @@ struct LineVertex
     glm::vec3 color;
 };
 
+struct TextVertex
+{
+    glm::vec2 position;
+    glm::vec2 texUV;
+};
+
 /*
 ### Vertex Buffer Object (VBO)
 Class for containing and handling OpenGL vertex buffer
@@ -36,6 +42,8 @@ template <typename Vert> class VBO
 
         // VBO constructor for storing vertex data and VBO information
         VBO(std::vector<Vert>& vertices, GLenum usage = GL_STATIC_DRAW);
+
+        VBO(unsigned int size, GLenum usage = GL_STATIC_DRAW);
 
         // Bind VBO to binding point
         void Bind();

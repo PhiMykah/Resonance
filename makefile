@@ -16,7 +16,8 @@ inc= $(a)/Libraries/include
 CXX=g++
 HEADERS= -I./$(h) -DGLM_ENABLE_EXPERIMENTAL
 NMRFLAGS= -DNMR64 -DLINUX -I./rd
-CXXFLAGS= -g -Wall -std=c++17 -I./$(inc) $(HEADERS) -I./$(inc)/imgui -I./$(inc)/GLMathematics -I./$(inc)/json
+FTFLAGS= -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/harfbuzz -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -pthread
+CXXFLAGS= -g -Wall -std=c++17 -I./$(inc) $(HEADERS) -I./$(inc)/imgui -I./$(inc)/GLMathematics -I./$(inc)/json $(FTFLAGS)
 LDFLAGS= -L./$(a)/Libraries/lib -lrt -lm -ldl -lglfw3
 
 SHAPES= $(h)/Shapes.hpp

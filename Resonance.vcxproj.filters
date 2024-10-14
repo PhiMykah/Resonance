@@ -273,6 +273,9 @@
     <ClCompile Include="Assets\Source\FBO.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Assets\Source\Text.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rd\dimloc.h">
@@ -420,6 +423,9 @@
       <Filter>Header Files\main</Filter>
     </ClInclude>
     <ClInclude Include="Assets\Headers\FBO.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Text.hpp">
       <Filter>Header Files\main</Filter>
     </ClInclude>
   </ItemGroup>

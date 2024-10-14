@@ -3,6 +3,7 @@
 template class VBO<PosVertex>;
 template class VBO<Vertex>;
 template class VBO<LineVertex>;
+template class VBO<TextVertex>;
 
 /*
 Main constructor for VBO
@@ -27,10 +28,19 @@ Returns
 -------
 VBO Object
 */
-template <typename Vert> VBO<Vert>::VBO(std::vector<Vert>& vertices, GLenum usage){
+template <typename Vert> 
+VBO<Vert>::VBO(std::vector<Vert>& vertices, GLenum usage){
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vert), vertices.data(), usage);
+}
+
+template <typename Vert>
+VBO<Vert>::VBO(unsigned int size, GLenum usage)
+{
+    glGenBuffers(1, &ID);
+    glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vert), NULL, usage);
 }
 
 /*
@@ -44,7 +54,8 @@ Returns
 -------
 None
 */
-template <typename Vert> void VBO<Vert>::Bind()
+template <typename Vert> 
+void VBO<Vert>::Bind()
 {
     // Buffer type for vertex buffer is GL_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, ID);
@@ -61,7 +72,8 @@ Returns
 -------
 None
 */
-template <typename Vert> void VBO<Vert>::Unbind(){
+template <typename Vert> 
+void VBO<Vert>::Unbind(){
     // Buffer type for vertex buffer is GL_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

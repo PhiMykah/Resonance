@@ -3,6 +3,7 @@
 template class VAO<PosVertex>;
 template class VAO<Vertex>;
 template class VAO<LineVertex>;
+template class VAO<TextVertex>;
 
 /*
 Default Constructor for vertex array class

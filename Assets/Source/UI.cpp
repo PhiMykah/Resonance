@@ -48,7 +48,6 @@ void drawMainMenu(std::map<std::string, void *>& nmrFiles, std::string & currFil
         if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
         // std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
         currFile = ImGuiFileDialog::Instance()->GetFilePathName();
-        nmrFiles[currFile] = NULL;
 
         for (auto & [key, val] : nmrFiles)
         {
@@ -58,8 +57,11 @@ void drawMainMenu(std::map<std::string, void *>& nmrFiles, std::string & currFil
             }
         }
         
+        nmrFiles.clear();
+        nmrFiles[currFile] = NULL;
+
         }
-        
+
         ImGuiFileDialog::Instance()->Close();
     }
 

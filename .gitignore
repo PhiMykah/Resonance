@@ -107,6 +107,11 @@ bld/
 *.com
 *.gnu
 
+# Freetype gitignore
+freetype/
+dlg/
+ft2build.h
+
 # gitignore Source Code
 # rd*/
 glad.c

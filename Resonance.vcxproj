@@ -38,6 +38,7 @@
     <ClCompile Include="Assets\Source\Model.cpp" />
     <ClCompile Include="Assets\Source\NMRMesh.cpp" />
     <ClCompile Include="Assets\Source\Shader.cpp" />
+    <ClCompile Include="Assets\Source\Text.cpp" />
     <ClCompile Include="Assets\Source\Texture.cpp" />
     <ClCompile Include="Assets\Source\UI.cpp" />
     <ClCompile Include="Assets\Source\VAO.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="Assets\Headers\NMRMesh.hpp" />
     <ClInclude Include="Assets\Headers\Shader.hpp" />
     <ClInclude Include="Assets\Headers\Shapes.hpp" />
+    <ClInclude Include="Assets\Headers\Text.hpp" />
     <ClInclude Include="Assets\Headers\Texture.hpp" />
     <ClInclude Include="Assets\Headers\UI.hpp" />
     <ClInclude Include="Assets\Headers\VAO.hpp" />
@@ -263,7 +265,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;$(ProjectDir)Assets\Libraries\include\freetype;$(ProjectDir)Assets\Libraries\include\dlg</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -271,7 +273,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -296,7 +298,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;_WIN;_DEBUG;_CONSOLE;NMR64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Assets\Libraries\include\imgui;$(ProjectDir)Assets\Libraries\include\ImGuiFileDialog;$(ProjectDir)Assets\Libraries\include\GLMathematics;$(ProjectDir)Assets\Libraries\include\json;$(ProjectDir)Assets\Headers;$(ProjectDir)rd;$(ProjectDir)Assets\Libraries\include\freetype;$(ProjectDir)Assets\Libraries\include\dlg</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -304,7 +306,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetype.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

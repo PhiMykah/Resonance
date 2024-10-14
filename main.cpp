@@ -9,6 +9,7 @@
 #include "Cubemap.hpp"
 #include "Shader.hpp"
 #include "FBO.hpp"
+#include "Text.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -94,7 +95,7 @@ int main()
     std::vector<std::string> shader_list = {
         "default", "points", "light", "nmr", "stencil",
         "skybox", "projection", "normals", "lines",
-        "selection"
+        "selection", "text"
     };
 
     std::map<std::string, Shader> shaders;
@@ -215,6 +216,12 @@ int main()
 
     SelectionFBO selection;
     selection.Init(width, height);
+    
+    // *************
+    // * Text Init *
+    // *************
+
+    Text t;
 
     // ****************** WHILE LOOP *************************
 
@@ -296,6 +303,8 @@ int main()
         // ******************
         // * OpenGL Drawing *
         // ******************
+
+        t.RenderText(shaders["text"], width/2, height/2, 10, glm::vec3((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0)));
 
         glDisable(GL_STENCIL_TEST);
         // Draw skybox
