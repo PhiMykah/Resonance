@@ -127,6 +127,9 @@
     <Filter Include="Resource Files\Shaders\stencil">
       <UniqueIdentifier>{9eeb7e6b-9ea7-460e-a47c-e9d7d8dfb6df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\text">
+      <UniqueIdentifier>{af191b90-1a81-4756-a2f8-1f8087e59181}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -273,7 +276,7 @@
     <ClCompile Include="Assets\Source\FBO.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Assets\Source\Text.cpp">
+    <ClCompile Include="Assets\Source\Type.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -425,7 +428,7 @@
     <ClInclude Include="Assets\Headers\FBO.hpp">
       <Filter>Header Files\main</Filter>
     </ClInclude>
-    <ClInclude Include="Assets\Headers\Text.hpp">
+    <ClInclude Include="Assets\Headers\Type.hpp">
       <Filter>Header Files\main</Filter>
     </ClInclude>
   </ItemGroup>
@@ -552,6 +555,12 @@
     </None>
     <None Include="Assets\Shaders\stencil\stencil.vert">
       <Filter>Resource Files\Shaders\stencil</Filter>
+    </None>
+    <None Include="Assets\Shaders\text\text.frag">
+      <Filter>Resource Files\Shaders\text</Filter>
+    </None>
+    <None Include="Assets\Shaders\text\text.vert">
+      <Filter>Resource Files\Shaders\text</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

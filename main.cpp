@@ -9,7 +9,7 @@
 #include "Cubemap.hpp"
 #include "Shader.hpp"
 #include "FBO.hpp"
-#include "Text.hpp"
+#include "Type.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -221,7 +221,7 @@ int main()
     // * Text Init *
     // *************
 
-    Text t;
+    Type t("Assets/Fonts/Arial.ttf");
 
     // ****************** WHILE LOOP *************************
 
@@ -235,8 +235,13 @@ int main()
             selection.Resize(win.width, win.height);
         }
 
+        if (win.width && win.height)
+            Type::SetProjection(0, static_cast<float>(win.width), 0, static_cast<float>(win.height));
         prevWidth = win.width;
         prevHeight = win.height;
+
+        shaders["text"].Activate();
+        glUniformMatrix4fv(glGetUniformLocation(shaders["text"].ID, "projection"), 1, GL_FALSE, Type::GetProjection());
 
         // ************************
         // * Update Frame Counter *
@@ -304,12 +309,10 @@ int main()
         // * OpenGL Drawing *
         // ******************
 
-        t.RenderText(shaders["text"], width/2, height/2, 10, glm::vec3((float)(25.0 / 255.0), (float)(25.0 / 255.0), (float)(122.0 / 255.0)));
-
         glDisable(GL_STENCIL_TEST);
         // Draw skybox
         if (win.width > 0 && win.height > 0)
-            skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);
+            skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);  
         glEnable(GL_STENCIL_TEST);
 
         drawMainMenu(nmrMeshes, currFile, main_window);
@@ -353,6 +356,16 @@ int main()
                 NMRMesh::selID = selected_pixel.objID;
             }
         }
+
+        // ******************
+        // * Text Rendering *
+        // ******************
+
+        ActivateTextSettings();
+
+        t.RenderText(shaders["text"], "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));      
+        
+        DeactivateTextSettings();
 
         // Render UI Window
         ImGui::Render();

@@ -36,10 +36,15 @@ VBO<Vert>::VBO(std::vector<Vert>& vertices, GLenum usage){
 }
 
 template <typename Vert>
-VBO<Vert>::VBO(unsigned int size, GLenum usage)
+VBO<Vert>::VBO()
 {
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
+}
+
+template <typename Vert>
+void VBO<Vert>::BufferData(unsigned int size, GLenum usage)
+{
     glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vert), NULL, usage);
 }
 
@@ -73,7 +78,7 @@ Returns
 None
 */
 template <typename Vert> 
-void VBO<Vert>::Unbind(){
+void VBO<Vert>::    Unbind(){
     // Buffer type for vertex buffer is GL_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

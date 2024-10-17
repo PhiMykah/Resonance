@@ -38,8 +38,8 @@
     <ClCompile Include="Assets\Source\Model.cpp" />
     <ClCompile Include="Assets\Source\NMRMesh.cpp" />
     <ClCompile Include="Assets\Source\Shader.cpp" />
-    <ClCompile Include="Assets\Source\Text.cpp" />
     <ClCompile Include="Assets\Source\Texture.cpp" />
+    <ClCompile Include="Assets\Source\Type.cpp" />
     <ClCompile Include="Assets\Source\UI.cpp" />
     <ClCompile Include="Assets\Source\VAO.cpp" />
     <ClCompile Include="Assets\Source\VBO.cpp" />
@@ -82,8 +82,8 @@
     <ClInclude Include="Assets\Headers\NMRMesh.hpp" />
     <ClInclude Include="Assets\Headers\Shader.hpp" />
     <ClInclude Include="Assets\Headers\Shapes.hpp" />
-    <ClInclude Include="Assets\Headers\Text.hpp" />
     <ClInclude Include="Assets\Headers\Texture.hpp" />
+    <ClInclude Include="Assets\Headers\Type.hpp" />
     <ClInclude Include="Assets\Headers\UI.hpp" />
     <ClInclude Include="Assets\Headers\VAO.hpp" />
     <ClInclude Include="Assets\Headers\VBO.hpp" />
@@ -158,6 +158,8 @@
     <None Include="Assets\Shaders\stencil\stencil.frag" />
     <None Include="Assets\Shaders\stencil\stencil.geom" />
     <None Include="Assets\Shaders\stencil\stencil.vert" />
+    <None Include="Assets\Shaders\text\text.frag" />
+    <None Include="Assets\Shaders\text\text.vert" />
     <None Include="makefile" />
     <None Include="spectra\ramp.ft2" />
     <None Include="spectra\ramp_tp.ft2" />

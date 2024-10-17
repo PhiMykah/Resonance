@@ -55,6 +55,10 @@ void AddFileDialog();
 
 void glRenderSettings();
 
+void ActivateTextSettings();
+
+void DeactivateTextSettings();
+
 struct ScopedID {
     ScopedID(unsigned int id) {
         ImGui::PushID(id);  // Push the ID when the object is created

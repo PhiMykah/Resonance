@@ -244,6 +244,8 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
 
     glRenderSettings();
 
+    glDisable(GL_CULL_FACE);
+
     // Enable writing to entire stencil buffer
     //            function | ref | bitwise AND mask
     glStencilFunc(GL_ALWAYS,  1,    0xFF);
@@ -295,6 +297,7 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
         }
     }
 
+    glEnable(GL_CULL_FACE);
 }
 
 void NMRMesh::DisplayUI(WindowData &win, Camera & camera, Shaders &shaders)

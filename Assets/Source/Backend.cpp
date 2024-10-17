@@ -158,9 +158,9 @@ void glRenderSettings()
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // Enable Face Culling
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
-    // glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
     
     // Enable/Disable VSYNC (1 or 0)
     glfwSwapInterval(1);
@@ -194,8 +194,26 @@ void glRenderSettings()
     // *******************
 
     // Anti-aliasing setting
-    glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_LINE_SMOOTH);
 
+}
+
+void ActivateTextSettings()
+{
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_STENCIL_TEST);
+}
+
+void DeactivateTextSettings()
+{
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_STENCIL_TEST);
 }
 
 // *************

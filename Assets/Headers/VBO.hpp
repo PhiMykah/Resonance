@@ -43,7 +43,9 @@ template <typename Vert> class VBO
         // VBO constructor for storing vertex data and VBO information
         VBO(std::vector<Vert>& vertices, GLenum usage = GL_STATIC_DRAW);
 
-        VBO(unsigned int size, GLenum usage = GL_STATIC_DRAW);
+        VBO();
+
+        void BufferData(unsigned int size, GLenum usage = GL_STATIC_DRAW);
 
         // Bind VBO to binding point
         void Bind();

@@ -31,7 +31,7 @@ std::string get_file_contents(const char * filename)
 
         return(contents);
     }
-    throw(errno);
+    return("");
 }
 
 std::string shaderFile(std::string shader_path, std::string name, ShaderType shader_type){
@@ -79,13 +79,20 @@ Shader object
 */
 Shader::Shader(const char *vertexFile, const char *fragmentFile, const char *geometryFile)
 {
+    bool useGeometry = true;
+
     std::string vertexCode = get_file_contents(vertexFile);
     std::string fragmentCode = get_file_contents(fragmentFile);
     std::string geometryCode = get_file_contents(geometryFile);
 
-    const char* vertexSource = vertexCode.c_str();
-    const char* fragmentSource = fragmentCode.c_str();
-    const char* geometrySource = geometryCode.c_str();
+    if (geometryCode.empty()) {
+        useGeometry = false;
+    }
+
+    const char* vertexSource    = vertexCode.c_str();
+    const char* fragmentSource  = fragmentCode.c_str();
+    const char* geometrySource  = geometryCode.c_str();
+    
 
     // ****** VERTEX SHADER ********
 
@@ -117,17 +124,21 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile, const char *geo
 
     // ****** GEOMETRY SHADER ***********
 
-    // Initialize geometry shader
-    GLuint geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+    GLuint geometryShader;
+    if (useGeometry) {
+        // Initialize geometry shader
+        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 
-    // Provide source for geometry shader
-    // Parameters:
-    // reference value, screen count, source code, array of string lengths
-    glShaderSource(geometryShader, 1, &geometrySource, NULL);
+        // Provide source for geometry shader
+        // Parameters:
+        // reference value, screen count, source code, array of string lengths
+        glShaderSource(geometryShader, 1, &geometrySource, NULL);
 
-    // Compile source code into machine code 
-    glCompileShader(geometryShader);
-    compileErrors(geometryShader, "GEOMETRY");
+        // Compile source code into machine code 
+        glCompileShader(geometryShader);
+        compileErrors(geometryShader, "GEOMETRY");
+    }
+
 
     // ******** SHADER PROGRAM ******** 
 
@@ -135,14 +146,14 @@ Shader::Shader(const char *vertexFile, const char *fragmentFile, const char *geo
     ID = glCreateProgram();
     glAttachShader(ID, vertexShader);
     glAttachShader(ID, fragmentShader);
-    glAttachShader(ID, geometryShader);
+    if (useGeometry) glAttachShader(ID, geometryShader);
     glLinkProgram(ID);
     compileErrors(ID, "PROGRAM");
 
     // Remove shaders now that the shaders are loaded to the program
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-    glDeleteShader(geometryShader);
+    if (useGeometry) glDeleteShader(geometryShader);
 }
 
 /*
