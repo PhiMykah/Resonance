@@ -113,7 +113,7 @@ glm::f32* Type::GetProjection()
 }
 
 
-void Type::RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color)
+glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color)
 {
     // activate corresponding render state	
     shader.Activate();
@@ -121,6 +121,9 @@ void Type::RenderText(Shader &shader, std::string text, float x, float y, float 
     glActiveTexture(Type::unit);
     glBindVertexArray(VAO);
 
+    float x_start = x;
+    float min_y = INFINITY;
+    float max_y = 0;
     // iterate through all characters
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++)
@@ -154,7 +157,42 @@ void Type::RenderText(Shader &shader, std::string text, float x, float y, float 
 
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        if (ypos < min_y) min_y = ypos;
+        if ((ypos + h) > max_y) max_y = ypos + h;
     }
+    
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return glm::vec4(x_start, (x-x_start)/2, min_y, (max_y - min_y)/2.0f);
+}
+
+void Type::RenderCenter(Shader &shader, glm::vec2 center_point, glm::vec3 color)
+{
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    float vertices[5] = { center_point.x, center_point.y, color.x, color.y, color.z};
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glBindVertexArray(VAO);
+
+    shader.Activate();
+    glUniform1f(glGetUniformLocation(shader.ID, "pointSize"), 5.0f);
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, Type::GetProjection());
+
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    glBindVertexArray(0);
 }

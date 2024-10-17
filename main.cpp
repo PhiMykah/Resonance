@@ -93,9 +93,9 @@ int main()
     std::string shader_path = assets + "Shaders/";
 
     std::vector<std::string> shader_list = {
-        "default", "points", "light", "nmr", "stencil",
-        "skybox", "projection", "normals", "lines",
-        "selection", "text"
+        "default", "default2d", "points", "point2d",
+        "light", "nmr", "stencil", "skybox", "projection",
+        "normals", "lines", "selection", "text", 
     };
 
     std::map<std::string, Shader> shaders;
@@ -222,6 +222,10 @@ int main()
     // *************
 
     Type t("Assets/Fonts/Arial.ttf");
+
+    glm::vec4 text_pos = glm::vec4(0.0f);
+    glm::vec4 prev_pos = text_pos;
+    glm::vec2 center_point = glm::vec2(0.0f);
 
     // ****************** WHILE LOOP *************************
 
@@ -363,7 +367,22 @@ int main()
 
         ActivateTextSettings();
 
-        t.RenderText(shaders["text"], "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));      
+        float text_x = static_cast<float>(win.width)/4.0f;
+        float text_y = static_cast<float>(win.height)/2.0f;
+        text_pos = t.RenderText(shaders["text"], "This is sample text", 
+                     text_x, 
+                     text_y, 
+                     1.0f, glm::vec3(1.0, 0.0, 0.0));
+        
+        center_point = glm::vec2(text_pos.x + text_pos.y, text_pos.z + text_pos.w);
+
+        t.RenderCenter(shaders["point2d"], center_point, glm::vec3(0.0));
+        if ((text_pos != prev_pos)) {
+            printf("Text Center: (%.3f, %.3f)\n", center_point.x, center_point.y);
+            printf("(%.3f + %.3f, %.3f + %.3f)\n", text_pos.x, text_pos.y, text_pos.z, text_pos.w);
+            printf("Starting from (%.3f, %.3f)\n", text_x, text_y);
+        }
+        prev_pos = text_pos;
         
         DeactivateTextSettings();
 

@@ -7,7 +7,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#define QUAD_COUNT 6
 class Type
 {
     public:
@@ -17,8 +16,9 @@ class Type
 
         static glm::f32* GetProjection();
         
-        void RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color);
+        glm::vec4 RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color);
 
+        void RenderCenter(Shader &shader, glm::vec2 center_point, glm::vec3 color);
         struct Character 
         {
             unsigned int textureID;  // ID handle of the glyph texture
