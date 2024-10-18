@@ -112,14 +112,38 @@ glm::f32* Type::GetProjection()
     return glm::value_ptr(Type::projection);
 }
 
-
-glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color)
+glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color, bool centerCoords)
 {
     // activate corresponding render state	
     shader.Activate();
     glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(Type::unit);
     glBindVertexArray(VAO);
+
+    if (centerCoords) {
+        std::string::const_iterator c;
+        float left = 0;
+        float bottom = 0;
+        float right = 0;
+        float top = 0;
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = Characters[*c];
+            
+            float xpos = ch.Bearing.x * scale;
+            float ypos = - (ch.Size.y - ch.Bearing.y) * scale;
+            float h = ch.Size.y * scale;
+
+            right += (ch.Advance >> 6) * scale;
+            if (ypos < bottom) bottom = ypos;
+            if ((ypos + h) > top) top = ypos + h;
+
+        }
+        float width = right - left;
+        float height = (top - bottom);
+
+        x = x - width / 2;
+        y = y - height / 2 - bottom;
+    }
 
     float x_start = x;
     float min_y = INFINITY;
@@ -164,7 +188,7 @@ glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, f
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return glm::vec4(x_start, (x-x_start)/2, min_y, (max_y - min_y)/2.0f);
+    return glm::vec4(x_start, (x-x_start), min_y, (max_y - min_y));
 }
 
 void Type::RenderCenter(Shader &shader, glm::vec2 center_point, glm::vec3 color)

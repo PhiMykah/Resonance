@@ -367,22 +367,33 @@ int main()
 
         ActivateTextSettings();
 
-        float text_x = static_cast<float>(win.width)/4.0f;
-        float text_y = static_cast<float>(win.height)/2.0f;
-        text_pos = t.RenderText(shaders["text"], "This is sample text", 
-                     text_x, 
-                     text_y, 
-                     1.0f, glm::vec3(1.0, 0.0, 0.0));
+        if (nmrMeshes.empty()) {
+            float text_x = static_cast<float>(win.width) / 2.0f;
+            float text_y = static_cast<float>(win.height) / 2.0f;
+            text_pos = t.RenderText(shaders["text"], "Welcome!", 
+                         text_x, 
+                         text_y + 50, 
+                         1.0f, glm::vec3(0.0, 0.0, 0.0), true);
+            t.RenderText(shaders["text"], "Use File->Open or Ctrl+O",
+                         text_x,
+                         text_y,
+                         1.0f, glm::vec3(0.0, 0.0, 0.0), true);
+            t.RenderText(shaders["text"], "to open a file.",
+                         text_x,
+                         text_y - 50,
+                         1.0f, glm::vec3(0.0, 0.0, 0.0), true);
         
-        center_point = glm::vec2(text_pos.x + text_pos.y, text_pos.z + text_pos.w);
+            center_point = glm::vec2(text_pos.x + text_pos.y / 2.0f, text_pos.z + text_pos.w / 2.0f);
 
-        t.RenderCenter(shaders["point2d"], center_point, glm::vec3(0.0));
-        if ((text_pos != prev_pos)) {
-            printf("Text Center: (%.3f, %.3f)\n", center_point.x, center_point.y);
-            printf("(%.3f + %.3f, %.3f + %.3f)\n", text_pos.x, text_pos.y, text_pos.z, text_pos.w);
-            printf("Starting from (%.3f, %.3f)\n", text_x, text_y);
+            #ifdef DEBUG
+                        t.RenderCenter(shaders["point2d"], center_point, glm::vec3(0.0));
+                        if ((text_pos != prev_pos)) {
+                            printf("Text Center: (%.3f, %.3f)\n", center_point.x, center_point.y);
+                            printf("(%.3f + %.3f, %.3f + %.3f)\n", text_pos.x, text_pos.y / 2, text_pos.z, text_pos.w / 2);
+                        }
+                        prev_pos = text_pos;
+            #endif // DEBUG
         }
-        prev_pos = text_pos;
         
         DeactivateTextSettings();
 

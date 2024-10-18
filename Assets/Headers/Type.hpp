@@ -16,7 +16,7 @@ class Type
 
         static glm::f32* GetProjection();
         
-        glm::vec4 RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color);
+        glm::vec4 RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color, bool centerCoords = false);
 
         void RenderCenter(Shader &shader, glm::vec2 center_point, glm::vec3 color);
         struct Character 
