@@ -187,7 +187,7 @@ void NMRMesh::updateUniforms(Shaders & shaders)
     // **************************
 
     shaders["normals"].Activate();
-    glUniform1f(glGetUniformLocation(shaders["normals"].ID, "hairLength"), normalLength);
+    shaders["normals"].setFloat("hairLength", normalLength);
 
     // *************************
     // * Light Object Settings *
@@ -196,12 +196,12 @@ void NMRMesh::updateUniforms(Shaders & shaders)
     // Calculate light position by parametric representation of a circle
     light_pos = glm::vec3(light_distance * cos(light_rotation), 0.5f, light_distance * sin(light_rotation));
     // Send updated light position to shader program
-    glUniform3f(glGetUniformLocation(shaders["default"].ID, "lightPos"), light_pos.x, light_pos.y, light_pos.z);
+    shaders["default"].setVec3("lightPos", light_pos.x, light_pos.y, light_pos.z);
 
     // Export shape object to shader program
     shaders["default"].Activate();
     // Export light color and position to shader program
-    glUniform4f(glGetUniformLocation(shaders["default"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+    shaders["default"].setVec4("lightColor", light_color.x, light_color.y, light_color.z, light_color.w);
 
 
     // ******************
@@ -209,22 +209,22 @@ void NMRMesh::updateUniforms(Shaders & shaders)
     // ******************
 
     shaders["points"].Activate();
-    glUniform1f(glGetUniformLocation(shaders["points"].ID, "pointSize"), pointSize);
+    shaders["points"].setFloat("pointSize", pointSize);
 
     // Export light object to light shader
     shaders["light"].Activate();
-    GLuint light_model_ID = glGetUniformLocation(shaders["light"].ID, "model");
-    glUniformMatrix4fv(light_model_ID, 1, GL_FALSE, glm::value_ptr(light_model));
+    shaders["light"].setMat4("model", light_model);
+
     // Export light color to light shader
-    glUniform4f(glGetUniformLocation(shaders["light"].ID, "lightColor"), light_color.x, light_color.y, light_color.z, light_color.w);
+    shaders["light"].setVec4("lightColor", light_color.x, light_color.y, light_color.z, light_color.w);
 
     // ********************
     // * Stencil Settings *
     // ********************
     shaders["stencil"].Activate(); // Activate stencil outline program
-    glUniform1f(glGetUniformLocation(shaders["stencil"].ID, "outlining"), outline); // Collect outline thickness parameter
-    glUniform4f(glGetUniformLocation(shaders["stencil"].ID, "color"), 
-                stencil_color[0], stencil_color[1], stencil_color[2], stencil_color[3]);
+    shaders["stencil"].setFloat("outlining", outline);
+    shaders["stencil"].setVec4("color", stencil_color[0], stencil_color[1], stencil_color[2], stencil_color[3]);
+
 }
 
 void NMRMesh::resetAttributes() 

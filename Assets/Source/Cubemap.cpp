@@ -141,7 +141,8 @@ void Cubemap::Draw(
     shader.Activate();
 
     // Send camera position to shader and perform camera matrix calculations
-    glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+    
+    shader.setVec3("camPos", camera.position.x, camera.position.y, camera.position.z);
     camera.Matrix(shader, "camMatrix");
 
     // Create transformation matrices for mesh
@@ -155,10 +156,10 @@ void Cubemap::Draw(
     sca = glm::scale(sca, scale);
 
     // Send transformation matrices and model matrix to shader
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+    shader.setMat4("translation", trans);
+    shader.setMat4("rotation", rot);
+    shader.setMat4("scale", sca);
+    shader.setMat4("model", matrix);
 
     // Draw object 
     glBindVertexArray(VAO);
@@ -182,8 +183,8 @@ void Cubemap::DrawSkybox(Shader & shader, Camera & camera, int width, int height
     skybox_view = glm::mat4(glm::mat3(glm::lookAt(camera.position, camera.position + camera.orientation, camera.up)));
     skybox_projection = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
     // Send view and projection to shader
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, glm::value_ptr(skybox_view));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(skybox_projection));
+    shader.setMat4("view",skybox_view);
+    shader.setMat4("projection",skybox_projection);
 
     // Draw object 
     glBindVertexArray(VAO);

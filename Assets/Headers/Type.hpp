@@ -14,7 +14,9 @@ class Type
 
         static void SetProjection(float left, float right, float bottom, float top);
 
-        static glm::f32* GetProjection();
+        static void SetProjection(glm::mat4 projection);
+
+        static glm::mat4 GetProjection();
         
         glm::vec4 RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color, bool centerCoords = false);
 
