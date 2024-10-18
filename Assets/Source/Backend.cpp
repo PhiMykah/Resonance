@@ -257,5 +257,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         if (key == GLFW_KEY_O && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
             OpenFileDialog();
         }
+        // ADD FILE HOTKEY
+        // Check if both A and CTRL are pressed
+        if (key == GLFW_KEY_O && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
+            AddFileDialog();
+        }
     }
 }

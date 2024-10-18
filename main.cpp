@@ -123,14 +123,13 @@ int main()
 
     // Export NMR object to NMR shader
     shaders["nmr"].Activate();
-    GLuint nmr_model_ID = glGetUniformLocation(shaders["nmr"].ID, "model");
-    glUniformMatrix4fv(nmr_model_ID, 1, GL_FALSE, glm::value_ptr(nmr_model));
+    shaders["nmr"].setMat4("model", nmr_model);
     // Export point color to nmr shader
-    glUniform4f(glGetUniformLocation(shaders["nmr"].ID, "pointColor"), point_color.x, point_color.y, point_color.z, point_color.w);
+    shaders["nmr"].setVec4("pointColor", point_color);
 
     // Export skybox texture to skybox shader
     shaders["skybox"].Activate();
-    glUniform1i(glGetUniformLocation(shaders["skybox"].ID, "skybox"), 0);
+    shaders["skybox"].setInt("skybox", 0);
 
     // ********************
     // * Initialize IMGUI *
@@ -245,7 +244,7 @@ int main()
         prevHeight = win.height;
 
         shaders["text"].Activate();
-        glUniformMatrix4fv(glGetUniformLocation(shaders["text"].ID, "projection"), 1, GL_FALSE, Type::GetProjection());
+        shaders["text"].setMat4("projection", Type::GetProjection());
 
         // ************************
         // * Update Frame Counter *
@@ -297,8 +296,9 @@ int main()
         camera.Input(main_window);
 
         // Update camera matrix based on view plane and FOV
-        if (win.width > 0 && win.height > 0)
+        if (win.width > 0 && win.height > 0) {
             camera.UpdateMatrix(win.width, win.height);
+        }
 
         // *******************
         // * Buffer Settings *

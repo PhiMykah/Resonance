@@ -137,10 +137,11 @@ None
 */
 void Texture::texUnit(Shader& shader, const char *uniform, GLuint unit)
 {
-    // Obtain sampler2D var from fragment shader for use in prgram
     GLuint texUni = glGetUniformLocation(shader.ID, uniform);
     shader.Activate();
-    glUniform1i(texUni, unit); // Connect texUni to texture unit in main program after activation
+    // Obtain sampler2D var from fragment shader for use in prgram
+    // Connect texUni to texture unit in main program after activation
+    shader.setInt(std::string(uniform), unit);
 
 }
 

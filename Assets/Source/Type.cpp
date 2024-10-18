@@ -92,9 +92,13 @@ int Type::GenerateBuffers()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_DYNAMIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 5, NULL, GL_DYNAMIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -107,16 +111,21 @@ void Type::SetProjection(float left, float right, float bottom, float top)
     Type::projection = glm::ortho(left, right, bottom, top);
 }
 
-glm::f32* Type::GetProjection()
+void Type::SetProjection(glm::mat4 projection)
 {
-    return glm::value_ptr(Type::projection);
+    Type::projection = projection;
+}
+
+glm::mat4 Type::GetProjection()
+{
+    return Type::projection;
 }
 
 glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color, bool centerCoords)
 {
     // activate corresponding render state	
     shader.Activate();
-    glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
+    shader.setVec3("textColor", color.x, color.y, color.z);
     glActiveTexture(Type::unit);
     glBindVertexArray(VAO);
 
@@ -160,11 +169,11 @@ glm::vec4 Type::RenderText(Shader &shader, std::string text, float x, float y, f
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
         // update VBO for each character
-        float vertices[4][4] = {
-            { xpos,     ypos + h,   0.0f, 0.0f },            
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }           
+        float vertices[4][5] = {
+            { xpos,     ypos + h,   0.0f, 0.0f, 0.0f },            
+            { xpos,     ypos,       0.0f, 0.0f, 1.0f },
+            { xpos + w, ypos,       0.0f, 1.0f, 1.0f },
+            { xpos + w, ypos + h,   0.0f, 1.0f, 0.0f }           
         };
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
@@ -213,8 +222,8 @@ void Type::RenderCenter(Shader &shader, glm::vec2 center_point, glm::vec3 color)
     glBindVertexArray(VAO);
 
     shader.Activate();
-    glUniform1f(glGetUniformLocation(shader.ID, "pointSize"), 5.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, Type::GetProjection());
+    shader.setFloat("pointSize", 5.0f);
+    shader.setMat4("projection", Type::GetProjection());
 
     glDrawArrays(GL_POINTS, 0, 1);
 

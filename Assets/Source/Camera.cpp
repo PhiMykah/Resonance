@@ -84,7 +84,7 @@ Returns
 None
 */
 void Camera::Matrix(Shader& shader, const char* uniform){
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+    shader.setMat4(std::string(uniform), cameraMatrix);
 }
 
 /* Handle the camera controls for the view

@@ -122,7 +122,7 @@ void SelectionFBO::SelectMesh(Shader &selection_shader, Camera &camera, std::map
         SelectionFBO::InitVAO(mesh, vao);
 
         GLuint objectID = static_cast<GLuint>(mesh->ID); // Assign unique object ID starting from 1
-        glUniform1ui(glGetUniformLocation(selection_shader.ID, "objID"), objectID);
+        selection_shader.setUInt("objID", objectID);
 
         // Draw the mesh
         DrawSelection(selection_shader, camera, vao, mesh);
@@ -163,10 +163,10 @@ void SelectionFBO::DrawSelection(Shader &shader, Camera &camera, VAO<PosVertex> 
     sca = glm::scale(sca, scale);
 
     // Send transformation matrices and model matrix to shader
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rotat));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(mat));
+    shader.setMat4("translation", trans);
+    shader.setMat4("rotation", rotat);
+    shader.setMat4("scale", sca);
+    shader.setMat4("model", mat);
 
     glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 }

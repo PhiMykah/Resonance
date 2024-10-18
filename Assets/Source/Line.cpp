@@ -49,7 +49,7 @@ void Line::Draw(
     vao.Bind();
 
     // Send camera position to shader and perform camera matrix calculations
-    glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+    shader.setVec3("camPos", camera.position.x, camera.position.y, camera.position.z);
     camera.Matrix(shader, "camMatrix");
 
     // Create transformation matrices for mesh
@@ -64,10 +64,10 @@ void Line::Draw(
     sca = glm::scale(sca, scale);
 
     // Send transformation matrices and model matrix to shader
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+    shader.setMat4("translation", trans);
+    shader.setMat4("rotation", rot);
+    shader.setMat4("scale", sca);
+    shader.setMat4("model", matrix);
 
 
     glDrawElements(primative, indices.size(), GL_UNSIGNED_INT, 0);

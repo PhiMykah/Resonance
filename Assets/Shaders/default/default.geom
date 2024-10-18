@@ -12,7 +12,7 @@ layout (triangle_strip, max_vertices = 3) out;
 // and fragment shader in the pipeline
 out vec3 Normal;
 out vec3 color;
-out vec2 texCoord;
+out vec2 texCoords;
 out vec3 currPos;
 
 // Position is not necessary to import since
@@ -21,7 +21,7 @@ in DATA
 {
     vec3 Normal;
     vec3 color;
-    vec2 texCoord;
+    vec2 texCoords;
     vec3 currPos;
     mat4 projection;
 } data_in[];
@@ -33,7 +33,7 @@ void defaultGeometry()
         gl_Position = data_in[i].projection * gl_in[i].gl_Position;
         Normal = data_in[i].Normal;
         color = data_in[i].color;
-        texCoord = data_in[i].texCoord;
+        texCoords = data_in[i].texCoords;
         currPos = data_in[i].currPos;
         // Call EmitVertex() when done with operating on vertex
         EmitVertex();
@@ -51,21 +51,21 @@ void explosionGeometry(){
     gl_Position = data_in[0].projection * (gl_in[0].gl_Position + surfaceNormal);
     Normal = data_in[0].Normal;
     color = data_in[0].color;
-    texCoord = data_in[0].texCoord;
+    texCoords = data_in[0].texCoords;
     currPos = data_in[0].currPos;
     EmitVertex();
 
     gl_Position = data_in[1].projection * (gl_in[1].gl_Position + surfaceNormal);
     Normal = data_in[1].Normal;
     color = data_in[1].color;
-    texCoord = data_in[1].texCoord;
+    texCoords = data_in[1].texCoords;
     currPos = data_in[1].currPos;
     EmitVertex();
 
     gl_Position = data_in[2].projection * (gl_in[2].gl_Position + surfaceNormal);
     Normal = data_in[2].Normal;
     color = data_in[2].color;
-    texCoord = data_in[2].texCoord;
+    texCoords = data_in[2].texCoords;
     currPos = data_in[2].currPos;
     EmitVertex();
 

@@ -8,7 +8,7 @@ out DATA
 {
     vec3 Normal; // Outputs the normal vectors of the object
     vec3 color; // Output color for fragment shader
-    vec2 texCoord; // Outputs the texture coordinates to the fragment shader
+    vec2 texCoords; // Outputs the texture coordinates to the fragment shader
     vec3 currPos; // Output the current 3 float position to the fragment shader
     mat4 projection; // Include projection matrix since it is applied after geometry shader
 } data_out;
@@ -34,9 +34,9 @@ void main()
     data_out.Normal = aNormal;
     // Assign colors from vertex data to color
     data_out.color = aColor;
-    // Assigns the texture coordinates from the vertex data to "texCoord"
+    // Assigns the texture coordinates from the vertex data to "texCoords"
     // Rotate texture coords by 90 deg to match gltf standards
-    data_out.texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
+    data_out.texCoords = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
     // Output projection matrix to perform after geometry shader
     data_out.currPos = vec3(gl_Position);
 
