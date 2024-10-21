@@ -30,6 +30,8 @@ BUFFERS= $(a)/VBO.o $(a)/EBO.o $(a)/VAO.o
 SHADERS= $(a)/Shader.o
 TEXTURES= $(a)/Texture.o
 CAMERA= $(a)/Camera.o
+LIGHT= $(a)/Light.o
+TYPE= $(a)/Type.o
 MESH= $(a)/Mesh.o
 LINE= $(a)/Line.o
 NMR= $(a)/NMRMesh.o
@@ -38,9 +40,9 @@ FBO = $(a)/FBO.o
 CUBEMAP = $(a)/Cubemap.o
 UI= $(a)/UI.o
 
-DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Line.o NMRMesh.o Model.o FBO.o Cubemap.o
+DEPS= $(IGFD).o $(IGZM).o Backend.o Buffers.o Shader.o Texture.o Camera.o Mesh.o Type.o Light.o Line.o NMRMesh.o Model.o FBO.o Cubemap.o
 
-OBJ= $(BACKEND) $(BUFFERS) $(FBO) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI) $(CONST)
+OBJ= $(BACKEND) $(BUFFERS) $(FBO) $(SHADERS) $(TEXTURES) $(CAMERA) $(MESH) $(LINE) $(NMR) $(MODEL) $(LIGHT) $(TYPE) $(CUBEMAP) $(a)/$(IGFD).o $(a)/$(IGZM).o $(SHAPES) $(UI) $(CONST)
 NMR_H= 
 NMR_OBJ= rd/readnmr.o rd/fdatap.o rd/cmndargs.o \
 rd/token.o rd/stralloc.o rd/memory.o rd/fdataio.o rd/dataio.o \
@@ -71,7 +73,7 @@ draw: $(DEPS)
 	$(CXX) $(CXXFLAGS) $(NMRFLAGS) draw.cpp $(glad) $(NMR_OBJ) $(OBJ) $(IMGUI) -o draw $(LDFLAGS)
 
 main: $(DEPS)
-	$(CXX) $(CXXFLAGS) $(NMRFLAGS) main.cpp $(glad) $(NMR_OBJ) $(OBJ) $(IMGUI) -o main $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(NMRFLAGS) main.cpp $(glad) $(NMR_OBJ) $(OBJ) $(IMGUI) -o main $(LDFLAGS) $(FTFLAGS)
 clean:
 	rm -rf $(a)/*.o
 
@@ -112,6 +114,12 @@ NMRMesh.o : Mesh.o UI.o
 
 Model.o : Mesh.o
 	$(CXX) $(CXXFLAGS) -c $(src)/Model.cpp -o $(MODEL) $(LDFLAGS)
+
+Light.o : Mesh.o
+	$(CXX) $(CXXFLAGS) -c $(src)/Light.cpp -o $(LIGHT) $(LDFLAGS)
+
+Type.o : Shader.o
+	$(CXX) $(CXXFLAGS) -c $(src)/Type.cpp -o $(TYPE) $(LDFLAGS) $(FTFLAGS)
 
 FBO.o: Buffers.o Shader.o Camera.o NMRMesh.o
 	$(CXX) $(CXXFLAGS) $(NMRFLAGS) -c $(src)/FBO.cpp -o $(FBO) $(LDFLAGS)

@@ -279,6 +279,9 @@
     <ClCompile Include="Assets\Source\Type.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Assets\Source\Light.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rd\dimloc.h">
@@ -429,6 +432,9 @@
       <Filter>Header Files\main</Filter>
     </ClInclude>
     <ClInclude Include="Assets\Headers\Type.hpp">
+      <Filter>Header Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Headers\Light.hpp">
       <Filter>Header Files\main</Filter>
     </ClInclude>
   </ItemGroup>

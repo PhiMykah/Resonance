@@ -125,19 +125,9 @@ class NMRMesh : public Mesh
         char IDTag [15]; // Tag for ID
         static ImGuizmo::OPERATION mCurrentGizmoOperation;
         static ImGuizmo::MODE mCurrentGizmoMode;
-
-        // Cubelight 
-        Mesh * light = NULL;
-
+        
         // Bounding Box
         Cubemap * boundingBox = NULL; 
-
-        // Light attributes
-        glm::vec4 light_color = WHITE;
-        glm::mat4 light_model = MAT_IDENTITY;
-        glm::vec3 light_pos;
-        float light_distance = 0.8f;
-        float light_rotation = 0.0f;
 
         // BoundingBox attributes
         glm::vec3 bbPos = ZEROS;

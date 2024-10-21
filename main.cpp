@@ -10,6 +10,7 @@
 #include "Shader.hpp"
 #include "FBO.hpp"
 #include "Type.hpp"
+#include "Light.hpp"
 
 // Matrix Headers
 #include <glm/glm.hpp>
@@ -226,6 +227,12 @@ int main()
     glm::vec4 prev_pos = text_pos;
     glm::vec2 center_point = glm::vec2(0.0f);
 
+    // ******************
+    // * Light Vertices *
+    // ******************
+
+    std::vector<Light*> lights;
+
     // ****************** WHILE LOOP *************************
 
     // While loop repeats until window is told to close or user closes window
@@ -319,7 +326,11 @@ int main()
             skybox.DrawSkybox(shaders["skybox"], camera, win.width, win.height);  
         glEnable(GL_STENCIL_TEST);
 
-        drawMainMenu(nmrMeshes, currFile, main_window);
+        DrawMainMenu(nmrMeshes, lights, currFile, main_window);
+
+        for (auto light: lights) {
+            light->Display(win, camera, shaders);
+        }
 
         // Create new NMRMesh if necessary
         if ((nmrMeshes.find(currFile) != nmrMeshes.end()) && (!currFile.empty())) {
@@ -367,7 +378,7 @@ int main()
 
         ActivateTextSettings();
 
-        if (nmrMeshes.empty()) {
+        if (nmrMeshes.empty() && lights.empty()) {
             float text_x = static_cast<float>(win.width) / 2.0f;
             float text_y = static_cast<float>(win.height) / 2.0f;
             text_pos = t.RenderText(shaders["text"], "Welcome!", 

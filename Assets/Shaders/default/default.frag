@@ -24,39 +24,42 @@ uniform Material material;
 
 // Point lighting properties
 struct PointLight {    
-    vec3 position;
-    
-    float constant;
-    float linear;
-    float quadratic;  
+   vec3 position;
+   
+   float constant;
+   float linear;
+   float quadratic;  
 
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+   vec3 ambient;
+   vec3 diffuse;
+   vec3 specular;
+   vec3 color;
 };  
 
 // Directional lighting properties
 struct DirLight {
-    vec3 direction;
-  
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+   vec3 direction;
+
+   vec3 ambient;
+   vec3 diffuse;
+   vec3 specular;
+   vec3 color;
 };  
 
 struct SpotLight {
-    vec3 position;
-    vec3 direction;
-    float cutOff;
-    float outerCutOff;
-  
-    float constant;
-    float linear;
-    float quadratic;
-  
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;       
+   vec3 position;
+   vec3 direction;
+   float cutOff;
+   float outerCutOff;
+
+   float constant;
+   float linear;
+   float quadratic;
+
+   vec3 ambient;
+   vec3 diffuse;
+   vec3 specular; 
+   vec3 color;      
 };
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 pos, vec3 viewDir);  
@@ -73,26 +76,19 @@ float logisticDepth(float depth);
 
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform DirLight dirLight;
-uniform SpotLight spotlight;
+uniform SpotLight spotLight;
 
 void main()
 { 
-   // Final color output
-   FragColor = pointLight();
-
    vec3 norm = normalize(Normal);
    vec3 viewDir = normalize(camPos - currPos);
-
-
-
    vec3 result = vec3(0.0, 0.0, 0.0);
 
    for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, currPos, viewDir);    
 
-   // Fog distance effect
-	// float depth = logisticDepth(gl_FragCoord.z);
-	// FragColor = directionalLight() * (1.0f - depth) + vec4(depth * vec3(0.85f, 0.85f, 0.90f), 1.0f);
+   // Final color output
+   FragColor = vec4(result, 1.0);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 pos, vec3 viewDir){
@@ -224,3 +220,7 @@ float logisticDepth(float depth, float steepness, float offset){
 float logisticDepth(float depth){
     return logisticDepth(depth, 0.5f, 5.0f);
 }
+
+// Fog distance effect
+// float depth = logisticDepth(gl_FragCoord.z);
+// FragColor = directionalLight() * (1.0f - depth) + vec4(depth * vec3(0.85f, 0.85f, 0.90f), 1.0f);
