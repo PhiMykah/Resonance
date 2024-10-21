@@ -5,8 +5,9 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "Constants.hpp"
-#include <filesystem>
+#include "Light.hpp"
 
+#include <filesystem>
 namespace fs = std::filesystem;
 
 static const float identityMatrix[16] =
@@ -15,7 +16,7 @@ static const float identityMatrix[16] =
     0.f, 0.f, 1.f, 0.f,
     0.f, 0.f, 0.f, 1.f };
 
-void drawMainMenu(std::map<std::string, void *>& nmrFiles, std::string & currFile, GLFWwindow * window);
+void DrawMainMenu(std::map<std::string, void *>& nmrFiles, std::vector<Light*> &lights, std::string & currFile, GLFWwindow * window);
 
 void EditTransform(
     const Camera& camera, glm::vec3& pos, 
@@ -24,5 +25,7 @@ void EditTransform(
     );
 
 void drawCubeView(Camera & camera, WindowData win);
+
+void CreateLight(std::vector<Light *> &lights);
 
 #endif // !UI_HEADER_H

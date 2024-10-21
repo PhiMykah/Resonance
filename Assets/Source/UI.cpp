@@ -1,6 +1,6 @@
 #include "UI.hpp"
 
-void drawMainMenu(std::map<std::string, void *>& nmrFiles, std::string & currFile, GLFWwindow * window) { // 
+void DrawMainMenu(std::map<std::string, void *>& nmrFiles, std::vector<Light*> & lights, std::string & currFile, GLFWwindow * window) { // 
 
     // open Dialog Simple
     if (ImGui::BeginMainMenuBar())
@@ -11,8 +11,14 @@ void drawMainMenu(std::map<std::string, void *>& nmrFiles, std::string & currFil
                 OpenFileDialog();
             }
 
-            if (ImGui::MenuItem("Add..", "Ctrl+A")) {
-                AddFileDialog();
+            if (ImGui::BeginMenu("Add..")) {
+                if (ImGui::MenuItem("Spectra", "Ctrl+A")) {
+                    AddFileDialog();
+                }
+                if (ImGui::MenuItem("Light")) {
+                    CreateLight(lights);
+                }
+                ImGui::EndMenu();
             }
 
             ImGui::EndMenu();
@@ -103,3 +109,23 @@ void drawCubeView(Camera & camera, WindowData win){
     camera.UpdateMatrix(win.width, win.height);
 }
 
+void CreateLight(std::vector<Light *> &lights)
+{
+    unsigned int ID = lights.size();
+    Light * newLight;
+
+    if (lights.size() > MAX_LIGHTS) {
+        Light * oldLight = lights.at(0);
+        newLight = new Light(0, LightType::POINT);
+        delete oldLight;
+        lights.at(0) = newLight;
+        return;
+    }
+
+    newLight = new Light(ID, LightType::POINT);
+    lights.push_back(newLight);
+
+    if (lights.size() > 0) {
+        Light::selID = 0;
+    }
+}

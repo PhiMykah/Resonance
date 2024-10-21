@@ -33,6 +33,7 @@
     <ClCompile Include="Assets\Source\Cubemap.cpp" />
     <ClCompile Include="Assets\Source\EBO.cpp" />
     <ClCompile Include="Assets\Source\FBO.cpp" />
+    <ClCompile Include="Assets\Source\Light.cpp" />
     <ClCompile Include="Assets\Source\Line.cpp" />
     <ClCompile Include="Assets\Source\Mesh.cpp" />
     <ClCompile Include="Assets\Source\Model.cpp" />
@@ -76,6 +77,7 @@
     <ClInclude Include="Assets\Headers\Cubemap.hpp" />
     <ClInclude Include="Assets\Headers\EBO.hpp" />
     <ClInclude Include="Assets\Headers\FBO.hpp" />
+    <ClInclude Include="Assets\Headers\Light.hpp" />
     <ClInclude Include="Assets\Headers\Line.hpp" />
     <ClInclude Include="Assets\Headers\Mesh.hpp" />
     <ClInclude Include="Assets\Headers\Model.hpp" />

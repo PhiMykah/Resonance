@@ -71,25 +71,6 @@ void NMRMesh::Constructor(unsigned int ID)
 
     boundingBox->BindTextures();
 
-    // *************************
-    // * Creating Light Object *
-    // *************************
-
-    Texture textures[]
-    {
-        Texture("Assets/Textures/Alb/planks.png", "diffuse", 0, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR),  // Load diffusion texture
-        Texture("Assets/Textures/Spec/planksSpec.png", "specular", 1, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST) // Load Specular Map for Texture
-    };
-
-    // Create vectors for vertices, indices, and textures
-    // Textures will be the same since light does not utilize textures
-    Vertices light_verts(Shapes::cube_vertices, 
-                         Shapes::cube_vertices + sizeof(Shapes::cube_vertices) / sizeof(Vertex));
-    Indices light_ind(Shapes::cube_indices,
-                      Shapes::cube_indices + sizeof(Shapes::cube_indices) / sizeof(GLuint));
-    Textures tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    light = new Mesh(light_verts, light_ind, tex);
 }
 
 void NMRMesh::NMRToVertex()
@@ -189,34 +170,12 @@ void NMRMesh::updateUniforms(Shaders & shaders)
     shaders["normals"].Activate();
     shaders["normals"].setFloat("hairLength", normalLength);
 
-    // *************************
-    // * Light Object Settings *
-    // *************************
-
-    // Calculate light position by parametric representation of a circle
-    light_pos = glm::vec3(light_distance * cos(light_rotation), 0.5f, light_distance * sin(light_rotation));
-    // Send updated light position to shader program
-    shaders["default"].setVec3("lightPos", light_pos.x, light_pos.y, light_pos.z);
-
-    // Export shape object to shader program
-    shaders["default"].Activate();
-    // Export light color and position to shader program
-    shaders["default"].setVec4("lightColor", light_color.x, light_color.y, light_color.z, light_color.w);
-
-
     // ******************
     // * Point Settings *
     // ******************
 
     shaders["points"].Activate();
     shaders["points"].setFloat("pointSize", pointSize);
-
-    // Export light object to light shader
-    shaders["light"].Activate();
-    shaders["light"].setMat4("model", light_model);
-
-    // Export light color to light shader
-    shaders["light"].setVec4("lightColor", light_color.x, light_color.y, light_color.z, light_color.w);
 
     // ********************
     // * Stencil Settings *
@@ -255,7 +214,7 @@ void NMRMesh::Display(WindowData &win, Camera & camera, Shaders &shaders)
     // * Draw Light *
     // **************
 
-    light->Draw(shaders["light"], camera, light_model, pos + light_pos);
+    // light->Draw(shaders["light"], camera, light_model, pos + light_pos);
 
     // **************
     // * UI Drawing *
@@ -411,12 +370,6 @@ void NMRMesh::SpectraUI(){
         ImGui::Checkbox(UITxt("Show Normals"), &showNormals);                           // Display normal vectors
         ImGui::SliderFloat(UITxt("Normals Magnitude"), &normalLength, 0.0f, 0.1f);      // Length of normal vectors
     }
-
-    ImGui::Separator();                                                                 // ------------------
-
-    ImGui::Text("Light Settings");                                                      // Text for light settings
-    ImGui::SliderFloat(UITxt("Light Distance"), &light_distance, 0.5f, 5.0f);           // Slider sets distance of light from center
-    ImGui::SliderAngle(UITxt("Light Rotation"), &light_rotation, 0.0f);                 // Angle on circle that light object is positioned at
 }
 
 void NMRMesh::StencilUI() {

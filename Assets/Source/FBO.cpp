@@ -102,6 +102,28 @@ void SelectionFBO::InitVAO(void *meshPtr, VAO<PosVertex> &vao)
     ebo.Unbind();
 }
 
+void SelectionFBO::InitVAO(Mesh *ptr, VAO<PosVertex> &vao)
+{
+    
+    // Bind Vertex Array Object (VAO)
+    vao.Bind();
+
+    std::vector<GLuint> indices = ptr->indices;
+    std::vector<PosVertex> vertices = ptr->posVertices;
+    VBO<PosVertex> vbo(vertices);
+
+    // Index Buffer Object (EBO)
+    EBO ebo(indices);
+
+    // Link vbo layouts to corresponding vao
+    // Position Coordinate layout (layout 0)
+    vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(PosVertex), (void *)0);
+
+    vao.Unbind();
+    vbo.Unbind();
+    ebo.Unbind();
+}
+
 void SelectionFBO::SelectMesh(Shader &selection_shader, Camera &camera, std::map<std::string, void *> nmrMeshes)
 {
     Bind(); // Bind FBO
@@ -126,6 +148,35 @@ void SelectionFBO::SelectMesh(Shader &selection_shader, Camera &camera, std::map
 
         // Draw the mesh
         DrawSelection(selection_shader, camera, vao, mesh);
+
+        // mesh->Draw(selection_shader, camera, mat, pos, rot, scale);
+    }
+
+    Unbind(); // Unbind FBO
+}
+
+void SelectionFBO::SelectMesh(Shader &selection_shader, Camera &camera, std::vector<Mesh *> vector)
+{
+    Bind(); // Bind FBO
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear FBO
+
+    selection_shader.Activate();
+
+    for (auto ptr : vector) 
+    {
+        // Avoid null pointer
+        if (ptr == NULL) continue;
+
+        VAO<PosVertex> vao;
+
+        SelectionFBO::InitVAO(ptr, vao);
+
+        GLuint objectID = static_cast<GLuint>(ptr->ID); // Assign unique object ID starting from 1
+        selection_shader.setUInt("objID", objectID);
+
+        // Draw the mesh
+        DrawSelection(selection_shader, camera, vao, ptr);
 
         // mesh->Draw(selection_shader, camera, mat, pos, rot, scale);
     }
@@ -169,4 +220,42 @@ void SelectionFBO::DrawSelection(Shader &shader, Camera &camera, VAO<PosVertex> 
     shader.setMat4("model", mat);
 
     glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+void SelectionFBO::DrawSelection(Shader &shader, Camera &camera, VAO<PosVertex> &vao, Mesh * ptr)
+{
+    glm::mat4 mat   = MAT_IDENTITY;
+    glm::vec3 pos   = ptr->pos;
+    glm::quat rot   = QUAT_IDENTITY;
+    glm::vec3 scale = ONES;
+
+    shader.Activate();
+    vao.Bind();
+
+    camera.Matrix(shader, "camMatrix");
+
+    // Create transformation matrices for mesh
+
+    glm::mat4 trans = MAT_IDENTITY;
+    glm::mat4 rotat = MAT_IDENTITY;
+    glm::mat4 sca = MAT_IDENTITY;
+
+    // Global transformation matrices
+
+    glm::mat4 gtrans = MAT_IDENTITY;
+    glm::mat4 grot = MAT_IDENTITY;
+    glm::mat4 gsca = MAT_IDENTITY;
+
+    // Apply translation, rotation, and scale to transformation matrices
+    trans = glm::translate(trans, pos);
+    rotat = glm::mat4_cast(rot);
+    sca = glm::scale(sca, scale);
+
+    // Send transformation matrices and model matrix to shader
+    shader.setMat4("translation", trans);
+    shader.setMat4("rotation", rotat);
+    shader.setMat4("scale", sca);
+    shader.setMat4("model", mat);
+
+    glDrawElements(GL_TRIANGLES, ptr->indices.size(), GL_UNSIGNED_INT, 0);
 }

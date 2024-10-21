@@ -52,6 +52,8 @@ class Mesh
             glm::vec3 globalScale = ONES
         );
         
+        GLuint ID;
+        glm::vec3 pos = ZEROS;
     protected:
         // Internal mesh initialization function used by Mesh and its children
         void initMesh(Vertices& vertices, Indices& indices, Textures& textures);

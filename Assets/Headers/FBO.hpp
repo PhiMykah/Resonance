@@ -61,8 +61,11 @@ class SelectionFBO : public FBO
     public:
         static GLuint currSel;
         void InitVAO(void * meshPtr, VAO<PosVertex> &vao);
+        void InitVAO(Mesh *ptr, VAO<PosVertex> &vao);
         void SelectMesh(Shader & selection_shader, Camera & camera, std::map<std::string, void *> nmrMeshes);
+        void SelectMesh(Shader & selection_shader, Camera & camera, std::vector<Mesh *> vector);
         void DrawSelection(Shader & selection_shader, Camera & camera, VAO<PosVertex> & vao, NMRMesh * mesh);
+        void DrawSelection(Shader &shader, Camera &camera, VAO<PosVertex> &vao, Mesh * ptr);
     private:
 };
 
