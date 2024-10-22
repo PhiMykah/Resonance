@@ -83,12 +83,14 @@ void Mesh::Draw(
         }
 
         // Add texture to texUnit based on number given
-        textures[i].texUnit(shader, (type + num).c_str(), i);
+        textures[i].texUnit(shader, (type + num).c_str(),   i);
         // Bind the texture to shader
         textures[i].Bind();
     }
     // Send camera position to shader and perform camera matrix calculations
     shader.setVec3("camPos", camera.position.x, camera.position.y, camera.position.z);
+    shader.setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+    shader.setFloat("material.shininess", 32.0f);
     camera.Matrix(shader, "camMatrix");
 
     // Create transformation matrices for mesh

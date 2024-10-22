@@ -137,6 +137,7 @@ None
 */
 void Texture::texUnit(Shader& shader, const char *uniform, GLuint unit)
 {
+    // std::string uniformString = "material." + std::string(uniform);
     shader.Activate();
     // Obtain sampler2D var from fragment shader for use in prgram
     // Connect texUni to texture unit in main program after activation

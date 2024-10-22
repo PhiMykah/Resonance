@@ -15,10 +15,10 @@ uniform vec3 camPos; // Obtain camera position for specular lighting
 
 // Material properties of object
 struct Material {
-    vec3 ambient;
-    sampler2D diffuse;
-    sampler2D specular;
-    float shininess;
+   vec3 ambient;
+   sampler2D diffuse;
+   sampler2D specular;
+   float shininess;
 }; 
 uniform Material material; 
 
@@ -66,7 +66,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 pos, vec3 viewDir);
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 pos, vec3 viewDir);
 
-vec4 pointLight();
+vec3 PointLightCalc(PointLight light);
 
 float near = 0.1f;
 float far = 100.f;
@@ -82,13 +82,16 @@ void main()
 { 
    vec3 norm = normalize(Normal);
    vec3 viewDir = normalize(camPos - currPos);
-   vec3 result = vec3(0.0, 0.0, 0.0);
+   vec3 result = vec3(0.0);
+   // result += PointLightCalc(pointLights[0]);
 
    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, currPos, viewDir);    
+      result += PointLightCalc(pointLights[i]);
+      // result += CalcPointLight(pointLights[i], norm, currPos, viewDir);    
 
    // Final color output
    FragColor = vec4(result, 1.0);
+
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 pos, vec3 viewDir){
@@ -103,9 +106,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 pos, vec3 viewDir){
    float attenuation = 1.0 / (light.constant + light.linear * distance + 
             light.quadratic * (distance * distance));    
    // combine results
-   vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, texCoords));
-   vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, texCoords));
-   vec3 specular = light.specular * spec * vec3(texture(material.specular, texCoords));
+   vec3 ambient  = light.ambient  * vec3(texture(diffuse0, texCoords));
+   vec3 diffuse  = light.diffuse  * diff * vec3(texture(diffuse0, texCoords));
+   vec3 specular = light.specular * spec * vec3(texture(specular0, texCoords).r);
    ambient  *= attenuation;
    diffuse  *= attenuation;
    specular *= attenuation;
@@ -157,19 +160,16 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 pos, vec3 viewDir)
 // Point light implements a light that emanates in all directions
 // with a relaitionship between distance and intensity.
 // The equation Intensity(d) = 1/(a*d^2+b*d+1)
-vec4 pointLight(){
+vec3 PointLightCalc(PointLight light){
    // Vector of light to target position
-   vec3 lightVec = lightPos - currPos;
+   vec3 lightVec = light.position - currPos;
    
    // Calculate distance that light travels by length of vector
    float dist = length(lightVec);
 
-   // Constants for equation
-   float a = 1.0f; // Controls how fast the intensity decreases
-   float b = 0.04f; // Controls how far the light reaches
-
    // Calculate intensity from equation above
-   float intensity = 1.0f / ((a * dist * dist) + (b * dist) + 1.0f);
+   float intensity = 1.0f / ((light.quadratic * dist * dist) + 
+                     (light.linear * dist) + light.constant);
 
    // Create ambient light for the object
    float ambient = 0.2f;
@@ -182,17 +182,16 @@ vec4 pointLight(){
    float diffuse = max(dot(normal, lightDirection), 0.0f);
 
    // Calculate specular light
-   float specular = 0.0f;
+   vec3 specular = vec3(0.0, 0.0, 0.0);
    if (diffuse != 0.0f) 
    {
-      float specularLight = 0.5f;
       vec3 viewDirection = normalize(camPos - currPos);
       vec3 reflectionDirection = reflect(-lightDirection, normal);
 
       vec3 halfwayVec = normalize(viewDirection + lightDirection);
 
       float specAmount = pow(max(dot(normal, halfwayVec), 0.0f), 16);
-      specular = specAmount * specularLight;
+      specular = specAmount * light.specular;
    }
 
    // // Ignore fragments that contain alpha values less than 0.1
@@ -201,7 +200,7 @@ vec4 pointLight(){
 
    // Final output color 
    //      Primary Texture Color based on ambient and Diffused light + Specular map using texture 
-   return (texture(diffuse0, texCoords) * (diffuse * intensity + ambient) + texture(specular0, texCoords).r * specular * intensity) * lightColor;
+   return (vec3(texture(diffuse0, texCoords)) * (diffuse * intensity + ambient) + vec3(texture(specular0, texCoords).r) * specular * intensity) * light.color;
 }
 
 // Make depth buffer operate on a linear function

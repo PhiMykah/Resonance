@@ -97,6 +97,7 @@ bld/
 
 # Testing Files
 .clangd
+*.trace
 
 # NMR gitignore
 
